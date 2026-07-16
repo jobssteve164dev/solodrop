@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-16T10:41:10.230Z",
+  "updatedAt": "2026-07-16T11:28:29.671Z",
   "documents": [
     {
       "path": "README.md",
@@ -40,17 +40,27 @@
       "status": "active",
       "solves": "约束长期 UI 或治理面如何服务用户动作。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-16T10:40:44.469Z"
+      "lastTouchedAt": "2026-07-16T10:42:45.762Z"
     }
   ],
-  "pendingReview": [],
+  "pendingReview": [
+    {
+      "path": "docs/ui/sidebar.md",
+      "reason": "文档缺少长期判断结构，建议确认它解决的项目判断和适用范围。",
+      "severity": "info",
+      "detectedAt": "2026-07-16T11:17:22.883Z",
+      "source": "documentation_audit"
+    }
+  ],
   "lastAudit": {
-    "auditedAt": "2026-07-16T09:20:12.527Z",
+    "auditedAt": "2026-07-16T11:17:22.883Z",
     "runKind": "solo",
     "nodeId": "__solo__",
     "status": "Completed",
-    "action": "none",
-    "touchedDocuments": [],
-    "pendingReviewCount": 0
+    "action": "needs_review",
+    "touchedDocuments": [
+      "docs/ui/sidebar.md"
+    ],
+    "pendingReviewCount": 1
   }
 }
