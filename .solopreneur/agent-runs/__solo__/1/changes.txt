@@ -1,0 +1,4 @@
+ M .solopreneur/documentation.json
+ M .solopreneur/project_journal.db
+?? .solopreneur/agent-runs/
+?? .solopreneur/agent-status/
