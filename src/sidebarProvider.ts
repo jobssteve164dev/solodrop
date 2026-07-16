@@ -176,6 +176,11 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         break;
       }
       case 'refresh': await this.refreshFromActiveEditor(); break;
+      case 'setLanguage': {
+        const nextLanguage = resolveLocale() === 'zh-cn' ? 'en' : 'zh-cn';
+        await vscode.workspace.getConfiguration('solodrop').update('language', nextLanguage, vscode.ConfigurationTarget.Global);
+        break;
+      }
       case 'open': if (message.url) await vscode.env.openExternal(vscode.Uri.parse(message.url)); break;
       case 'copy': if (message.url) await vscode.env.clipboard.writeText(message.url); break;
     }

@@ -28,3 +28,4 @@ The sidebar has one primary action: share the selected artifact. Dragging a file
 - Claim URLs are never presented as public share links.
 - Errors include a recovery action or a specific next step.
 - All user-visible sidebar, notification, command and setting text supports English and Simplified Chinese. Language changes rerender the sidebar immediately; automatic mode follows VS Code.
+- A visible header button switches directly between English and Simplified Chinese. The choice is stored in the global VS Code `solodrop.language` setting and survives reloads and workspace changes.

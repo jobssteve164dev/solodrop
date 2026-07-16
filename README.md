@@ -18,7 +18,7 @@ SoloDrop turns files created by coding agents into clean browser previews and gi
 3. Choose **Share preview**.
 4. SoloDrop builds the preview, verifies the deployment and copies its public URL.
 
-Set **SoloDrop: Language** to `Auto`, `English` or `简体中文`. Changes apply to the sidebar and notifications immediately; `Auto` follows the VS Code display language.
+Use the **中 / EN** button in the sidebar header to switch languages immediately. The choice is saved globally and remains active after VS Code restarts. You can also set **SoloDrop: Language** to `Auto`, `English` or `简体中文`; `Auto` follows the VS Code display language.
 
 Temporary previews must be claimed within 60 minutes to remain online. The ownership link is sensitive and is never copied as the public share link.
 

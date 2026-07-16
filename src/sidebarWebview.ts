@@ -18,7 +18,8 @@ export function getSidebarHtml(webview: vscode.Webview, extensionUri: vscode.Uri
   <main class="shell">
     <header class="hero">
       <img src="${webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'resources', 'logo.svg'))}" alt="" class="logo">
-      <div><h1>SoloDrop</h1><p>${escapeHtml(text.tagline)}</p></div>
+      <div class="hero-copy"><h1>SoloDrop</h1><p>${escapeHtml(text.tagline)}</p></div>
+      <button id="language" class="language-button" type="button" aria-label="${escapeHtml(text.switchLanguage)}" title="${escapeHtml(text.switchLanguage)}">${locale === 'zh-cn' ? 'EN' : '中'}</button>
     </header>
 
     <section id="drop-zone" class="share-card" aria-labelledby="selected-heading">

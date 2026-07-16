@@ -13,6 +13,7 @@
     copy: document.getElementById('copy-link'),
     claim: document.getElementById('claim-link'),
     refresh: document.getElementById('refresh'),
+    language: document.getElementById('language'),
     history: document.getElementById('history')
   };
   elements.dropZone = document.getElementById('drop-zone');
@@ -58,6 +59,7 @@
   elements.choose.addEventListener('click', () => post('choose'));
   elements.share.addEventListener('click', () => post('share'));
   elements.refresh.addEventListener('click', () => post('refresh'));
+  elements.language.addEventListener('click', () => post('setLanguage'));
   elements.open.addEventListener('click', () => latestRecord && post('open', { url: latestRecord.previewUrl }));
   elements.copy.addEventListener('click', () => latestRecord && post('copy', { url: latestRecord.previewUrl }));
   elements.claim.addEventListener('click', () => latestRecord?.claimUrl && post('open', { url: latestRecord.claimUrl }));
