@@ -1,6 +1,6 @@
 {
   "extension.displayName": "SoloDrop - Share Agent Artifacts",
-  "extension.description": "Turn files created by coding agents into clean browser previews and share them with one click.",
+  "extension.description": "Turn agent-made files into verified browser previews and share them in one click. / 将 Agent 生成的文件转成已验证的网页预览，一键分享。",
   "command.shareCurrentFile": "SoloDrop: Share Current File",
   "command.chooseAndShare": "SoloDrop: Choose File to Share",
   "command.openSidebar": "SoloDrop: Open Sidebar",
