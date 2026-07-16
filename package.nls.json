@@ -1,0 +1,18 @@
+{
+  "extension.displayName": "SoloDrop - Share Agent Artifacts",
+  "extension.description": "Turn files created by coding agents into clean browser previews and share them with one click.",
+  "command.shareCurrentFile": "SoloDrop: Share Current File",
+  "command.chooseAndShare": "SoloDrop: Choose File to Share",
+  "command.openSidebar": "SoloDrop: Open Sidebar",
+  "view.sidebar": "SoloDrop",
+  "configuration.title": "SoloDrop",
+  "configuration.deploymentMode.auto": "Use the signed-in Cloudflare account when available, otherwise create a 60-minute temporary preview.",
+  "configuration.deploymentMode.temporary": "Always create an unauthenticated 60-minute temporary preview.",
+  "configuration.deploymentMode.authenticated": "Require an authenticated Wrangler session and create a persistent preview.",
+  "configuration.deploymentMode.description": "How SoloDrop publishes generated previews.",
+  "configuration.confirmBeforeUpload.description": "Show the exact file and size before it is uploaded.",
+  "configuration.language.auto": "Follow the VS Code display language.",
+  "configuration.language.en": "Use English.",
+  "configuration.language.zh": "使用简体中文。",
+  "configuration.language.description": "Language used by the SoloDrop sidebar and notifications."
+}

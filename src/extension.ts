@@ -7,6 +7,9 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     output,
     vscode.window.registerWebviewViewProvider(SoloDropSidebarProvider.viewType, provider),
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration('solodrop.language')) provider.rerender();
+    }),
     vscode.commands.registerCommand('solodrop.openSidebar', () => vscode.commands.executeCommand('workbench.view.extension.solodrop-sidebar-container')),
     vscode.commands.registerCommand('solodrop.chooseAndShare', async () => {
       await provider.chooseFile();

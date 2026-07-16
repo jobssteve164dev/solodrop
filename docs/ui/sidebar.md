@@ -27,3 +27,4 @@ The sidebar has one primary action: share the selected artifact. Dragging a file
 - Sharing never starts silently: the final filename and size are confirmed unless the user disables confirmation.
 - Claim URLs are never presented as public share links.
 - Errors include a recovery action or a specific next step.
+- All user-visible sidebar, notification, command and setting text supports English and Simplified Chinese. Language changes rerender the sidebar immediately; automatic mode follows VS Code.

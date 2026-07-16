@@ -7,6 +7,7 @@ import { deployPreview, isWranglerAuthenticated, verifyPreview } from './deploym
 import { buildPreview } from './preview';
 import { getSidebarHtml } from './sidebarWebview';
 import { createDeploymentName } from './naming';
+import { format, resolveLocale, strings } from './i18n';
 import { ArtifactSelection, DeploymentMode, ShareRecord } from './types';
 
 const HISTORY_KEY = 'solodrop.shareHistory';
@@ -34,13 +35,13 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
   resolveWebviewView(view: vscode.WebviewView): void {
     this.view = view;
     view.webview.options = { enableScripts: true, localResourceRoots: [this.context.extensionUri] };
-    view.webview.html = getSidebarHtml(view.webview, this.context.extensionUri);
+    this.render();
     view.webview.onDidReceiveMessage((message) => {
       void this.handleMessage(message).catch((error) => {
         const detail = error instanceof Error ? error.message : String(error);
         this.output.appendLine(`Sidebar action failed: ${detail}`);
         this.post({ command: 'shareFailed', message: detail });
-        vscode.window.showErrorMessage(`SoloDrop could not continue: ${detail}`);
+        vscode.window.showErrorMessage(format(strings().actionFailure, { message: detail }));
       });
     });
     this.refreshFromActiveEditor();
@@ -52,7 +53,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
   }
 
   async chooseFile(): Promise<void> {
-    const selected = await vscode.window.showOpenDialog({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false, openLabel: 'Share this file' });
+    const selected = await vscode.window.showOpenDialog({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false, openLabel: strings().sharePreview });
     if (selected?.[0]) await this.select(selected[0].fsPath);
   }
 
@@ -62,39 +63,40 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
       if (!this.selection) return;
     }
     const artifact = this.selection;
+    const text = strings();
     const settings = vscode.workspace.getConfiguration('solodrop');
     const mode = settings.get<DeploymentMode>('deploymentMode', 'auto');
     const findings = await scanArtifact(artifact.path);
     if (findings.length > 0) {
       const action = await vscode.window.showWarningMessage(
-        `SoloDrop found possible sensitive content (${findings.join(', ')}) in ${artifact.name}.`,
-        { modal: true, detail: 'Review the file before publishing it to a public URL.' },
-        'Share anyway'
+        format(text.sensitiveTitle, { findings: findings.join(', '), name: artifact.name }),
+        { modal: true, detail: text.sensitiveDetail },
+        text.shareAnyway
       );
-      if (action !== 'Share anyway') return;
+      if (action !== text.shareAnyway) return;
     }
     if (artifact.size > 5 * 1024 * 1024 && (mode === 'temporary' || (mode === 'auto' && !await isWranglerAuthenticated()))) {
-      throw new Error('Temporary Cloudflare previews accept files up to 5 MB. Sign in to Wrangler or choose a smaller file.');
+      throw new Error(text.temporaryLimit);
     }
     if (settings.get<boolean>('confirmBeforeUpload', true)) {
       const confirmation = await vscode.window.showInformationMessage(
-        `Share ${artifact.name} (${formatBytes(artifact.size)}) on a public preview URL?`,
+        format(text.publicConfirm, { name: artifact.name, size: formatBytes(artifact.size) }),
         { modal: true },
-        'Share preview'
+        text.shareAction
       );
-      if (confirmation !== 'Share preview') return;
+      if (confirmation !== text.shareAction) return;
     }
 
     this.post({ command: 'shareStarted' });
     const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'solodrop-preview-'));
     try {
-      const record = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: `Sharing ${artifact.name}`, cancellable: false }, async (progress) => {
-        progress.report({ message: 'Building preview…' });
+      const record = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: format(text.shareTitle, { name: artifact.name }), cancellable: false }, async (progress) => {
+        progress.report({ message: text.buildingPreview });
         await buildPreview(artifact, directory);
-        progress.report({ message: 'Publishing to Cloudflare…' });
+        progress.report({ message: text.publishing });
         const deployed = await deployPreview(directory, createDeploymentName(artifact.name), mode);
         this.output.appendLine(deployed.output.replace(/https:\/\/dash\.cloudflare\.com\/claim-preview\?claimToken=[^\s]+/g, '[claim URL hidden]'));
-        progress.report({ message: 'Checking the public link…' });
+        progress.report({ message: text.checkingLink });
         await verifyPreview(deployed.previewUrl);
         const next: ShareRecord = {
           id: `${Date.now()}`,
@@ -110,15 +112,15 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         return next;
       });
       this.post({ command: 'shareCompleted', record, records: this.history() });
-      vscode.window.showInformationMessage(`${artifact.name} is ready. The preview link is on your clipboard.`, 'Open preview').then((choice) => {
-        if (choice === 'Open preview') vscode.env.openExternal(vscode.Uri.parse(record.previewUrl));
+      vscode.window.showInformationMessage(format(text.readyMessage, { name: artifact.name }), text.openPreview).then((choice) => {
+        if (choice === text.openPreview) vscode.env.openExternal(vscode.Uri.parse(record.previewUrl));
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.output.appendLine(`Share failed: ${message}`);
       this.post({ command: 'shareFailed', message });
-      vscode.window.showErrorMessage(`SoloDrop could not share this file: ${message}`, 'Show output').then((choice) => {
-        if (choice === 'Show output') this.output.show();
+      vscode.window.showErrorMessage(format(text.failurePrefix, { message }), text.showOutput).then((choice) => {
+        if (choice === text.showOutput) this.output.show();
       });
     } finally {
       await cleanupGeneratedDirectory(directory);
@@ -128,6 +130,15 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
   refresh(): void {
     this.postSelection();
     this.post({ command: 'historyLoaded', records: this.history() });
+  }
+
+  rerender(): void {
+    this.render();
+    this.refresh();
+  }
+
+  private render(): void {
+    if (this.view) this.view.webview.html = getSidebarHtml(this.view.webview, this.context.extensionUri, strings(), resolveLocale());
   }
 
   private async refreshFromActiveEditor(): Promise<void> {
@@ -144,7 +155,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
       case 'dropUri': {
         if (!message.uri) break;
         const uri = vscode.Uri.parse(message.uri);
-        if (uri.scheme !== 'file') throw new Error('SoloDrop can only share local files.');
+        if (uri.scheme !== 'file') throw new Error(strings().localOnly);
         await this.select(uri.fsPath);
         await this.shareSelection();
         break;

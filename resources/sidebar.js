@@ -1,5 +1,7 @@
 (function () {
   const vscode = acquireVsCodeApi();
+  const text = window.solodropStrings;
+  function format(template, values) { return template.replace(/\{(\w+)\}/g, (_match, key) => String(values[key] ?? `{${key}}`)); }
   const elements = {
     selection: document.getElementById('selection'),
     share: document.getElementById('share'),
@@ -21,33 +23,33 @@
     elements.share.classList.toggle('loading', loading);
     elements.share.disabled = loading || elements.selection.classList.contains('empty');
     elements.choose.disabled = loading;
-    elements.status.textContent = loading ? 'Building and checking your public preview…' : '';
+    elements.status.textContent = loading ? text.buildingChecking : '';
   }
   function renderSelection(selection) {
     elements.selection.classList.toggle('empty', !selection);
-    elements.selection.querySelector('strong').textContent = selection ? selection.name : 'No file selected';
-    elements.selection.querySelector('small').textContent = selection ? `${selection.kind} · ${selection.displaySize}` : 'Drag from Explorer or choose a file.';
+    elements.selection.querySelector('strong').textContent = selection ? selection.name : text.noFile;
+    elements.selection.querySelector('small').textContent = selection ? `${selection.kind} · ${selection.displaySize}` : text.dragOrChoose;
     elements.share.disabled = !selection;
     elements.result.classList.add('hidden');
   }
   function relativeTime(iso) {
     const seconds = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
-    if (seconds < 60) return 'just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    return `${Math.floor(seconds / 86400)}d ago`;
+    if (seconds < 60) return text.justNow;
+    if (seconds < 3600) return format(text.minutesAgo, { count: Math.floor(seconds / 60) });
+    if (seconds < 86400) return format(text.hoursAgo, { count: Math.floor(seconds / 3600) });
+    return format(text.daysAgo, { count: Math.floor(seconds / 86400) });
   }
   function renderHistory(records) {
     elements.history.replaceChildren();
     if (!records || records.length === 0) {
-      const empty = document.createElement('p'); empty.className = 'muted'; empty.textContent = 'Shared previews will appear here.'; elements.history.append(empty); return;
+      const empty = document.createElement('p'); empty.className = 'muted'; empty.textContent = text.emptyHistory; elements.history.append(empty); return;
     }
     records.forEach((record) => {
       const item = document.createElement('button'); item.type = 'button'; item.className = 'history-item';
       const copy = document.createElement('span'); copy.className = 'history-copy';
       const name = document.createElement('strong'); name.textContent = record.name;
-      const meta = document.createElement('small'); meta.textContent = `${record.temporary ? 'Temporary' : 'Persistent'} · ${relativeTime(record.createdAt)}`;
-      const action = document.createElement('span'); action.className = 'history-action'; action.textContent = 'Open';
+      const meta = document.createElement('small'); meta.textContent = `${record.temporary ? text.temporary : text.persistent} · ${relativeTime(record.createdAt)}`;
+      const action = document.createElement('span'); action.className = 'history-action'; action.textContent = text.open;
       copy.append(name, meta); item.append(copy, action);
       item.addEventListener('click', () => post('open', { url: record.previewUrl }));
       elements.history.append(item);
@@ -72,8 +74,8 @@
       if (uri) { post('dropUri', { uri }); return; }
     }
     const file = transfer?.files?.[0];
-    if (!file) { elements.status.textContent = 'Drop one file from Explorer or your computer.'; return; }
-    if (file.size > 5 * 1024 * 1024) { elements.status.textContent = 'Files dragged from your computer are limited to 5 MB. Use Choose a file for larger artifacts.'; return; }
+    if (!file) { elements.status.textContent = text.dropOneFile; return; }
+    if (file.size > 5 * 1024 * 1024) { elements.status.textContent = text.droppedFileLimit; return; }
     const bytes = await file.arrayBuffer();
     vscode.postMessage({ command: 'dropFile', name: file.name, bytes });
   });
@@ -85,7 +87,7 @@
     if (message.command === 'shareFailed') { setLoading(false); elements.status.textContent = message.message; }
     if (message.command === 'shareCompleted') {
       setLoading(false); latestRecord = message.record; elements.result.classList.remove('hidden');
-      elements.resultMeta.textContent = message.record.temporary ? 'Temporary preview · claim within 60 minutes' : 'Persistent Cloudflare preview';
+      elements.resultMeta.textContent = message.record.temporary ? text.temporaryMeta : text.persistentMeta;
       elements.claim.classList.toggle('hidden', !message.record.claimUrl);
       renderHistory(message.records || [message.record]);
     }
