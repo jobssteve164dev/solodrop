@@ -1,6 +1,7 @@
 .git/**
 .github/**
 .vscode/**
+.solopreneur/**
 docs/**
 src/**
 test/**

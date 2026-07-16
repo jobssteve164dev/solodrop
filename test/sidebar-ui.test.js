@@ -16,6 +16,7 @@ test('ships sidebar styles in the initial webview document', () => {
 test('keeps the sidebar shell on the compact spacing scale', () => {
   const styles = fs.readFileSync(path.join(root, 'resources', 'sidebar.css'), 'utf8');
 
+  assert.match(styles, /body \{ margin: 0; padding: 0;/);
   assert.match(styles, /\.shell \{ padding: 8px 4px 16px; \}/);
   assert.match(styles, /\.share-card \{[\s\S]*?padding: 8px;/);
   assert.match(styles, /\.recent \{ margin-top: 14px; \}/);
