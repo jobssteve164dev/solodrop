@@ -2,7 +2,7 @@
   "name": "solodrop",
   "displayName": "SoloDrop - Share Agent Artifacts",
   "description": "Turn files created by coding agents into clean browser previews and share them with one click.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "SZLK",
   "license": "MIT",
   "icon": "resources/logo.png",
@@ -13,8 +13,19 @@
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["Visualization", "Other"],
-  "keywords": ["agent", "artifact", "share", "preview", "cloudflare", "markdown", "pdf"],
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "agent",
+    "artifact",
+    "share",
+    "preview",
+    "cloudflare",
+    "markdown",
+    "pdf"
+  ],
   "activationEvents": [
     "onView:solodrop.sidebar",
     "onCommand:solodrop.shareCurrentFile",
@@ -79,7 +90,11 @@
         "solodrop.deploymentMode": {
           "type": "string",
           "default": "auto",
-          "enum": ["auto", "temporary", "authenticated"],
+          "enum": [
+            "auto",
+            "temporary",
+            "authenticated"
+          ],
           "enumDescriptions": [
             "Use the signed-in Cloudflare account when available, otherwise create a 60-minute temporary preview.",
             "Always create an unauthenticated 60-minute temporary preview.",
