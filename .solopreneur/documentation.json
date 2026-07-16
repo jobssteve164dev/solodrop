@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-16T08:32:21.827Z",
+  "documents": [
+    {
+      "path": "README.md",
+      "role": "direction",
+      "status": "active",
+      "solves": "说明项目是什么、服务谁、成功标准和对外表达。",
+      "lastReviewedAt": "",
+      "lastTouchedAt": "2026-07-16T08:15:26.567Z"
+    },
+    {
+      "path": ".solopreneur/README.md",
+      "role": "data_ownership",
+      "status": "active",
+      "solves": "说明项目数据、缓存、运行记录和 Git 管理边界。",
+      "lastReviewedAt": "",
+      "lastTouchedAt": "2026-07-16T08:23:38.997Z"
+    },
+    {
+      "path": "docs/product/product-direction.md",
+      "role": "reference",
+      "status": "active",
+      "solves": "保存项目长期解释性背景。",
+      "lastReviewedAt": "",
+      "lastTouchedAt": "2026-07-16T06:58:59.783Z"
+    },
+    {
+      "path": "docs/research/cloudflare-drop-vscode-plugin.md",
+      "role": "reference",
+      "status": "active",
+      "solves": "保存项目长期解释性背景。",
+      "lastReviewedAt": "",
+      "lastTouchedAt": "2026-07-16T06:44:38.837Z"
+    },
+    {
+      "path": "docs/ui/sidebar.md",
+      "role": "ui_guideline",
+      "status": "active",
+      "solves": "约束长期 UI 或治理面如何服务用户动作。",
+      "lastReviewedAt": "",
+      "lastTouchedAt": "2026-07-16T08:15:26.567Z"
+    }
+  ],
+  "pendingReview": []
+}
