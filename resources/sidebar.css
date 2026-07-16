@@ -13,7 +13,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--vscode-foreground); background: var(--vscode-sideBar-background); }
 button { font: inherit; }
-.shell { padding: 8px 8px 16px; }
+.shell { padding: 8px 4px 16px; }
 .hero { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; }
 .logo { width: 30px; height: 30px; border-radius: 8px; }
 .hero-copy { min-width: 0; flex: 1; }
@@ -25,7 +25,7 @@ h1, h2, p { margin: 0; }
 
 .share-card {
   position: relative;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--surface);
