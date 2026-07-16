@@ -1882,3 +1882,196 @@ index dfeb96d..6ef7bb9 100644
 
 [35m[3mcodex[0m[0m
 改动已通过侧边栏专项测试和完整 `npm run check`（编译 + 15 项测试）。二次用户视角检查也通过：组件横向空间增加，但边框仍保留 4px 安全呼吸区，按钮尺寸、文本可读性、最近分享入口均未受损。现在按项目约定提交并推送完整工作区。
+[35m[3mexec[0m[0m
+[1m/bin/bash -lc 'git add -A && git commit -m "fix: tighten sidebar horizontal spacing" && git push origin main'[0m in /home/ubuntu/project/solodrop
+diff --git a/resources/sidebar.css b/resources/sidebar.css
+index c6c9c887170be8969bf648380425357079e03689..80570808a1079f4093b1a562837a6737c2fd6128
+--- a/resources/sidebar.css
++++ b/resources/sidebar.css
+@@ -13,7 +13,7 @@
+ * { box-sizing: border-box; }
+ body { margin: 0; color: var(--vscode-foreground); background: var(--vscode-sideBar-background); }
+ button { font: inherit; }
+-.shell { padding: 8px 8px 16px; }
++.shell { padding: 8px 4px 16px; }
+ .hero { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; }
+ .logo { width: 30px; height: 30px; border-radius: 8px; }
+ .hero-copy { min-width: 0; flex: 1; }
+@@ -25,7 +25,7 @@
+ 
+ .share-card {
+   position: relative;
+-  padding: 10px;
++  padding: 8px;
+   border: 1px solid var(--border);
+   border-radius: 12px;
+   background: var(--surface);
+diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js
+index dfeb96d743a40854d627fa3d80fee21e72cc5f47..6ef7bb9fb8d5ad6253fcaca096156ca902d42dd9
+--- a/test/sidebar-ui.test.js
++++ b/test/sidebar-ui.test.js
+@@ -16,7 +16,7 @@
+ test('keeps the sidebar shell on the compact spacing scale', () => {
+   const styles = fs.readFileSync(path.join(root, 'resources', 'sidebar.css'), 'utf8');
+ 
+-  assert.match(styles, /\.shell \{ padding: 8px 8px 16px; \}/);
+-  assert.match(styles, /\.share-card \{[\s\S]*?padding: 10px;/);
++  assert.match(styles, /\.shell \{ padding: 8px 4px 16px; \}/);
++  assert.match(styles, /\.share-card \{[\s\S]*?padding: 8px;/);
+   assert.match(styles, /\.recent \{ margin-top: 14px; \}/);
+ });
+
+[32m succeeded in 2008ms:[0m
+To https://github.com/jobssteve164dev/solodrop.git
+   54834a4..8f32dc3  main -> main
+
+[35m[3mexec[0m[0m
+[1m/bin/bash -lc 'git status --short && git rev-parse --short HEAD && gh run list --commit 8f32dc3 --limit 10 --json name,status,conclusion,url'[0m in /home/ubuntu/project/solodrop
+diff --git a/resources/sidebar.css b/resources/sidebar.css
+index c6c9c887170be8969bf648380425357079e03689..80570808a1079f4093b1a562837a6737c2fd6128
+--- a/resources/sidebar.css
++++ b/resources/sidebar.css
+@@ -13,7 +13,7 @@
+ * { box-sizing: border-box; }
+ body { margin: 0; color: var(--vscode-foreground); background: var(--vscode-sideBar-background); }
+ button { font: inherit; }
+-.shell { padding: 8px 8px 16px; }
++.shell { padding: 8px 4px 16px; }
+ .hero { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; }
+ .logo { width: 30px; height: 30px; border-radius: 8px; }
+ .hero-copy { min-width: 0; flex: 1; }
+@@ -25,7 +25,7 @@
+ 
+ .share-card {
+   position: relative;
+-  padding: 10px;
++  padding: 8px;
+   border: 1px solid var(--border);
+   border-radius: 12px;
+   background: var(--surface);
+diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js
+index dfeb96d743a40854d627fa3d80fee21e72cc5f47..6ef7bb9fb8d5ad6253fcaca096156ca902d42dd9
+--- a/test/sidebar-ui.test.js
++++ b/test/sidebar-ui.test.js
+@@ -16,7 +16,7 @@
+ test('keeps the sidebar shell on the compact spacing scale', () => {
+   const styles = fs.readFileSync(path.join(root, 'resources', 'sidebar.css'), 'utf8');
+ 
+-  assert.match(styles, /\.shell \{ padding: 8px 8px 16px; \}/);
+-  assert.match(styles, /\.share-card \{[\s\S]*?padding: 10px;/);
++  assert.match(styles, /\.shell \{ padding: 8px 4px 16px; \}/);
++  assert.match(styles, /\.share-card \{[\s\S]*?padding: 8px;/);
+   assert.match(styles, /\.recent \{ margin-top: 14px; \}/);
+ });
+
+[32m succeeded in 475ms:[0m
+[]
+
+[35m[3mcodex[0m[0m
+提交 `8f32dc3` 已推送到 `origin/main`。远端暂未创建对应 Actions 运行；本地工作区只剩 SoloMap 正在持续写入的本次运行日志变化，这是会话保存中的运行态文件，不是产品代码尾项，我不会为追逐自增日志制造循环提交。再做一次远端提交/分支一致性确认后交付。
+[35m[3mexec[0m[0m
+[1m/bin/bash -lc 'git fetch origin main && test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" && echo remote-main-matches && git diff --name-only HEAD -- '"':"'!.solopreneur/agent-runs/**'"' ':"'!.solopreneur/agent-status/**'"'"[0m in /home/ubuntu/project/solodrop
+diff --git a/resources/sidebar.css b/resources/sidebar.css
+index c6c9c887170be8969bf648380425357079e03689..80570808a1079f4093b1a562837a6737c2fd6128
+--- a/resources/sidebar.css
++++ b/resources/sidebar.css
+@@ -13,7 +13,7 @@
+ * { box-sizing: border-box; }
+ body { margin: 0; color: var(--vscode-foreground); background: var(--vscode-sideBar-background); }
+ button { font: inherit; }
+-.shell { padding: 8px 8px 16px; }
++.shell { padding: 8px 4px 16px; }
+ .hero { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; }
+ .logo { width: 30px; height: 30px; border-radius: 8px; }
+ .hero-copy { min-width: 0; flex: 1; }
+@@ -25,7 +25,7 @@
+ 
+ .share-card {
+   position: relative;
+-  padding: 10px;
++  padding: 8px;
+   border: 1px solid var(--border);
+   border-radius: 12px;
+   background: var(--surface);
+diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js
+index dfeb96d743a40854d627fa3d80fee21e72cc5f47..6ef7bb9fb8d5ad6253fcaca096156ca902d42dd9
+--- a/test/sidebar-ui.test.js
++++ b/test/sidebar-ui.test.js
+@@ -16,7 +16,7 @@
+ test('keeps the sidebar shell on the compact spacing scale', () => {
+   const styles = fs.readFileSync(path.join(root, 'resources', 'sidebar.css'), 'utf8');
+ 
+-  assert.match(styles, /\.shell \{ padding: 8px 8px 16px; \}/);
+-  assert.match(styles, /\.share-card \{[\s\S]*?padding: 10px;/);
++  assert.match(styles, /\.shell \{ padding: 8px 4px 16px; \}/);
++  assert.match(styles, /\.share-card \{[\s\S]*?padding: 8px;/);
+   assert.match(styles, /\.recent \{ margin-top: 14px; \}/);
+ });
+
+[32m succeeded in 618ms:[0m
+From https://github.com/jobssteve164dev/solodrop
+ * branch            main       -> FETCH_HEAD
+remote-main-matches
+
+[35m[3mcodex[0m[0m
+已优化插件侧边栏左右留白：
+
+- 外层左右边距：`8px → 4px`
+- 主卡片内边距：`10px → 8px`
+- 保留原有边框、圆角、按钮尺寸和交互
+- 完整编译及 15 项测试全部通过
+- 已提交并推送：`8f32dc3`
+
+剩余风险：远端暂未生成对应 GitHub Actions 运行，本地验证已全部通过。
+
+本次对话更适合仅保留在 Solo。
+diff --git a/resources/sidebar.css b/resources/sidebar.css
+index c6c9c887170be8969bf648380425357079e03689..80570808a1079f4093b1a562837a6737c2fd6128
+--- a/resources/sidebar.css
++++ b/resources/sidebar.css
+@@ -13,7 +13,7 @@
+ * { box-sizing: border-box; }
+ body { margin: 0; color: var(--vscode-foreground); background: var(--vscode-sideBar-background); }
+ button { font: inherit; }
+-.shell { padding: 8px 8px 16px; }
++.shell { padding: 8px 4px 16px; }
+ .hero { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; }
+ .logo { width: 30px; height: 30px; border-radius: 8px; }
+ .hero-copy { min-width: 0; flex: 1; }
+@@ -25,7 +25,7 @@
+ 
+ .share-card {
+   position: relative;
+-  padding: 10px;
++  padding: 8px;
+   border: 1px solid var(--border);
+   border-radius: 12px;
+   background: var(--surface);
+diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js
+index dfeb96d743a40854d627fa3d80fee21e72cc5f47..6ef7bb9fb8d5ad6253fcaca096156ca902d42dd9
+--- a/test/sidebar-ui.test.js
++++ b/test/sidebar-ui.test.js
+@@ -16,7 +16,7 @@
+ test('keeps the sidebar shell on the compact spacing scale', () => {
+   const styles = fs.readFileSync(path.join(root, 'resources', 'sidebar.css'), 'utf8');
+ 
+-  assert.match(styles, /\.shell \{ padding: 8px 8px 16px; \}/);
+-  assert.match(styles, /\.share-card \{[\s\S]*?padding: 10px;/);
++  assert.match(styles, /\.shell \{ padding: 8px 4px 16px; \}/);
++  assert.match(styles, /\.share-card \{[\s\S]*?padding: 8px;/);
+   assert.match(styles, /\.recent \{ margin-top: 14px; \}/);
+ });
+
+[2mtokens used[0m
+92,880
+已优化插件侧边栏左右留白：
+
+- 外层左右边距：`8px → 4px`
+- 主卡片内边距：`10px → 8px`
+- 保留原有边框、圆角、按钮尺寸和交互
+- 完整编译及 15 项测试全部通过
+- 已提交并推送：`8f32dc3`
+
+剩余风险：远端暂未生成对应 GitHub Actions 运行，本地验证已全部通过。
+
+本次对话更适合仅保留在 Solo。

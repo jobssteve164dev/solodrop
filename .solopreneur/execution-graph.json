@@ -1,23 +1,30 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-07-16T09:17:10.288Z",
-  "runCount": 1,
+  "updatedAt": "2026-07-16T09:20:12.529Z",
+  "runCount": 2,
   "indexes": {
     "byNode": {
       "__solo__": [
+        "__solo__-2",
         "__solo__-1"
       ]
     },
     "byAgent": {
       "/usr/local/bin/codex": [
+        "__solo__-2",
         "__solo__-1"
       ]
     },
     "byFile": {
-      "solodrop-0.0.4.vsix": [
+      "resources/sidebar.css": [
+        "__solo__-2",
         "__solo__-1"
       ],
       "test/sidebar-ui.test.js": [
+        "__solo__-2",
+        "__solo__-1"
+      ],
+      "solodrop-0.0.4.vsix": [
         "__solo__-1"
       ],
       "package-lock.json": [
@@ -26,30 +33,49 @@
       "package.json": [
         "__solo__-1"
       ],
-      "resources/sidebar.css": [
-        "__solo__-1"
-      ],
       "src/sidebarWebview.ts": [
         "__solo__-1"
       ]
     },
     "byStatus": {
       "Completed": [
+        "__solo__-2",
         "__solo__-1"
       ]
     },
     "byFailure": {},
     "byCommand": {
+      "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-ch...": [
+        "__solo__-2"
+      ],
       "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/1/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-ch...": [
         "__solo__-1"
       ]
     },
     "byExperience": {
-      "exp-verification-1ddc7786fd4a0a31": [
+      "exp-verification-762a29a7b8713810": [
+        "__solo__-2",
         "__solo__-1"
       ],
-      "exp-verification-762a29a7b8713810": [
+      "exp-verification-c9f51331fcc78dd5": [
+        "__solo__-2"
+      ],
+      "exp-verification-1ddc7786fd4a0a31": [
+        "__solo__-2",
         "__solo__-1"
+      ],
+      "exp-verification-4571cd44d64e2a2b": [
+        "__solo__-2"
+      ],
+      "exp-reusable-signal-bbd83203f5340823": [
+        "__solo__-2",
+        "__solo__-1"
+      ],
+      "exp-handoff-action-2f7d4b5bc91ed04c": [
+        "__solo__-2"
+      ],
+      "exp-handoff-action-858053e2a9ecc4ff": [
+        "__solo__-2"
       ],
       "exp-verification-661db52ee4751633": [
         "__solo__-1"
@@ -63,9 +89,6 @@
       "exp-verification-b979ac4d6f154120": [
         "__solo__-1"
       ],
-      "exp-reusable-signal-bbd83203f5340823": [
-        "__solo__-1"
-      ],
       "exp-handoff-action-2afa8c91bbff0e28": [
         "__solo__-1"
       ],
@@ -75,44 +98,6 @@
     }
   },
   "experienceNodes": {
-    "exp-verification-1ddc7786fd4a0a31": {
-      "id": "exp-verification-1ddc7786fd4a0a31",
-      "type": "verification",
-      "centralMeaning": "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
-      "sourceKinds": [
-        "solo"
-      ],
-      "sourceRefs": [
-        "__solo__-1"
-      ],
-      "appliesWhen": [
-        "solodrop-0.0.4.vsix",
-        "test/sidebar-ui.test.js",
-        "package-lock.json",
-        "package.json",
-        "resources/sidebar.css",
-        "同一路线图入口：__solo__"
-      ],
-      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
-      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
-      "checks": [
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/1/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
-        "+++ b/test/sidebar-ui.test.js",
-        "+const test = require('node:test');",
-        "+test('ships sidebar styles in the initial webview document', () => {"
-      ],
-      "stats": {
-        "uses": 1,
-        "wins": 1,
-        "losses": 0,
-        "neutral": 0,
-        "alpha": 2,
-        "beta": 1,
-        "winRate": 0.6667,
-        "lastUsed": "2026-07-16T09:17:10.283Z"
-      }
-    },
     "exp-verification-762a29a7b8713810": {
       "id": "exp-verification-762a29a7b8713810",
       "type": "verification",
@@ -121,24 +106,65 @@
         "solo"
       ],
       "sourceRefs": [
+        "__solo__-2",
         "__solo__-1"
       ],
       "appliesWhen": [
-        "solodrop-0.0.4.vsix",
-        "test/sidebar-ui.test.js",
-        "package-lock.json",
-        "package.json",
         "resources/sidebar.css",
-        "同一路线图入口：__solo__"
+        "test/sidebar-ui.test.js",
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环",
+        "solodrop-0.0.4.vsix",
+        "package-lock.json",
+        "package.json"
       ],
       "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
       "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
       "checks": [
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/1/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
         "+++ b/test/sidebar-ui.test.js",
+        "test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+        "--- a/test/sidebar-ui.test.js",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/1/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
         "+const test = require('node:test');",
         "+test('ships sidebar styles in the initial webview document', () => {"
+      ],
+      "stats": {
+        "uses": 2,
+        "wins": 2,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 3,
+        "beta": 1,
+        "winRate": 0.75,
+        "lastUsed": "2026-07-16T09:20:12.527Z"
+      }
+    },
+    "exp-verification-c9f51331fcc78dd5": {
+      "id": "exp-verification-c9f51331fcc78dd5",
+      "type": "verification",
+      "centralMeaning": "test('keeps the sidebar shell on the compact spacing scale', () => {",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-2"
+      ],
+      "appliesWhen": [
+        "resources/sidebar.css",
+        "test/sidebar-ui.test.js",
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环"
+      ],
+      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
+      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+++ b/test/sidebar-ui.test.js",
+        "test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+        "--- a/test/sidebar-ui.test.js"
       ],
       "stats": {
         "uses": 1,
@@ -148,7 +174,201 @@
         "alpha": 2,
         "beta": 1,
         "winRate": 0.6667,
-        "lastUsed": "2026-07-16T09:17:10.283Z"
+        "lastUsed": "2026-07-16T09:20:12.527Z"
+      }
+    },
+    "exp-verification-1ddc7786fd4a0a31": {
+      "id": "exp-verification-1ddc7786fd4a0a31",
+      "type": "verification",
+      "centralMeaning": "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-2",
+        "__solo__-1"
+      ],
+      "appliesWhen": [
+        "resources/sidebar.css",
+        "test/sidebar-ui.test.js",
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环",
+        "solodrop-0.0.4.vsix",
+        "package-lock.json",
+        "package.json"
+      ],
+      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
+      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+++ b/test/sidebar-ui.test.js",
+        "test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+        "--- a/test/sidebar-ui.test.js",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/1/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+const test = require('node:test');",
+        "+test('ships sidebar styles in the initial webview document', () => {"
+      ],
+      "stats": {
+        "uses": 2,
+        "wins": 2,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 3,
+        "beta": 1,
+        "winRate": 0.75,
+        "lastUsed": "2026-07-16T09:20:12.527Z"
+      }
+    },
+    "exp-verification-4571cd44d64e2a2b": {
+      "id": "exp-verification-4571cd44d64e2a2b",
+      "type": "verification",
+      "centralMeaning": "--- a/test/sidebar-ui.test.js",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-2"
+      ],
+      "appliesWhen": [
+        "resources/sidebar.css",
+        "test/sidebar-ui.test.js",
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环"
+      ],
+      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
+      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+++ b/test/sidebar-ui.test.js",
+        "test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+        "--- a/test/sidebar-ui.test.js"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-16T09:20:12.527Z"
+      }
+    },
+    "exp-reusable-signal-bbd83203f5340823": {
+      "id": "exp-reusable-signal-bbd83203f5340823",
+      "type": "reusable_signal",
+      "centralMeaning": "Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-2",
+        "__solo__-1"
+      ],
+      "appliesWhen": [
+        "resources/sidebar.css",
+        "test/sidebar-ui.test.js",
+        "同一路线图入口：__solo__",
+        "后续任务出现相同目标、文件或验证需求",
+        "solodrop-0.0.4.vsix",
+        "package-lock.json",
+        "package.json"
+      ],
+      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
+      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+++ b/test/sidebar-ui.test.js",
+        "test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+        "--- a/test/sidebar-ui.test.js",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/1/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+const test = require('node:test');",
+        "+test('ships sidebar styles in the initial webview document', () => {"
+      ],
+      "stats": {
+        "uses": 2,
+        "wins": 2,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 3,
+        "beta": 1,
+        "winRate": 0.75,
+        "lastUsed": "2026-07-16T09:20:12.527Z"
+      }
+    },
+    "exp-handoff-action-2f7d4b5bc91ed04c": {
+      "id": "exp-handoff-action-2f7d4b5bc91ed04c",
+      "type": "handoff_action",
+      "centralMeaning": "先阅读上一轮改动/触达文件：resources/sidebar.css, test/sidebar-ui.test.js",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-2"
+      ],
+      "appliesWhen": [
+        "resources/sidebar.css",
+        "test/sidebar-ui.test.js",
+        "接手同一路线图入口：__solo__",
+        "后续 Agent 需要接续上一轮未完全显式化的上下文"
+      ],
+      "doThis": "把这条交接动作转成当前任务的第一步检查或验证。",
+      "avoidThis": "不要把 handoff 当成已验证结论；先和当前代码、日志、测试对齐。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+++ b/test/sidebar-ui.test.js",
+        "test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+        "--- a/test/sidebar-ui.test.js"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 0,
+        "losses": 0,
+        "neutral": 1,
+        "alpha": 1,
+        "beta": 1,
+        "winRate": 0.5,
+        "lastUsed": "2026-07-16T09:20:12.527Z"
+      }
+    },
+    "exp-handoff-action-858053e2a9ecc4ff": {
+      "id": "exp-handoff-action-858053e2a9ecc4ff",
+      "type": "handoff_action",
+      "centralMeaning": "复用或复跑验证信号：+++ b/test/sidebar-ui.test.js / test('keeps the sidebar shell on the compact spacing scale', () => {",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-2"
+      ],
+      "appliesWhen": [
+        "resources/sidebar.css",
+        "test/sidebar-ui.test.js",
+        "接手同一路线图入口：__solo__",
+        "后续 Agent 需要接续上一轮未完全显式化的上下文"
+      ],
+      "doThis": "把这条交接动作转成当前任务的第一步检查或验证。",
+      "avoidThis": "不要把 handoff 当成已验证结论；先和当前代码、日志、测试对齐。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+++ b/test/sidebar-ui.test.js",
+        "test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+        "--- a/test/sidebar-ui.test.js"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 0,
+        "losses": 0,
+        "neutral": 1,
+        "alpha": 1,
+        "beta": 1,
+        "winRate": 0.5,
+        "lastUsed": "2026-07-16T09:20:12.527Z"
       }
     },
     "exp-verification-661db52ee4751633": {
@@ -303,44 +523,6 @@
         "lastUsed": "2026-07-16T09:17:10.283Z"
       }
     },
-    "exp-reusable-signal-bbd83203f5340823": {
-      "id": "exp-reusable-signal-bbd83203f5340823",
-      "type": "reusable_signal",
-      "centralMeaning": "Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。",
-      "sourceKinds": [
-        "solo"
-      ],
-      "sourceRefs": [
-        "__solo__-1"
-      ],
-      "appliesWhen": [
-        "solodrop-0.0.4.vsix",
-        "test/sidebar-ui.test.js",
-        "package-lock.json",
-        "package.json",
-        "resources/sidebar.css",
-        "同一路线图入口：__solo__"
-      ],
-      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
-      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
-      "checks": [
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/1/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
-        "+++ b/test/sidebar-ui.test.js",
-        "+const test = require('node:test');",
-        "+test('ships sidebar styles in the initial webview document', () => {"
-      ],
-      "stats": {
-        "uses": 1,
-        "wins": 1,
-        "losses": 0,
-        "neutral": 0,
-        "alpha": 2,
-        "beta": 1,
-        "winRate": 0.6667,
-        "lastUsed": "2026-07-16T09:17:10.283Z"
-      }
-    },
     "exp-handoff-action-2afa8c91bbff0e28": {
       "id": "exp-handoff-action-2afa8c91bbff0e28",
       "type": "handoff_action",
@@ -419,6 +601,111 @@
     }
   },
   "usageEdges": [
+    {
+      "runId": "__solo__-2",
+      "experienceId": "exp-verification-762a29a7b8713810",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-2.json",
+        "execution_logs:2",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "check:+++ b/test/sidebar-ui.test.js",
+        "check:test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "check:diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js"
+      ],
+      "createdAt": "2026-07-16T09:20:12.527Z"
+    },
+    {
+      "runId": "__solo__-2",
+      "experienceId": "exp-verification-c9f51331fcc78dd5",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-2.json",
+        "execution_logs:2",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "check:+++ b/test/sidebar-ui.test.js",
+        "check:test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "check:diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js"
+      ],
+      "createdAt": "2026-07-16T09:20:12.527Z"
+    },
+    {
+      "runId": "__solo__-2",
+      "experienceId": "exp-verification-1ddc7786fd4a0a31",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-2.json",
+        "execution_logs:2",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "check:+++ b/test/sidebar-ui.test.js",
+        "check:test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "check:diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js"
+      ],
+      "createdAt": "2026-07-16T09:20:12.527Z"
+    },
+    {
+      "runId": "__solo__-2",
+      "experienceId": "exp-verification-4571cd44d64e2a2b",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-2.json",
+        "execution_logs:2",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "check:+++ b/test/sidebar-ui.test.js",
+        "check:test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "check:diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js"
+      ],
+      "createdAt": "2026-07-16T09:20:12.527Z"
+    },
+    {
+      "runId": "__solo__-2",
+      "experienceId": "exp-reusable-signal-bbd83203f5340823",
+      "phase": "observed",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-2.json",
+        "execution_logs:2",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "check:+++ b/test/sidebar-ui.test.js",
+        "check:test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "check:diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js"
+      ],
+      "createdAt": "2026-07-16T09:20:12.527Z"
+    },
+    {
+      "runId": "__solo__-2",
+      "experienceId": "exp-handoff-action-2f7d4b5bc91ed04c",
+      "phase": "observed",
+      "outcome": "neutral",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-2.json",
+        "execution_logs:2",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "check:+++ b/test/sidebar-ui.test.js",
+        "check:test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "check:diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js"
+      ],
+      "createdAt": "2026-07-16T09:20:12.527Z"
+    },
+    {
+      "runId": "__solo__-2",
+      "experienceId": "exp-handoff-action-858053e2a9ecc4ff",
+      "phase": "observed",
+      "outcome": "neutral",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-2.json",
+        "execution_logs:2",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "check:+++ b/test/sidebar-ui.test.js",
+        "check:test('keeps the sidebar shell on the compact spacing scale', () => {",
+        "check:diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js"
+      ],
+      "createdAt": "2026-07-16T09:20:12.527Z"
+    },
     {
       "runId": "__solo__-1",
       "experienceId": "exp-verification-1ddc7786fd4a0a31",
@@ -556,6 +843,22 @@
     }
   ],
   "runs": [
+    {
+      "runId": "__solo__-2",
+      "executionLogId": 2,
+      "nodeId": "__solo__",
+      "runKind": "solo",
+      "agentCli": "/usr/local/bin/codex",
+      "status": "Completed",
+      "finishedAt": "2026-07-16T09:20:12.527Z",
+      "changedFiles": [],
+      "touchedFiles": [
+        "resources/sidebar.css",
+        "test/sidebar-ui.test.js"
+      ],
+      "failures": [],
+      "handoffSummary": "Solo 对话已完成，等待用户决定是否关联到路线图环节。 优先查看 resources/sidebar.css, test/sidebar-ui.test.js。 建议验证：cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -。"
+    },
     {
       "runId": "__solo__-1",
       "executionLogId": 1,
