@@ -1,16 +1,18 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-07-16T09:20:12.529Z",
-  "runCount": 2,
+  "updatedAt": "2026-07-16T09:29:09.183Z",
+  "runCount": 3,
   "indexes": {
     "byNode": {
       "__solo__": [
+        "__solo__-3",
         "__solo__-2",
         "__solo__-1"
       ]
     },
     "byAgent": {
       "/usr/local/bin/codex": [
+        "__solo__-3",
         "__solo__-2",
         "__solo__-1"
       ]
@@ -38,6 +40,9 @@
       ]
     },
     "byStatus": {
+      "Recorded": [
+        "__solo__-3"
+      ],
       "Completed": [
         "__solo__-2",
         "__solo__-1"
@@ -45,6 +50,9 @@
     },
     "byFailure": {},
     "byCommand": {
+      "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'": [
+        "__solo__-3"
+      ],
       "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-ch...": [
         "__solo__-2"
       ],
@@ -53,6 +61,21 @@
       ]
     },
     "byExperience": {
+      "exp-verification-c59da09c5136ae54": [
+        "__solo__-3"
+      ],
+      "exp-verification-44a2e6a5f34c999d": [
+        "__solo__-3"
+      ],
+      "exp-reusable-signal-1477c0bd97fdae96": [
+        "__solo__-3"
+      ],
+      "exp-reusable-signal-51627a968c549197": [
+        "__solo__-3"
+      ],
+      "exp-handoff-action-b0428c592b51aa69": [
+        "__solo__-3"
+      ],
       "exp-verification-762a29a7b8713810": [
         "__solo__-2",
         "__solo__-1"
@@ -98,6 +121,166 @@
     }
   },
   "experienceNodes": {
+    "exp-verification-c59da09c5136ae54": {
+      "id": "exp-verification-c59da09c5136ae54",
+      "type": "verification",
+      "centralMeaning": "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-3"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环"
+      ],
+      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
+      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-16T09:29:09.177Z"
+      }
+    },
+    "exp-verification-44a2e6a5f34c999d": {
+      "id": "exp-verification-44a2e6a5f34c999d",
+      "type": "verification",
+      "centralMeaning": "• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-3"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环"
+      ],
+      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
+      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-16T09:29:09.177Z"
+      }
+    },
+    "exp-reusable-signal-1477c0bd97fdae96": {
+      "id": "exp-reusable-signal-1477c0bd97fdae96",
+      "type": "reusable_signal",
+      "centralMeaning": "Completion: 续聊已记录；不参与任务完成、失败或进行中判断。",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-3"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务出现相同目标、文件或验证需求"
+      ],
+      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
+      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-16T09:29:09.177Z"
+      }
+    },
+    "exp-reusable-signal-51627a968c549197": {
+      "id": "exp-reusable-signal-51627a968c549197",
+      "type": "reusable_signal",
+      "centralMeaning": "• Ran git add -A && git commit -m \"fix: remove host padding from sidebar\" && git",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-3"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务出现相同目标、文件或验证需求"
+      ],
+      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
+      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-16T09:29:09.177Z"
+      }
+    },
+    "exp-handoff-action-b0428c592b51aa69": {
+      "id": "exp-handoff-action-b0428c592b51aa69",
+      "type": "handoff_action",
+      "centralMeaning": "复用或复跑验证信号：│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test / • Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-3"
+      ],
+      "appliesWhen": [
+        "接手同一路线图入口：__solo__",
+        "后续 Agent 需要接续上一轮未完全显式化的上下文"
+      ],
+      "doThis": "把这条交接动作转成当前任务的第一步检查或验证。",
+      "avoidThis": "不要把 handoff 当成已验证结论；先和当前代码、日志、测试对齐。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 0,
+        "losses": 0,
+        "neutral": 1,
+        "alpha": 1,
+        "beta": 1,
+        "winRate": 0.5,
+        "lastUsed": "2026-07-16T09:29:09.177Z"
+      }
+    },
     "exp-verification-762a29a7b8713810": {
       "id": "exp-verification-762a29a7b8713810",
       "type": "verification",
@@ -602,6 +785,76 @@
   },
   "usageEdges": [
     {
+      "runId": "__solo__-3",
+      "experienceId": "exp-verification-c59da09c5136ae54",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-3.json",
+        "execution_logs:3",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "check:│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "check:• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "createdAt": "2026-07-16T09:29:09.177Z"
+    },
+    {
+      "runId": "__solo__-3",
+      "experienceId": "exp-verification-44a2e6a5f34c999d",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-3.json",
+        "execution_logs:3",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "check:│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "check:• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "createdAt": "2026-07-16T09:29:09.177Z"
+    },
+    {
+      "runId": "__solo__-3",
+      "experienceId": "exp-reusable-signal-1477c0bd97fdae96",
+      "phase": "observed",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-3.json",
+        "execution_logs:3",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "check:│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "check:• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "createdAt": "2026-07-16T09:29:09.177Z"
+    },
+    {
+      "runId": "__solo__-3",
+      "experienceId": "exp-reusable-signal-51627a968c549197",
+      "phase": "observed",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-3.json",
+        "execution_logs:3",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "check:│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "check:• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "createdAt": "2026-07-16T09:29:09.177Z"
+    },
+    {
+      "runId": "__solo__-3",
+      "experienceId": "exp-handoff-action-b0428c592b51aa69",
+      "phase": "observed",
+      "outcome": "neutral",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-3.json",
+        "execution_logs:3",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "check:│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "check:• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "createdAt": "2026-07-16T09:29:09.177Z"
+    },
+    {
       "runId": "__solo__-2",
       "experienceId": "exp-verification-762a29a7b8713810",
       "phase": "verified",
@@ -843,6 +1096,19 @@
     }
   ],
   "runs": [
+    {
+      "runId": "__solo__-3",
+      "executionLogId": 3,
+      "nodeId": "__solo__",
+      "runKind": "solo_continue",
+      "agentCli": "/usr/local/bin/codex",
+      "status": "Recorded",
+      "finishedAt": "2026-07-16T09:29:09.177Z",
+      "changedFiles": [],
+      "touchedFiles": [],
+      "failures": [],
+      "handoffSummary": "续聊已记录；不参与任务完成、失败或进行中判断。"
+    },
     {
       "runId": "__solo__-2",
       "executionLogId": 2,
