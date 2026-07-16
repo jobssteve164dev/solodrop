@@ -1,0 +1,96 @@
+name: Publish VS Code Extension
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'resources/**'
+      - 'test/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - '.vscodeignore'
+      - 'README.md'
+      - 'LICENSE'
+      - '.github/workflows/publish.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: solodrop-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run check
+
+      - name: Validate marketplace credentials
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: |
+          test -n "$VSCE_PAT" || { echo "::error::VSCE_PAT is missing"; exit 1; }
+          test -n "$OVSX_PAT" || { echo "::error::OVSX_PAT is missing"; exit 1; }
+          npx --yes ovsx -p "$OVSX_PAT" verify-pat SZLK
+
+      - name: Bump patch version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          NEW_TAG=$(npm version patch -m "chore(release): %s [skip ci]")
+          echo "TAG=$NEW_TAG" >> "$GITHUB_ENV"
+          echo "VERSION=${NEW_TAG#v}" >> "$GITHUB_ENV"
+
+      - name: Package extension
+        run: |
+          VSIX_PATH="solodrop-${VERSION}.vsix"
+          npm run package -- --out "$VSIX_PATH"
+          echo "VSIX_PATH=$VSIX_PATH" >> "$GITHUB_ENV"
+
+      - name: Push version and tag
+        run: |
+          git push origin main
+          git push origin "$TAG"
+
+      - name: Publish to Visual Studio Marketplace
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx @vscode/vsce publish --packagePath "$VSIX_PATH" --skip-duplicate
+
+      - name: Publish to Open VSX
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npx --yes ovsx -p "$OVSX_PAT" publish "$VSIX_PATH" --skip-duplicate
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$TAG" "$VSIX_PATH" --title "$TAG" --generate-notes --latest
+
+      - name: Verify Open VSX availability
+        run: |
+          for attempt in {1..30}; do
+            if curl -fsS "https://open-vsx.org/api/SZLK/solodrop/$VERSION" > /tmp/solodrop-openvsx.json; then
+              node -e "const d=require('/tmp/solodrop-openvsx.json'); if(d.namespace!=='SZLK'||d.name!=='solodrop'||d.version!==process.env.VERSION) process.exit(1)"
+              exit 0
+            fi
+            sleep 20
+          done
+          echo "::warning::Open VSX publication is not visible yet."

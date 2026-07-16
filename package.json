@@ -1,0 +1,112 @@
+{
+  "name": "solodrop",
+  "displayName": "SoloDrop - Share Agent Artifacts",
+  "description": "Turn files created by coding agents into clean browser previews and share them with one click.",
+  "version": "0.0.1",
+  "publisher": "SZLK",
+  "license": "MIT",
+  "icon": "resources/logo.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jobssteve164dev/solodrop.git"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Visualization", "Other"],
+  "keywords": ["agent", "artifact", "share", "preview", "cloudflare", "markdown", "pdf"],
+  "activationEvents": [
+    "onView:solodrop.sidebar",
+    "onCommand:solodrop.shareCurrentFile",
+    "onCommand:solodrop.chooseAndShare"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "solodrop.shareCurrentFile",
+        "title": "SoloDrop: Share Current File",
+        "category": "SoloDrop"
+      },
+      {
+        "command": "solodrop.chooseAndShare",
+        "title": "SoloDrop: Choose File to Share",
+        "category": "SoloDrop"
+      },
+      {
+        "command": "solodrop.openSidebar",
+        "title": "SoloDrop: Open Sidebar",
+        "category": "SoloDrop"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "solodrop.shareCurrentFile",
+          "group": "navigation@9",
+          "when": "resourceScheme == file"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "solodrop.shareCurrentFile",
+          "group": "navigation@9",
+          "when": "resourceScheme == file"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "solodrop-sidebar-container",
+          "title": "SoloDrop",
+          "icon": "resources/activitybar.svg"
+        }
+      ]
+    },
+    "views": {
+      "solodrop-sidebar-container": [
+        {
+          "type": "webview",
+          "id": "solodrop.sidebar",
+          "name": "SoloDrop"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "SoloDrop",
+      "properties": {
+        "solodrop.deploymentMode": {
+          "type": "string",
+          "default": "auto",
+          "enum": ["auto", "temporary", "authenticated"],
+          "enumDescriptions": [
+            "Use the signed-in Cloudflare account when available, otherwise create a 60-minute temporary preview.",
+            "Always create an unauthenticated 60-minute temporary preview.",
+            "Require an authenticated Wrangler session and create a persistent preview."
+          ],
+          "description": "How SoloDrop publishes generated previews."
+        },
+        "solodrop.confirmBeforeUpload": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the exact file and size before it is uploaded."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run check",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "node --test test/*.test.js",
+    "check": "npm run compile && npm test",
+    "package": "npx @vscode/vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.6.0",
+    "typescript": "^5.7.0"
+  }
+}

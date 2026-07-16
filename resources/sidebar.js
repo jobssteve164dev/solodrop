@@ -1,0 +1,94 @@
+(function () {
+  const vscode = acquireVsCodeApi();
+  const elements = {
+    selection: document.getElementById('selection'),
+    share: document.getElementById('share'),
+    choose: document.getElementById('choose'),
+    status: document.getElementById('status'),
+    result: document.getElementById('result'),
+    resultMeta: document.getElementById('result-meta'),
+    open: document.getElementById('open-link'),
+    copy: document.getElementById('copy-link'),
+    claim: document.getElementById('claim-link'),
+    refresh: document.getElementById('refresh'),
+    history: document.getElementById('history')
+  };
+  elements.dropZone = document.getElementById('drop-zone');
+  let latestRecord = null;
+
+  function post(command, extras) { vscode.postMessage(Object.assign({ command }, extras || {})); }
+  function setLoading(loading) {
+    elements.share.classList.toggle('loading', loading);
+    elements.share.disabled = loading || elements.selection.classList.contains('empty');
+    elements.choose.disabled = loading;
+    elements.status.textContent = loading ? 'Building and checking your public preview…' : '';
+  }
+  function renderSelection(selection) {
+    elements.selection.classList.toggle('empty', !selection);
+    elements.selection.querySelector('strong').textContent = selection ? selection.name : 'No file selected';
+    elements.selection.querySelector('small').textContent = selection ? `${selection.kind} · ${selection.displaySize}` : 'Drag from Explorer or choose a file.';
+    elements.share.disabled = !selection;
+    elements.result.classList.add('hidden');
+  }
+  function relativeTime(iso) {
+    const seconds = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+    if (seconds < 60) return 'just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    return `${Math.floor(seconds / 86400)}d ago`;
+  }
+  function renderHistory(records) {
+    elements.history.replaceChildren();
+    if (!records || records.length === 0) {
+      const empty = document.createElement('p'); empty.className = 'muted'; empty.textContent = 'Shared previews will appear here.'; elements.history.append(empty); return;
+    }
+    records.forEach((record) => {
+      const item = document.createElement('button'); item.type = 'button'; item.className = 'history-item';
+      const copy = document.createElement('span'); copy.className = 'history-copy';
+      const name = document.createElement('strong'); name.textContent = record.name;
+      const meta = document.createElement('small'); meta.textContent = `${record.temporary ? 'Temporary' : 'Persistent'} · ${relativeTime(record.createdAt)}`;
+      const action = document.createElement('span'); action.className = 'history-action'; action.textContent = 'Open';
+      copy.append(name, meta); item.append(copy, action);
+      item.addEventListener('click', () => post('open', { url: record.previewUrl }));
+      elements.history.append(item);
+    });
+  }
+  elements.choose.addEventListener('click', () => post('choose'));
+  elements.share.addEventListener('click', () => post('share'));
+  elements.refresh.addEventListener('click', () => post('refresh'));
+  elements.open.addEventListener('click', () => latestRecord && post('open', { url: latestRecord.previewUrl }));
+  elements.copy.addEventListener('click', () => latestRecord && post('copy', { url: latestRecord.previewUrl }));
+  elements.claim.addEventListener('click', () => latestRecord?.claimUrl && post('open', { url: latestRecord.claimUrl }));
+  let dragDepth = 0;
+  elements.dropZone.addEventListener('dragenter', (event) => { event.preventDefault(); dragDepth += 1; elements.dropZone.classList.add('dragging'); });
+  elements.dropZone.addEventListener('dragover', (event) => { event.preventDefault(); if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy'; });
+  elements.dropZone.addEventListener('dragleave', () => { dragDepth = Math.max(0, dragDepth - 1); if (dragDepth === 0) elements.dropZone.classList.remove('dragging'); });
+  elements.dropZone.addEventListener('drop', async (event) => {
+    event.preventDefault(); dragDepth = 0; elements.dropZone.classList.remove('dragging');
+    const transfer = event.dataTransfer;
+    const uriList = transfer?.getData('text/uri-list') || transfer?.getData('application/vnd.code.uri-list');
+    if (uriList) {
+      const uri = uriList.split(/\r?\n/).find((line) => line && !line.startsWith('#'));
+      if (uri) { post('dropUri', { uri }); return; }
+    }
+    const file = transfer?.files?.[0];
+    if (!file) { elements.status.textContent = 'Drop one file from Explorer or your computer.'; return; }
+    if (file.size > 5 * 1024 * 1024) { elements.status.textContent = 'Files dragged from your computer are limited to 5 MB. Use Choose a file for larger artifacts.'; return; }
+    const bytes = await file.arrayBuffer();
+    vscode.postMessage({ command: 'dropFile', name: file.name, bytes });
+  });
+  window.addEventListener('message', (event) => {
+    const message = event.data;
+    if (message.command === 'selectionChanged') renderSelection(message.selection);
+    if (message.command === 'historyLoaded') renderHistory(message.records);
+    if (message.command === 'shareStarted') setLoading(true);
+    if (message.command === 'shareFailed') { setLoading(false); elements.status.textContent = message.message; }
+    if (message.command === 'shareCompleted') {
+      setLoading(false); latestRecord = message.record; elements.result.classList.remove('hidden');
+      elements.resultMeta.textContent = message.record.temporary ? 'Temporary preview · claim within 60 minutes' : 'Persistent Cloudflare preview';
+      elements.claim.classList.toggle('hidden', !message.record.claimUrl);
+      renderHistory(message.records || [message.record]);
+    }
+  });
+  post('ready');
+}());

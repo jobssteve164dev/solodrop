@@ -1,0 +1,10 @@
+.git/**
+.github/**
+.vscode/**
+docs/**
+src/**
+test/**
+scripts/**
+.env*
+tsconfig.json
+*.vsix
