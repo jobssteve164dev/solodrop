@@ -1,4 +1,5 @@
 import * as crypto from 'node:crypto';
+import * as fs from 'node:fs';
 import * as vscode from 'vscode';
 import { Strings, SupportedLocale } from './i18n';
 
@@ -8,12 +9,12 @@ function escapeHtml(value: string): string {
 
 export function getSidebarHtml(webview: vscode.Webview, extensionUri: vscode.Uri, text: Strings, locale: SupportedLocale): string {
   const nonce = crypto.randomBytes(16).toString('base64');
-  const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'resources', 'sidebar.css'));
+  const styles = fs.readFileSync(vscode.Uri.joinPath(extensionUri, 'resources', 'sidebar.css').fsPath, 'utf8');
   const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'resources', 'sidebar.js'));
   return `<!doctype html>
 <html lang="${locale}"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} data:; script-src 'nonce-${nonce}';">
-<link rel="stylesheet" href="${styleUri}"><title>SoloDrop</title></head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; img-src ${webview.cspSource} data:; script-src 'nonce-${nonce}';">
+<style nonce="${nonce}">${styles}</style><title>SoloDrop</title></head>
 <body>
   <main class="shell">
     <header class="hero">
