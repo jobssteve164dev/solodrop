@@ -1,6 +1,6 @@
 {
   "extension.displayName": "SoloDrop - 分享 Agent 产物",
-  "extension.description": "将编程 Agent 生成的文件转成清晰的网页预览，一键分享。",
+  "extension.description": "将 Agent 生成的文件转成已验证的网页预览，一键分享。 / Turn agent-made files into verified browser previews and share them in one click.",
   "command.shareCurrentFile": "SoloDrop：分享当前文件",
   "command.chooseAndShare": "SoloDrop：选择文件并分享",
   "command.openSidebar": "SoloDrop：打开侧边栏",
