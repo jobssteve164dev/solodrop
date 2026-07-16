@@ -76,11 +76,18 @@ button:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-off
 .icon-button { width: 28px; height: 28px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; }
 .icon-button:hover { color: var(--vscode-foreground); background: var(--vscode-toolbar-hoverBackground); }
 .history { display: grid; gap: 4px; }
-.history-item { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 8px; padding: 7px 6px; border-radius: 8px; cursor: pointer; }
+.history-item { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 8px; padding: 7px 6px; border-radius: 8px; }
 .history-item:hover { background: var(--vscode-list-hoverBackground); }
 .history-copy { min-width: 0; }
-.history-copy strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+.history-heading { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.history-copy strong { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
 .history-copy small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
-.history-action { color: var(--brand); font-size: 10px; }
+.expiry-tag { flex: none; padding: 1px 5px; border-radius: 999px; font-size: 8px; font-weight: 700; }
+.expiry-tag.active { color: #258b5b; background: color-mix(in srgb, #35a66f 14%, transparent); }
+.expiry-tag.expired { color: var(--vscode-errorForeground); background: color-mix(in srgb, var(--vscode-errorForeground) 12%, transparent); }
+.history-actions { display: flex; align-items: center; gap: 2px; }
+.history-action { padding: 3px 4px; border: 0; border-radius: 4px; background: transparent; color: var(--brand); font-size: 10px; cursor: pointer; }
+.history-action:hover { background: var(--vscode-toolbar-hoverBackground); }
+.history-action.reshare { font-weight: 650; }
 .muted { padding: 6px 2px; color: var(--muted); font-size: 10px; line-height: 1.45; }
 .hidden { display: none !important; }
