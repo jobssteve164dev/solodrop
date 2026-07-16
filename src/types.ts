@@ -10,11 +10,12 @@ export interface ArtifactSelection {
 export interface ShareRecord {
   id: string;
   name: string;
-  sourcePath: string;
+  sourcePath?: string;
   previewUrl: string;
   claimUrl?: string;
   temporary: boolean;
   createdAt: string;
+  expiresAt?: string;
 }
 
 export interface DeploymentResult {

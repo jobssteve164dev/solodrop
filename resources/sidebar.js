@@ -46,13 +46,22 @@
       const empty = document.createElement('p'); empty.className = 'muted'; empty.textContent = text.emptyHistory; elements.history.append(empty); return;
     }
     records.forEach((record) => {
-      const item = document.createElement('button'); item.type = 'button'; item.className = 'history-item';
+      const item = document.createElement('div'); item.className = 'history-item';
       const copy = document.createElement('span'); copy.className = 'history-copy';
-      const name = document.createElement('strong'); name.textContent = record.name;
+      const heading = document.createElement('span'); heading.className = 'history-heading';
+      const name = document.createElement('strong'); name.textContent = record.name; heading.append(name);
+      const expiresAt = record.expiresAt || (record.temporary ? new Date(new Date(record.createdAt).getTime() + 60 * 60 * 1000).toISOString() : null);
+      const expired = Boolean(record.temporary && Date.now() >= new Date(expiresAt).getTime());
+      if (record.temporary) {
+        const tag = document.createElement('span'); tag.className = `expiry-tag ${expired ? 'expired' : 'active'}`; tag.textContent = expired ? text.expired : text.active; heading.append(tag);
+      }
       const meta = document.createElement('small'); meta.textContent = `${record.temporary ? text.temporary : text.persistent} · ${relativeTime(record.createdAt)}`;
-      const action = document.createElement('span'); action.className = 'history-action'; action.textContent = text.open;
-      copy.append(name, meta); item.append(copy, action);
-      item.addEventListener('click', () => post('open', { url: record.previewUrl }));
+      const actions = document.createElement('span'); actions.className = 'history-actions';
+      const open = document.createElement('button'); open.type = 'button'; open.className = 'history-action'; open.textContent = text.open; open.addEventListener('click', () => post('open', { url: record.previewUrl })); actions.append(open);
+      if (expired) {
+        const reshare = document.createElement('button'); reshare.type = 'button'; reshare.className = 'history-action reshare'; reshare.textContent = text.shareAgain; reshare.addEventListener('click', () => post('reshare', { id: record.id })); actions.append(reshare);
+      }
+      copy.append(heading, meta); item.append(copy, actions);
       elements.history.append(item);
     });
   }

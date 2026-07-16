@@ -11,6 +11,20 @@ import { format, resolveLocale, strings } from './i18n';
 import { ArtifactSelection, DeploymentMode, ShareRecord } from './types';
 
 const HISTORY_KEY = 'solodrop.shareHistory';
+const HISTORY_SOURCES_KEY = 'solodrop.shareHistorySources';
+const TEMPORARY_LIFETIME_MS = 60 * 60 * 1000;
+
+export async function prepareShareHistorySync(context: vscode.ExtensionContext): Promise<void> {
+  const records = context.globalState.get<ShareRecord[]>(HISTORY_KEY, []);
+  const sources = { ...context.globalState.get<Record<string, string>>(HISTORY_SOURCES_KEY, {}) };
+  const sanitized = records.map(({ sourcePath, ...record }) => {
+    if (sourcePath) sources[record.id] = sourcePath;
+    return record;
+  });
+  await context.globalState.update(HISTORY_SOURCES_KEY, sources);
+  await context.globalState.update(HISTORY_KEY, sanitized);
+  context.globalState.setKeysForSync([HISTORY_KEY]);
+}
 
 async function cleanupGeneratedDirectory(directory: string): Promise<void> {
   const entries = await fs.readdir(directory).catch(() => []);
@@ -105,11 +119,13 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
           previewUrl: deployed.previewUrl,
           claimUrl: deployed.claimUrl,
           temporary: deployed.temporary,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          expiresAt: deployed.temporary ? new Date(Date.now() + TEMPORARY_LIFETIME_MS).toISOString() : undefined
         };
         await this.saveRecord(next);
         await vscode.env.clipboard.writeText(next.previewUrl);
-        return next;
+        const { sourcePath: _sourcePath, ...publicRecord } = next;
+        return publicRecord;
       });
       this.post({ command: 'shareCompleted', record, records: this.history() });
       vscode.window.showInformationMessage(format(text.readyMessage, { name: artifact.name }), text.openPreview).then((choice) => {
@@ -147,7 +163,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     else this.refresh();
   }
 
-  private async handleMessage(message: { command?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer }): Promise<void> {
+  private async handleMessage(message: { command?: string; id?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer }): Promise<void> {
     switch (message.command) {
       case 'ready': this.refresh(); break;
       case 'choose': await this.chooseFile(); break;
@@ -176,6 +192,26 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         break;
       }
       case 'refresh': await this.refreshFromActiveEditor(); break;
+      case 'reshare': {
+        const record = this.history().find((item) => item.id === message.id);
+        if (!record?.temporary) break;
+        const sourcePath = this.context.globalState.get<Record<string, string>>(HISTORY_SOURCES_KEY, {})[record.id];
+        const sourceAvailable = sourcePath ? await fs.stat(sourcePath).then((stat) => stat.isFile()).catch(() => false) : false;
+        if (sourceAvailable) {
+          await this.select(sourcePath);
+        } else {
+          const selected = await vscode.window.showOpenDialog({
+            canSelectFiles: true,
+            canSelectFolders: false,
+            canSelectMany: false,
+            openLabel: strings().chooseToShareAgain
+          });
+          if (!selected?.[0]) break;
+          await this.select(selected[0].fsPath);
+        }
+        await this.shareSelection();
+        break;
+      }
       case 'setLanguage': {
         const nextLanguage = resolveLocale() === 'zh-cn' ? 'en' : 'zh-cn';
         await vscode.workspace.getConfiguration('solodrop').update('language', nextLanguage, vscode.ConfigurationTarget.Global);
@@ -191,7 +227,12 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
   }
 
   private async saveRecord(record: ShareRecord): Promise<void> {
-    await this.context.globalState.update(HISTORY_KEY, [record, ...this.history()].slice(0, 20));
+    if (record.sourcePath) {
+      const sources = this.context.globalState.get<Record<string, string>>(HISTORY_SOURCES_KEY, {});
+      await this.context.globalState.update(HISTORY_SOURCES_KEY, { ...sources, [record.id]: record.sourcePath });
+    }
+    const { sourcePath: _sourcePath, ...syncedRecord } = record;
+    await this.context.globalState.update(HISTORY_KEY, [syncedRecord, ...this.history()].slice(0, 20));
   }
 
   private postSelection(): void {

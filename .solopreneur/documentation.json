@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-16T10:35:03.131Z",
+  "updatedAt": "2026-07-16T10:41:10.230Z",
   "documents": [
     {
       "path": "README.md",
@@ -40,7 +40,7 @@
       "status": "active",
       "solves": "约束长期 UI 或治理面如何服务用户动作。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-16T08:15:26.567Z"
+      "lastTouchedAt": "2026-07-16T10:40:44.469Z"
     }
   ],
   "pendingReview": [],

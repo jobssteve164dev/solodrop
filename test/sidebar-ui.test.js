@@ -21,3 +21,17 @@ test('keeps the sidebar shell on the compact spacing scale', () => {
   assert.match(styles, /\.share-card \{[\s\S]*?padding: 8px;/);
   assert.match(styles, /\.recent \{ margin-top: 14px; \}/);
 });
+
+test('syncs share history and exposes temporary expiry recovery', () => {
+  const extension = fs.readFileSync(path.join(root, 'src', 'extension.ts'), 'utf8');
+  const provider = fs.readFileSync(path.join(root, 'src', 'sidebarProvider.ts'), 'utf8');
+  const script = fs.readFileSync(path.join(root, 'resources', 'sidebar.js'), 'utf8');
+
+  assert.match(extension, /prepareShareHistorySync\(context\)/);
+  assert.match(provider, /setKeysForSync\(\[HISTORY_KEY\]\)/);
+  assert.match(provider, /sourcePath: _sourcePath/);
+  assert.match(provider, /case 'reshare'/);
+  assert.match(provider, /expiresAt:/);
+  assert.match(script, /text\.expired/);
+  assert.match(script, /post\('reshare', \{ id: record\.id \}\)/);
+});

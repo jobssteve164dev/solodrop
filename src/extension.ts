@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
-import { SoloDropSidebarProvider } from './sidebarProvider';
+import { prepareShareHistorySync, SoloDropSidebarProvider } from './sidebarProvider';
 
-export function activate(context: vscode.ExtensionContext): void {
+export async function activate(context: vscode.ExtensionContext): Promise<void> {
+  await prepareShareHistorySync(context);
   const output = vscode.window.createOutputChannel('SoloDrop', { log: true });
   const provider = new SoloDropSidebarProvider(context, output);
   context.subscriptions.push(
