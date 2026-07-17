@@ -1,10 +1,11 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-07-16T11:34:17.035Z",
-  "runCount": 5,
+  "updatedAt": "2026-07-17T13:22:55.062Z",
+  "runCount": 6,
   "indexes": {
     "byNode": {
       "__solo__": [
+        "__solo__-6",
         "__solo__-5",
         "__solo__-4",
         "__solo__-3",
@@ -14,6 +15,7 @@
     },
     "byAgent": {
       "/usr/local/bin/codex": [
+        "__solo__-6",
         "__solo__-5",
         "__solo__-4",
         "__solo__-3",
@@ -71,6 +73,7 @@
     },
     "byStatus": {
       "Completed": [
+        "__solo__-6",
         "__solo__-5",
         "__solo__-4",
         "__solo__-2",
@@ -82,6 +85,9 @@
     },
     "byFailure": {},
     "byCommand": {
+      "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/6/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-ch...": [
+        "__solo__-6"
+      ],
       "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/5/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-ch...": [
         "__solo__-5"
       ],
@@ -99,6 +105,13 @@
       ]
     },
     "byExperience": {
+      "exp-reusable-signal-bbd83203f5340823": [
+        "__solo__-6",
+        "__solo__-5",
+        "__solo__-4",
+        "__solo__-2",
+        "__solo__-1"
+      ],
       "exp-verification-8c08f5cfbd223c31": [
         "__solo__-5"
       ],
@@ -107,12 +120,6 @@
       ],
       "exp-verification-ef13bb036e3b1aba": [
         "__solo__-5"
-      ],
-      "exp-reusable-signal-bbd83203f5340823": [
-        "__solo__-5",
-        "__solo__-4",
-        "__solo__-2",
-        "__solo__-1"
       ],
       "exp-reusable-signal-19738715bf4cf74e": [
         "__solo__-5"
@@ -194,6 +201,53 @@
     }
   },
   "experienceNodes": {
+    "exp-reusable-signal-bbd83203f5340823": {
+      "id": "exp-reusable-signal-bbd83203f5340823",
+      "type": "reusable_signal",
+      "centralMeaning": "Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-6",
+        "__solo__-5",
+        "__solo__-4",
+        "__solo__-2",
+        "__solo__-1"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务出现相同目标、文件或验证需求",
+        "solodrop-0.0.8.vsix",
+        "package-lock.json",
+        "package.json",
+        "package.nls.json",
+        "package.nls.zh-cn.json",
+        "solodrop-0.0.7.vsix"
+      ],
+      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
+      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/6/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/5/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "npm run package",
+        "+ \"extension.description\": \"Turn agent-made files into verified browser previews and share them in one click. / 将 Agent 生成的文件转成已验证的网页预览，一键分享。\",",
+        "+ \"extension.description\": \"将 Agent 生成的文件转成已验证的网页预览，一键分享。 / Turn agent-made files into verified browser previews and share them in one click.\",",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/4/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
+        "--- a/test/sidebar-ui.test.js"
+      ],
+      "stats": {
+        "uses": 5,
+        "wins": 5,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 6,
+        "beta": 1,
+        "winRate": 0.8571,
+        "lastUsed": "2026-07-17T13:22:55.056Z"
+      }
+    },
     "exp-verification-8c08f5cfbd223c31": {
       "id": "exp-verification-8c08f5cfbd223c31",
       "type": "verification",
@@ -302,52 +356,6 @@
         "alpha": 2,
         "beta": 1,
         "winRate": 0.6667,
-        "lastUsed": "2026-07-16T11:34:17.032Z"
-      }
-    },
-    "exp-reusable-signal-bbd83203f5340823": {
-      "id": "exp-reusable-signal-bbd83203f5340823",
-      "type": "reusable_signal",
-      "centralMeaning": "Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。",
-      "sourceKinds": [
-        "solo"
-      ],
-      "sourceRefs": [
-        "__solo__-5",
-        "__solo__-4",
-        "__solo__-2",
-        "__solo__-1"
-      ],
-      "appliesWhen": [
-        "solodrop-0.0.8.vsix",
-        "package-lock.json",
-        "package.json",
-        "package.nls.json",
-        "package.nls.zh-cn.json",
-        "同一路线图入口：__solo__",
-        "solodrop-0.0.7.vsix",
-        "docs/ui/sidebar.md"
-      ],
-      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
-      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
-      "checks": [
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/5/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "npm run package",
-        "+ \"extension.description\": \"Turn agent-made files into verified browser previews and share them in one click. / 将 Agent 生成的文件转成已验证的网页预览，一键分享。\",",
-        "+ \"extension.description\": \"将 Agent 生成的文件转成已验证的网页预览，一键分享。 / Turn agent-made files into verified browser previews and share them in one click.\",",
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/4/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js",
-        "--- a/test/sidebar-ui.test.js",
-        "+++ b/test/sidebar-ui.test.js"
-      ],
-      "stats": {
-        "uses": 4,
-        "wins": 4,
-        "losses": 0,
-        "neutral": 0,
-        "alpha": 5,
-        "beta": 1,
-        "winRate": 0.8333,
         "lastUsed": "2026-07-16T11:34:17.032Z"
       }
     },
@@ -1245,6 +1253,18 @@
   },
   "usageEdges": [
     {
+      "runId": "__solo__-6",
+      "experienceId": "exp-reusable-signal-bbd83203f5340823",
+      "phase": "observed",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-6.json",
+        "execution_logs:6",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/6/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -"
+      ],
+      "createdAt": "2026-07-17T13:22:55.056Z"
+    },
+    {
       "runId": "__solo__-5",
       "experienceId": "exp-verification-8c08f5cfbd223c31",
       "phase": "verified",
@@ -1781,6 +1801,19 @@
     }
   ],
   "runs": [
+    {
+      "runId": "__solo__-6",
+      "executionLogId": 6,
+      "nodeId": "__solo__",
+      "runKind": "solo",
+      "agentCli": "/usr/local/bin/codex",
+      "status": "Completed",
+      "finishedAt": "2026-07-17T13:22:55.056Z",
+      "changedFiles": [],
+      "touchedFiles": [],
+      "failures": [],
+      "handoffSummary": "Solo 对话已完成，等待用户决定是否关联到路线图环节。 建议验证：cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/6/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -。"
+    },
     {
       "runId": "__solo__-5",
       "executionLogId": 5,

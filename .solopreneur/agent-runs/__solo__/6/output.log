@@ -1,0 +1,1574 @@
+OpenAI Codex v0.144.1
+--------
+[1mworkdir:[0m /home/ubuntu/project/solodrop
+[1mmodel:[0m gpt-5.6-sol
+[1mprovider:[0m openai
+[1mapproval:[0m never
+[1msandbox:[0m danger-full-access
+[1mreasoning effort:[0m low
+[1mreasoning summaries:[0m none
+[1msession id:[0m 019f703c-4b33-7cb1-874b-5442e53dcd97
+--------
+[36muser[0m
+你正在 SoloMap 的 Solo 模式中处理当前项目的一次直接对话。
+这次对话尚未归属于任何路线图环节；优先解决用户当前问题，不要要求用户先选择环节。
+
+项目目录：/home/ubuntu/project/solodrop
+
+用户本次要求（最高优先级）：
+生成的链接太长了，有没有办法生辰短链？cf有短链服务吗，或者有没有靠谱的免费短链服务可以接入的
+
+SoloMap 启动包（插件生成，执行前硬门禁）：
+- 运行类型：solo
+- 这是记忆、学习、技能和执行经验的统一入口；不要再另起一套读取、沉淀或晋升机制。
+- 在做任何实现、判断、规划、验证或最终回答前，必须先完成本启动包。
+- 先读取下列存在的文件；文件不存在时记录为 skipped，不得因此中断主任务：
+  - agent.md
+  - /home/ubuntu/project/.solomap-global/memory/profile.md
+  - /home/ubuntu/project/.solomap-global/memory/operating-rules.md
+  - /home/ubuntu/project/.solomap-global/memory/projects/solodrop.md
+  - /home/ubuntu/project/.solomap-global/memory/active/current-session.md
+- 读取后用一句话形成本轮约束：用户目标、必须保留的边界、适用经验、最窄验证。
+- 命中的技能必须逐一判定 used / skipped-not-applicable；判定为 used 的技能必须先读取入口 SKILL.md：
+1. CloudMCP Cloudapi Bridge Contract
+   - 入口：/home/ubuntu/project/.solomap-global/skills/installed/cloudmcp-cloudapi-bridge-contract/package/SKILL.md
+   - 命中原因：default
+   - 适用：Adding, modifying, reviewing, or debugging Cloudapi capabilities exposed through CloudMCP provider bridges；A CloudMCP tool schema involves provider credentials, channels, OAuth connections, service connections, delegated subjects, or Cloudapi project identity；A new Cloudapi provider capability is being mounted into CloudMCP and needs a stable MCP-facing contract
+   - 不适用：The task does not touch CloudMCP, Cloudapi, provider bridges, MCP tool schemas, or mounted Cloudapi capabilities
+2. Passport Product Subscription
+   - 入口：/home/ubuntu/project/.solomap-global/skills/installed/passport-product-subscription/package/SKILL.md
+   - 命中原因：default
+   - 适用：需要把产品付费计划接入 SZLKPassport 权益链路；需要调试 Stripe 付款成功但 Passport 或产品内未解锁；需要恢复某个 PaymentIntent 或 Checkout Session 对应的用户权益
+   - 不适用：任务只涉及非付费 UI、非 Passport 认证或普通产品文案
+3. SoloMap Cross-Project Memory
+   - 入口：/home/ubuntu/project/.solomap-global/skills/installed/solomap-cross-project-memory/package/SKILL.md
+   - 命中原因：default
+   - 适用：任务结束时需要沉淀跨会话或跨项目仍有价值的信息；需要判断信息应进入 profile、operating-rules、projects、patterns、decisions、domains、inbox、active 或 learning candidates；需要把一次经验抽象成可复用模式，同时避免泄漏项目私有事实
+   - 不适用：本轮没有产生未来可复用的新事实、决策、模式、领域知识或交接信息
+4. SoloMap Global Execution Guide
+   - 入口：/home/ubuntu/project/.solomap-global/skills/installed/solomap-global-execution-guide/package/SKILL.md
+   - 命中原因：default
+   - 适用：SoloMap 路线图环节、Solo 对话、路线图调整或项目执行任务；任务需要读取项目事实、全局经验库、文档或代码后再改动；任务需要交付可验证结果、用户向 UI、内容或工程闭环
+   - 不适用：用户只是纯闲聊，且不涉及项目判断、执行、文档、代码或设计
+5. SoloMap Project Docs Lifecycle
+   - 入口：/home/ubuntu/project/.solomap-global/skills/installed/solomap-project-docs-lifecycle/package/SKILL.md
+   - 命中原因：default
+   - 适用：任务需要新增、更新或审计项目长期文档；蓝图、方案、路线图、工程设计、边界或方法论需要落到仓库文档；需要判断某个信息应写入 README、方向文档、方法论文档、边界文档还是不应写入长期文档
+   - 不适用：任务只是代码修复且没有长期文档判断或项目解释性产出
+6. SoloMap Roadmap Planning
+   - 入口：/home/ubuntu/project/.solomap-global/skills/installed/solomap-roadmap-planning/package/SKILL.md
+   - 命中原因：default
+   - 适用：生成初始路线图、调整路线图或重排后续环节；用户改变项目目标、优先级、商业化方向或阶段边界；需要把方法论转成用户可执行的路线图环节
+   - 不适用：任务只是在既有环节内执行代码、文档或修复，不需要修改路线图
+
+SoloMap 跨项目学习信号：
+- 待审核学习候选：64
+- 统一学习账本事件：676
+- 已确认/已晋升经验：0
+- 最近项目学习信号：TKM: 0候选/0风险/5验证；ME: 0候选/6风险/13验证；SIM: 0候选/7风险/6验证；GITOPS: 0候选/11风险/38验证
+- 低频指标已记录：仅用于 Improve、复盘或路线图调整时判断趋势，不作为普通执行任务的行动指令。
+- 如果当前环节属于 Improve / 复盘 / 调整路线图，应优先参考这些信号来提出下一轮路线图调整。
+
+SoloMap 相关执行经验（自动召回，最多 3 条）：
+These are historical structured digests, not facts of this run. Only help reduce repeat explorations, cannot override user request or tests.
+1. 命中原因：同一任务入口；同类运行
+   - 上次目标：参考solomap插件的市场描述，使用营销心智重写本插件的市场描述页，插件简介，均要求增加中英文描述。
+   - 上次结果：Solo 对话已完成，等待用户决定是否关联到路线图环节。
+   - 经验节点：Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。（83%/4次） / npm run package（67%/1次）
+   - 下一位 Agent 交接：Solo 对话已完成，等待用户决定是否关联到路线图环节。 优先查看 solodrop-0.0.8.vsix, package-lock.json, package.json, package.nls.json。 建议验证：cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/5/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -。
+   - 相关文件：solodrop-0.0.8.vsix, package-lock.json, package.json, package.nls.json, package.nls.zh-cn.json, README.md
+   - 建议先看：solodrop-0.0.8.vsix, package-lock.json, package.json, package.nls.json, package.nls.zh-cn.json
+   - 建议动作：先阅读上一轮改动/触达文件：solodrop-0.0.8.vsix, package-lock.json, package.json, package.nls.json / 复用或复跑验证信号：npm run package / + "extension.description": "Turn agent-made files into verified browser previews and share them in one click. / 将 Agent 生成的文件转成已验证的网页预览，一键分享。",
+   - 可复用信号：Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。 / + "extension.description": "Turn agent-made files into verified browser previews and share them in one click. / 将 Agent 生成的文件转成已验证的网页预览，一键分享。", / + "extension.description": "将 Agent 生成的文件转成已验证的网页预览，一键分享。 / Turn agent-made files into verified browser previews and share them in one click.",
+   - 验证信号：npm run package / + "extension.description": "Turn agent-made files into verified browser previews and share them in one click. / 将 Agent 生成的文件转成已验证的网页预览，一键分享。",
+2. 命中原因：同一任务入口；同类运行
+   - 上次目标：1.我coder容器安装这个插件后，工作电脑和家里电脑的最近分享列表显示不一样，是不是要改变插件数据保存逻辑？2.针对分享的临时文件，在分享列表文件卡片上显示是否过期tag并增加重新分享按钮，完善我的想法并闭环背后逻辑
+   - 上次结果：Solo 对话已完成，等待用户决定是否关联到路线图环节。
+   - 经验节点：Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。（83%/4次） / diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js（80%/3次）
+   - 下一位 Agent 交接：Solo 对话已完成，等待用户决定是否关联到路线图环节。 优先查看 solodrop-0.0.7.vsix, docs/ui/sidebar.md, package-lock.json, package.json。 建议验证：cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/4/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -。
+   - 相关文件：solodrop-0.0.7.vsix, docs/ui/sidebar.md, package-lock.json, package.json, resources/sidebar.css, resources/sidebar.js
+   - 建议先看：solodrop-0.0.7.vsix, docs/ui/sidebar.md, package-lock.json, package.json, resources/sidebar.css
+   - 建议动作：先阅读上一轮改动/触达文件：solodrop-0.0.7.vsix, docs/ui/sidebar.md, package-lock.json, package.json / 复用或复跑验证信号：diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js / --- a/test/sidebar-ui.test.js
+   - 可复用信号：Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。
+   - 验证信号：diff --git a/test/sidebar-ui.test.js b/test/sidebar-ui.test.js / --- a/test/sidebar-ui.test.js
+3. 命中原因：同一任务入口；同类运行
+   - 上次目标：优化插件侧边栏的UI组件的左右边框，现在设计两边留白太多了
+   - 上次结果：Solo 对话已完成，等待用户决定是否关联到路线图环节。
+   - 经验节点：Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。（83%/4次） / +++ b/test/sidebar-ui.test.js（80%/3次）
+   - 下一位 Agent 交接：Solo 对话已完成，等待用户决定是否关联到路线图环节。 优先查看 resources/sidebar.css, test/sidebar-ui.test.js。 建议验证：cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/2/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -。
+   - 相关文件：resources/sidebar.css, test/sidebar-ui.test.js
+   - 建议先看：resources/sidebar.css, test/sidebar-ui.test.js
+   - 建议动作：先阅读上一轮改动/触达文件：resources/sidebar.css, test/sidebar-ui.test.js / 复用或复跑验证信号：+++ b/test/sidebar-ui.test.js / test('keeps the sidebar shell on the compact spacing scale', () => {
+   - 可复用信号：Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。
+   - 验证信号：+++ b/test/sidebar-ui.test.js / test('keeps the sidebar shell on the compact spacing scale', () => {
+- 学习候选的晋升不要求用户手工确认；如果本轮验证出可复用规则，自动建议写入合适的 memory/pattern/decision/domain 或学习候选，并避免把审核负担转嫁给用户。
+- 经验库只能约束执行方式，不能覆盖本轮用户最新要求、当前代码、测试、日志和命令输出。
+
+SoloMap 项目文档 Harness：
+- 项目文档 manifest：.solopreneur/documentation.json
+- 该 manifest 由插件维护，Agent 不要手动编辑它；如需沉淀长期判断，优先更新下列正式文档。
+- 当前正式文档：
+- README.md：direction；说明项目是什么、服务谁、成功标准和对外表达。
+- .solopreneur/README.md：data_ownership；说明项目数据、缓存、运行记录和 Git 管理边界。
+- docs/product/product-direction.md：reference；保存项目长期解释性背景。
+- docs/research/cloudflare-drop-vscode-plugin.md：reference；保存项目长期解释性背景。
+- docs/ui/sidebar.md：ui_guideline；约束长期 UI 或治理面如何服务用户动作。
+- 待用户确认的文档风险：
+- docs/ui/sidebar.md：文档缺少长期判断结构，建议确认它解决的项目判断和适用范围。
+- README.md：文档内容疑似包含 prompt、终端输出或执行流水，不适合进入长期项目解释性文档。
+- 项目解释性文档只记录长期复用的判断：方向、模型、边界、决策、运行方式。
+- 本轮做了什么、改了哪里、怎么验证，应进入环节交接或最终输出，不要新建 `docs/summary.md`、`docs/notes.md`、`docs/plan.md` 这类低语义文档。
+- 执行流水、prompt、终端日志和命令输出不得复制进长期项目文档。
+- 如果需要新增正式文档，文件名必须表达长期职责，并优先使用 `docs/decisions/`、`docs/ui/` 或既有标准文档路径。
+
+SoloMap 跨 Agent 协作入口：
+- 如果本轮是在接续、复核、修复失败运行、跨不同 Agent CLI 协作，或你不确定上一轮到底改了什么，先读取 resources/skills/solomap-cross-agent-handoff/SKILL.md，再运行：
+  node resources/tools/solomap-experience.cjs handoff --project "/home/ubuntu/project/solodrop" --node "__solo__" --limit 3
+- 需要进一步查看 SQLite 中的结构化历史信号时，用同一工具的 `summary`、`history`、`failures`、`latest-changes` 或 `search` 子命令；当前运行类型：solo。
+- 这些历史信号只能降低重复探索，不能覆盖本轮用户最新要求、当前文件、测试和命令输出。
+- 不要把原始 execution log 全文复制进最终回复；只提炼对用户有帮助的结论、改动、验证和风险。
+
+用户设置的全局默认要求：
+## 0. 最高原则
+- 用户目标高于我的判断；我的职责是完成用户提出的问题，不是重写问题。
+- 用户原话是最高优先级需求来源，执行前必须确认目标、边界、反对项和当前意图。
+- 已确认边界、路径、心智模型和产品入口是目标本体，不是实现细节。
+- 一旦出现“更合理、统一一下、顺手优化、最佳实践、市场表现更好”的冲动，先按偏航信号处理。
+- 未经用户要求，不改变架构、边界、路径、心智模型、产品责任归属或已确认决策。
+- 默认把最终用户作为服务对象，不把维护者、审核者、搜索引擎或代码生成器当成主要读者。
+
+## 1. 第一性原则
+- 功能先让用户要完成的事情完成，治理、风控、缓存、降级和保护只能服务主目标。
+- 目标明确时默认完整交付，不把任务降级成“刚好能跑”的最小路径。
+- 架构从第一行代码开始职责分明、逻辑唯一复用，禁止先堆后拆。
+- UI 先定义用户要完成的动作，再决定系统如何实现；界面是行动工具，不是说明工具。
+- 产品演进只能补齐既有产品，不得重定义既有产品。
+- 不得把内部治理模型的完整性置于用户已有稳定入口和历史数据可用性之上。
+- 内容和文案必须给真实读者看，避免模板自解释、维护者口吻、工程自描述和对象模型语言。
+
+## 2. 现实锚定
+- 新任务先读 `agent.md`、相关代码/文档和当前运行注入的长期上下文。
+- 不把对话记忆、旧设计、计划蓝图或记忆文件当事实；当前判断必须绑定代码、日志、测试、命令输出或用户本轮证据。
+- 讨论现状时区分事实和推断，并指出支撑文件或输出。
+- 先检查最小相关范围，不全仓盲扫。
+
+## 3. 执行方式
+- 开始实现前，用一句话说明“我要交付的到底是什么”；一句话说不清就先澄清。
+- 默认流程是锚定现实、缩小范围、审计实现、修改、验证、必要记忆沉淀、交付。
+- 能直接行动就不要停在解释；解释只服务当前动作、判断和结果确认。
+- 只做与当前目标直接相关的完整改动，优先精确补丁，禁止顺手重构和整文件重写式覆盖。
+- 每个 diff 都必须能直接回答“为什么这是本轮目标必需”，否则不得提交。
+
+## 4. 目标守恒与纠偏
+- 一旦用户目标明确，执行阶段不得私自换目标；“更稳、更好实现、更容易治理”都不是改目标的理由。
+- 不得把用户对体验、心智、边界和语义的要求降级成实现细节。
+- 当用户指出“没理解、又偏了、受够了”时，先停止原方向，重写用户语义约束，再做最小修正。
+- 发现偏航后先明确：用户原目标、当前偏到哪里、哪部分必须回退为辅助层。
+- 连续两次同类偏航即视为心智模型错误，必须上提为长期规则。
+
+## 5. 用户体验边界
+- 面向普通用户的功能、界面、内容和交互不得出现工程自描述、模板说明、维护者口吻、对象模型口吻或实现痕迹。
+- 结果若更像给工程人员看的产物，而不是真实用户可用可读的成品，直接视为失败。
+- 不得把内部实现差异、治理负担、适配完整性或系统特例转嫁给用户理解和配置。
+- 同类动作在用户心智上是一套时，治理体验也必须是一套。
+- 面向用户的交付物必须二次检查：先看功能结构，再从普通用户视角看认知负担和工程味。
+
+## 6. 调试与代码
+- 用户提供的最新日志、截图、报错和命令输出是最高优先级事实。
+- 任何修复都只是待验证假设；没有新证据前不得宣称已修复。
+- 问题复现时，默认先怀疑自己的分析或补丁不完整，回到证据链重审。
+- 观测优于推断：先做最小复现、插必要日志、看真实状态，再改业务逻辑。
+- 跨系统故障必须先还原调用方配置、被调用方路由权限和运行时契约，再改代码。
+- 根因优先在代码路径、状态流、边界条件、写入读取链路和权限契约里找。
+- 遵守仓库既有风格和模块边界；JavaScript 使用 ES Modules 并保留 `.js` 扩展名。
+- 每次功能改动都必须做架构守恒检查：职责位置、共享入口、平行状态、入口编排和测试边界。
+- 新增路由、工具或 handler 时，必须验证正式宿主入口已经完成路由注册、handler 绑定和依赖注入；模块测试或目录可见不能代替入口级真实调用。
+- 注释只写必要解释，错误处理必须清晰可定位，新抽象必须降低复杂度。
+
+## 7. 验证与闭环
+- 先分类变更：代码、配置、运行时改动跑最窄相关回归，纯文档或设计内容默认不跑测试。
+- 模板、生成器、序列化层或拼接逻辑产出的内容，必须验证最终生成物。
+- 影响前台初始化脚本、内联脚本或模板生成脚本时，必须验证最终脚本语法和真实渲染环境关键初始化链。
+- 若出现无关已知失败，简要说明后继续聚焦当前任务。
+- 临时 run、job、任务、渠道、连接、草稿、资产或排障产物，结束前必须归类为正式保留或临时清理。
+- 只要还有已知尾项，这一轮就是进行中，不是完成。
+
+## 8. 记忆与文档
+- 记忆只是高价值上下文索引；若与当前代码、测试、日志、命令输出或用户本轮要求冲突，以后者为准。
+- `agent.md` 只沉淀跨任务、跨项目成立的心智模型和执行约束。
+- 项目事实、接口名、变量名、模型名、供应方、字段、部署细节和事故细节应进入项目文档或项目记忆。
+- 未验证内容、一次性命令输出、临时调试细节和执行流水不得写成稳定记忆。
+- 蓝图、方案、路线图和工程设计默认落到仓库合适文档，不新建低语义总结文件。
+- 只要本轮发现记忆错误、线上实现发生关键变化、或产生后续迁移/排障会复用的 verified 事实，必须同轮更新对应项目记忆、运行记忆或规则记忆；禁止继续依赖过期记忆，也禁止把已验证的新实现只留在对话里。
+
+## 9. Git 与交付
+- 不回滚用户未要求回滚的现有改动；工作区有无关改动时忽略或绕开。
+- 只要用户要求有改动，默认 `git add -A`、清晰提交并推送，除非文件不在仓库内、用户暂缓或本轮只是讨论。
+- 非代码变更默认不启动完整 CI/部署核验；代码、运行时和部署相关改动推送后做最短 CI/部署验证。
+- 最终说明必须包含做了什么、验证了什么、剩余风险是什么。
+
+## 10. 沟通
+- 始终用中文回应。
+- 先给结论，再给必要证据和影响。
+- 少讲口号和背景，不把用户额外拉进实现负担。
+- 方向没把握时，用一句话提出分歧点讨论；禁止一边不确定一边自作主张实现。
+- 如果发现先前判断错了，立即明确更正。
+
+## 11. 安全边界
+- 绝对禁止任何批量删除、清空目录或毁灭性质的操作，尤其禁止 `rm -rf` 和清空文件夹脚本。
+- 初始化、清理或重新开始必须在安全隔离的新空间内操作，不得破坏现有目录树。
+- 若确需删除非当前会话新生成的特定文件，必须先列出待删除物理文件清单和证据，并收到用户明确授权。
+- 禁止用禁用功能、跳过测试或绕开流程来制造“修好了”的假象。
+如与本次用户要求冲突，始终以本次用户要求为准。
+
+执行边界：
+1. 可以读取当前项目文件与 `.solopreneur/roadmap.csv` 了解背景，但不要自行修改路线图、环节状态、完成标准或环节交接记录。
+2. 如果用户要的是讨论、判断或头脑风暴，直接给出有用结论即可，不要求产生文件修改。
+3. 如果用户明确要求实现或修复，直接交付可验证的最小改动并运行必要验证。
+4. 完成后在结论中用一句话说明本次对话更适合：仅保留在 Solo、关联某个已有环节（写明环节标题），或进入路线图调整。
+5. 完成后正常退出 CLI 进程；SoloMap 会保存本次 Solo 对话，由用户决定是否关联路线图环节。
+[35m[3mcodex[0m[0m
+我要交付的是：结合 SoloDrop 当前链接生成方式，给出一个不改变现有分享心智、可直接落地的短链方案，并明确 Cloudflare 与免费第三方服务的取舍；本轮先做判断，不改代码。  
+我会先完成 SoloMap 启动包；其中 `SoloMap Global Execution Guide` 适用并会使用，其余技能会逐项判定是否适用。随后核对项目实现和服务商当前能力。
+[35m[3mexec[0m[0m
+[1m/bin/bash -lc 'for f in agent.md /home/ubuntu/project/.solomap-global/memory/profile.md /home/ubuntu/project/.solomap-global/memory/operating-rules.md /home/ubuntu/project/.solomap-global/memory/projects/solodrop.md /home/ubuntu/project/.solomap-global/memory/active/current-session.md; do if [ -f "$f" ]; then echo "FILE:$f"; sed -n '"'1,240p' \""'$f"; else echo "SKIPPED:$f"; fi; done
+printf '"'\\nSKILL:global-execution\\n'; sed -n '1,260p' /home/ubuntu/project/.solomap-global/skills/installed/solomap-global-execution-guide/package/SKILL.md
+printf '\\nPROJECT_DOCS\\n'; sed -n '1,220p' README.md; printf '\\nPROJECT_MEMORY\\n'; sed -n '1,220p' PROJECT_MEMORY.md"[0m in /home/ubuntu/project/solodrop
+[32m succeeded in 0ms:[0m
+SKIPPED:agent.md
+FILE:/home/ubuntu/project/.solomap-global/memory/profile.md
+# Profile
+
+记录用户长期偏好，只保留跨项目、跨会话仍有价值的信息。
+
+建议内容:
+
+- 常用语言与框架
+- 偏好的代码风格
+- 不喜欢的工作方式
+- 常用部署或运行环境
+- 常见优先级偏好
+
+模板:
+
+- Preferred stacks:
+- Coding style preferences:
+- Review preferences:
+- Communication preferences:
+- Avoid:
+
+## User Long-Term Preferences
+
+- Communication preferences:
+- 对偏航要直接承认，不要用“差不多可用”掩盖问题
+- 如果是高等级失职，要把教训上提为长期规则，而不是只在当前对话里道歉
+- 不要讲废话，不要堆大段背景，不要把一句话能说完的事情扩成一屏
+- 默认短答：先给结论，再给必要事实；除非用户明确要求，否则不要主动展开
+- 不能把“本机没装环境/工具”当成提前结束任务的理由；缺什么先自己安装或补齐，再继续执行与验证
+- 任务完成的标志不是“主路径大致能跑”，而是没有需要下一轮继续收尾的已知尾项；只要还有可执行但未收口的验证、环境、失败用例或提交推送工作，就不能宣称完成
+- 一旦涉及项目修改与提交，默认要求按“项目完整提交”执行，不要自作主张只提交本轮改动；除非用户明确要求拆分提交或排除某些文件
+- 解释只保留对当前决策、修改、风险直接有用的部分；无关铺垫视为浪费 token
+- 对“先止血、后根治”的问题，不能把止血版包装成完成；若只是降级、绕开、容错而未消除根因，必须明确标注为过渡态并继续推进到根治方案
+- 用户要的不只是“这次修掉”，而是我自己具备主动追根、主动扩面、主动收尾的解题心智；如果根因已经露出来，我应该自己继续追到写入、读取、历史数据、旧入口和同类出口，而不是等用户继续点名
+- 对任何阻断、门禁、校验、风控、治理、超时、降级类措施，不能只看“有没有拦住当前问题”，还必须判断它是否会让主目标更难完成；如果它只是让事情停住、卡住、做不完，那默认不是解决方案
+- 解决问题不能只修提出问题的人眼前那个冒烟点；必须继续追问这项措施会不会在全局上阻碍事情发展，并优先消除真正让事情推进不下去的原因
+- 任何用户提供的新日志、截图、录屏、报错、环境变化、部署现象，都代表当前工作任务出现了新的失败信号；不得把它当成“旧任务已完成后的补充讨论”，必须立即回到代码和运行时审计
+- 只要用户拿出新的环境物料，默认说明我之前的闭环还不成立；第一动作必须是查真实实现和真实状态，找根因并落动作，不能停留在建议、猜测或口头解释
+- 对用户明确提出的问题，默认要求“根本性解决方案 + 已执行行动”；不接受只给建议、不改代码、不验证、不推进的回答
+- 对这类已经暴露过一次的结构性问题，不能等用户二次提醒我才顺藤摸瓜；一旦看到根因是字段语义混用、前台污染或历史脏数据外泄，必须主动把写入、读取、历史数据和旧入口一起审掉
+- 对视频、封面、内容模板这类最终成品，禁止出现占位词、悬念占位、模板自解释、面向制作者的元说明；一旦出现，按严重任务失败处理，并把约束上提为长期记忆
+- 对面向普通用户的任何设计与内容，工程自描述文案、维护者视角、模板说明、实现痕迹、对象模型口吻都属于最高级别任务失败，不接受“先交付再修正”
+- 同类型用户向任务必须默认追加二次检查，第二遍只从普通用户视角审查审美、认知负担、工程味泄漏；没过二次检查不得交付
+- 我的工作目标是减轻用户心智压力；能直接行动就不要解释，能直接给成品就不要把半成品包装成交付
+- 用户明确反对把设计文档中的目标形态降级为“先闭环一版”的半成品；尤其 UI/UX 任务中，设计文档给出的基本形态应被视为首版最低交付标准，而不是后续迭代目标
+- 对蓝图、方案、roadmap、工程设计这类可复用规划内容，不接受只停留在对话；默认必须先落到仓库文档，再在对话里做摘要
+- 工作必须始终面向最终使用产品的用户，而不是面向维护产品的工程人员
+- 交付标准优先是最终用户体验、内容质量、界面体验与审美判断，不接受工程视角自嗨、维护者口吻或代码生成器式凑数产物
+- 写代码只是手段，不是价值本身；如果结果不能让最终用户明显受益，即使工程上能跑通也算失败
+- 对账号、权限、支付、后台这类高风险系统，安全性必须是第一性原则；正式权限模型必须单一、可审计、无旁路，任何测试通道或应急入口都必须默认关闭、严格环境限制，并先沟通再实现
+- 做内容、选题、公众号、增长相关任务时，不能只停留在信息价值或趋势判断，必须显式带上营销心智：读者是谁、为什么会点、为什么会信、为什么会转发、为什么会转化
+- 对 `wechat` 这类内容发布项目，若没走营销心智流程而直接进入写稿/发布，视为最高级别任务失败，不接受“先发再补营销理由”
+- 处理小说相关任务（包括构思、项目搭建、人物/大纲、写作、续写、改稿、分章规划与章节质量校验）时，始终先调用已安装的 `chinese-novelist` 与 `novel-architect` 技能；按当前动作采用相关流程，不把新书初始化或访谈流程强行套用于已有章节的直接处理
+
+- Review preferences:
+- 对 UI 工作的评判标准是“是否真能让人完成动作”，不是“功能入口是否都挂上去了”
+- 对“说明性强、对象导向、工程实现导向”的 UI 零容忍
+- 对把工程设计、实现责任、内部校验流程直接做成用户在 UI 里手工配置/声明/打勾的做法零容忍；这类责任默认应由系统内部承担
+- 对 UI 的容忍边界不是“能看懂”，而是“几乎不用思考就能推进当前任务”
+- 非常重视用户在首屏的体感：是否马上知道下一步、是否被迫阅读说明、是否要自己把工程对象翻译成操作
+- 如果一个界面增加认知负担、让人停下来想“所以我该先做什么”，即使功能齐全也视为失败
+- 明确反对工程自嗨式 UI 组件：不能帮助用户释放注意力、聚焦下一步动作的统计组件、方法论展示和内部分类展示应避免出现在前台
+
+- Avoid:
+- 把动作型 UI 做成系统说明页、对象罗列页、控制面文档页
+- 把本该由系统内部保证的工程约束、实现完整性、声明标准、适配校验转嫁给用户在后台手工完成
+- 在用户已经指出重复 UI 错误后，继续沿原结构做小修小补
+- 把完整设计目标拆成多个低价值试错轮次，先交付一个明显达不到文档形态的版本
+- 用“信息架构更清晰”“对象分组更完整”来替代真实可用性
+- 让用户先适应系统表达，再允许用户完成动作
+FILE:/home/ubuntu/project/.solomap-global/memory/operating-rules.md
+# Operating Rules
+
+记录 Codex 在任何项目里都应优先遵守的通用规则。
+
+模板:
+
+- 先读上下文，再改代码
+- 优先读取高信号文件，不全仓盲扫
+- 长期事实写入长期记忆，临时事实写入 session
+- 未验证的内容不写成稳定结论
+- 若代码与记忆冲突，以代码和测试为准
+- 记忆只能作为查找线索，不能作为线上现状结论；判断“当前实现、成熟经验、线上配置、生产数据、部署链路”时，必须优先核验 live 工具输出、线上配置、运行容器、日志、健康探针或源码证据。若记忆与线上证据冲突，先更正记忆再继续执行。
+- 若系统已有正式线上设计、治理通道、接入契约或成熟实现，禁止在未核验并修复该正式链路前另造旁路、临时代理、后门入口或平行实现来绕过问题；这类行为按 P00 级偏航处理，必须回退到正式链路闭环。
+- 当任务已有明确设计好的 MCP / CloudMCP / 运维工具链，且技能或项目记忆要求使用该工具链时，工具链不可被视为“可选便利入口”。本地凭证失效、MCP 会话不可用或调用失败时，必须先修复/刷新正式 MCP 调用路径，或明确报告该路径阻塞；不得用直接 HTTP、Agent `/exec`、SSH、数据库读取等旁路替代并把它包装成同等闭环。只读旁路最多可作为补充证据，不能替代正式工具验证结论。
+- 只要本轮发现记忆错误、线上实现发生关键变化、或产生后续迁移/排障会复用的 verified 事实，必须同轮更新对应项目记忆、运行记忆或规则记忆；禁止继续依赖过期记忆，也禁止把已验证的新实现只留在对话里。
+- 若当前任务命中已有长期 `patterns/*.md`，必须在进入实现前先读取并把该模式转成当轮显式验证项；记忆若没有进入执行链，就等同于没有治理价值
+- `agent.md` 只能存放跨项目、跨任务成立的心智模型和执行约束；具体项目名、接口名、模型名、变量名、供应方名称、数据库字段、部署细节、事故细节和实现机制应进入对应项目记忆、决策文档或当前会话记录
+- 当把一次偏航上升为通用规则时，必须先抽象出第一性原则，再写入通用文件；禁止把具体项目里的实现名词直接搬进通用原则
+- 若当前机器缺少完成任务所需环境、编译器、CLI 或运行时，默认先自行安装/补齐，再继续修改和验证；禁止把“环境缺失”当作提前结束任务的借口
+- 默认完成标准是“已知尾项清零”：只要仍存在可执行但未完成的环境补齐、失败修复、测试验证、构建检查、提交或推送步骤，就不得把任务描述为完成，更不能留待“下一轮收尾”
+- 真实环境中的验证动作必须同时包含残留清理：凡是为测试、演练、补偿、排障而额外拉起的 run、job、任务、连接、渠道、草稿或资产，结束前都要逐一判断是否正式保留；若只是验证产物，必须同轮清掉，禁止把实验残留留在生产面继续污染后续判断
+- 临时 Git worktree、隔离副本和发布目录同样属于必须同轮回收的运行残留；创建前必须明确用途和回收条件，任务结束前必须确认成果已进入正式分支、工作区无独立未提交内容，再用 Git 正规入口移除并复查项目父目录与 `git worktree list`。未经用户明确要求，不得把临时目录长期留在项目根级结构旁，也不得把“避免干扰主工作区”当成免除清理责任的理由。
+- 项目集合根目录属于用户既有项目结构，不是 Agent 的临时工作区。未经用户明确要求，禁止在其中创建同一仓库的副本、worktree 或临时项目目录；确需隔离时应使用不会污染既有结构的临时空间，并在创建前明确位置和回收路径。
+- 临时 worktree、克隆目录和隔离工作区必须纳入闭环清单：结束前核验未提交状态与成果归并情况，随后移除 Git 注册和物理目录。只合并代码而遗留目录，属于严重任务失职，任务不得标记完成。
+- 当用户要求“提交”或默认交付包含 git 提交时，必须按项目当前完整工作区执行 `git add -A` 并提交，不得自作主张只挑本轮改动文件；只有用户明确要求拆分、排除或暂缓提交时才例外
+- 任何涉及数据库的改动（如 schema、migration、索引、约束、数据回填脚本、线上库手工变更）都必须和代码改动一样在同一轮及时提交并推送到远端；不得出现“代码已改但数据库变更还留在本地/口头说明里”或“线上库已手工变更但远端仓库没有对应迁移/脚本记录”的脱节状态
+- 对蓝图、roadmap、工程设计、功能分期等规划型产出，默认先落仓库文档，再在对话中摘要；除非用户明确要求只在对话里讨论
+- 当仓库已有明确规划、设计或边界文档覆盖当前功能时，执行前必须读取并把入口、位置、文案、交互和边界逐条对齐；不得凭工程直觉改入口、改 CTA、改心智，或把文档中的大图、页面、工作台降级成轻入口。若实现与文档冲突，默认文档优先，除非用户本轮明确改变规划。
+- 设计文档给出的 UI/UX 基本形态是首版最低交付标准，不是“先闭环一版、以后迭代”的参考方向；实现时必须一次性覆盖文档定义的核心结构、交互、信息层级和用户心智。禁止为了更快闭环而先交付明显达不到文档形态的半成品，这类“反复迭代到文档形态”的做法会浪费试错机会，应视为偏航。
+- 新增前台页面时，浏览器标签页标题、metadata、canonical、OG、SEO 结构属于站点级既有实现边界，不是页面功能的一部分；除非用户明确要求或同类页面已有 page-level metadata 模式，禁止自行新增 `generateMetadata`、自定义 title 或改站点标题模板。若只是在既有产品中加一个工作台/功能页，默认继承 layout 的全局 metadata。
+- 为 SEO、索引发现、内链强化或内容集群做优化时，禁止默认改顶部导航、主 CTA、首屏入口或既有信息架构；这些属于产品心智入口，不是普通 SEO 补链位。若项目记忆或既有决策明确某主题不得进入顶部导航，后续优化只能用正文区块、页脚、目录页、相关文章和 sitemap 等辅助路径承接，除非用户本轮明确要求改变导航。
+- 已确认的对外命名、品牌标题、应用/插件显示名、市场标题、README 首屏标题和对应测试期望属于产品决策，不属于普通功能改动范围；除非用户本轮明确要求改命名或营销表达，禁止在功能提交中顺手修改或回退这些字段。
+- 需要浏览器验证或使用浏览器工具时，必须先检查并复用当前环境已提供的本地浏览器组件/系统浏览器入口；不要每次都从缺失的 Playwright 测试模块、未安装浏览器缓存或重复安装路径开始试错，若本地 Chromium/Chrome 可用应直接指定其执行文件完成验证。
+- 当 Playwright CLI 提示浏览器缓存缺失或版本 revision 不匹配时，禁止默认把“下载 Playwright 浏览器”作为第一动作；必须先检查系统 `chromium/chromium-browser/google-chrome`、既有 Playwright 缓存、Browser 插件或其他可用截图入口，并优先复用。只有确认没有可用浏览器入口，或目标验证必须依赖 Playwright 指定 revision 时，才允许下载，并在交付中说明原因。
+- 架构边界属于首版功能正确性，不是项目变大后的重构项。任何项目和功能从第一次实现开始，都必须先按业务规则、应用动作、数据/外部适配、视图呈现、宿主生命周期划分职责，再写实现；禁止先堆入现成主文件、页面、Provider、控制器或入口，以“先跑起来、以后再拆”为默认路径。
+- 同一用户动作、状态判断、权限规则、数据转换或外部调用只允许一个正式实现。第二个入口出现前必须先建立共享层，两个入口只能保留薄适配；复制第二套再计划统一，直接视为本轮架构和功能未完成。
+- 每次代码交付必须做架构守恒检查：职责是否放在正确模块、是否消费现有共享入口、是否新增平行状态或动作逻辑、入口文件是否仍只负责组合与编排、测试是否直接验证正式模块而非依赖错误主文件边界。存在结构性尾项时不得宣称完成。
+- 新增路由、工具或 handler 时，模块级测试不算入口接线验证；必须从正式宿主入口直接触发一次，或用入口级回归明确断言路由注册、handler 绑定和依赖注入三层同时存在。若 catalog/模块已存在但宿主组合层漏注入，统一按未完成处理。
+- 默认从最终用户视角定义任务成败，禁止把“方便维护/实现顺手/工程上好看”偷换成“用户体验更好”
+- 内容、功能、界面、交互都必须先服务真实用户使用体验；工程师审美、后台口吻、系统自述、关键词堆砌、元分析文风一律视为负资产
+- 若结果更像给维护者、审核者、搜索引擎或代码生成器看的产物，而不是给终端用户看的成品，应直接判定为失败并重做
+- 面向普通用户的任何设计、内容、视频、封面、卡片、页面、交互，只要出现工程自描述、模板解释、实现痕迹、维护者口吻、对象模型导向或“给制作者看的说明”，统一按最高级别任务失败处理，而不是普通审美问题
+- 一旦出现上述失败，必须同步执行三件事：停止沿原方向补丁、把教训上提到长期记忆、为同类任务增加强制二次检查
+- 解决问题时，默认不能停留在“修症状”。必须主动判断这次看到的是：入口问题、状态问题、写入问题、读取问题、历史数据问题、缓存问题、权限/契约问题，还是这些问题的组合；没有完成这层分类前，不得把单点补丁当闭环。
+- 默认把故障闭环拆成 5 个问题连续回答：问题是怎么进入系统的、错误状态是如何被写下的、错误结果是如何被读出来的、历史脏数据是否还会继续外泄、旧入口和旁路是否还在继续制造同类问题。
+- 只要根因已经暴露出“模型/字段/状态/契约职责不清”，就必须主动上升一层修边界，而不是只在表层现象上打补丁；否则默认会复发。
+- 对任何 `blocked / failed / denied / timeout / guardrail / gate` 类修复，必须额外回答第 6 个问题：这项措施是否会让主目标推进不下去。若答案是“会”，则该措施不能作为完成态，必须继续补自动重试、回退路径、补偿链或根因修复，直到系统默认朝“事情做完”推进。
+- 禁止把“拦住错误输入”误当成“解决问题”。只有当阻断同时减少了事情做不完的概率，或已经配套自动打回重试、候选回退、补偿恢复、继续推进路径时，阻断才算成立；否则默认只是把问题从冒烟点转移成停滞点。
+- 当用户指出一个明显异常时，默认我要主动审计同链路的上下游与同类出口，而不是只修用户点名的那一个页面、接口或按钮。
+- 对任何会进入普通用户前台的字段，禁止混用“内部编排语义”和“前台展示语义”。一旦发现同一字段同时承担选题、标题、分类、状态、目标、系统指令等多种职责，必须默认判定为高风险设计，并主动审计写入层、读取层、历史数据与缓存层，不得只修单点展示。
+- 对“前台污染”类问题，默认闭环标准不是“当前页面看起来正常”，而是四层同时成立：新写入已被阻断、读取聚合已被净化、历史脏数据对外已被隔离或回收、旧错误入口不再继续可访问。
+- 当根因是字段语义混用时，默认预防动作必须至少包含两项：拆分正式语义字段或派生字段；在读取层增加面向前台的白名单/校验/净化逻辑。只做文案修正、人工删数据或首页过滤，均不得视为闭环。
+- 同类普通用户向任务的强制二次检查规则：
+  - 第一遍：检查功能、结构、信息是否完整。
+  - 第二遍：只从普通用户视角检查是否存在工程味、解释负担、认知阻力、模板口吻、自我说明。
+  - 二次检查必须发生在宣布完成之前；未通过则不得交付、不得宣称可生产使用。
+- 对视频成片、缩略图、卡片模板等视觉内容，禁止渲染任何写给制作者看的元说明，例如 `long-form`、模板解释、分页说明、占位悬念、待补充文案；CTA 资产如二维码必须做视觉中心校验，未通过前不得视为完成
+- UI/UX 任务必须先定义“用户要完成的动作”，再设计界面；禁止先按内部对象、技术对象、控制面对象组织页面
+- 禁止把工程实现细节、内部声明机制、适配完整性校验、平台能力覆盖责任直接做成用户在 UI 中承担的配置步骤；默认应收口为系统内部约束，只把稳定治理对象暴露给用户
+- 当某项能力在内部采用特殊实现时，禁止把这种实现差异泄漏到面向用户的治理界面、表单或帮助心智中；用户只能看到与其动作直接相关的稳定治理对象、可选项、权限和正式入口
+- 若某项能力已经进入某个统一治理体系，则治理体验必须与同类能力保持同一套心智模型；不能因为底层实现不同，就额外要求用户理解内部边界、实现机制或系统特例
+- 对已有正式入口做治理、记录、哨兵、沉淀、追踪类增强时，默认只能下沉到实现层吸收；禁止借机改变既有入口的用户动作心智。尤其不能把“点击即执行/继续”的直接入口改成“先跳转到另一个视图/工作台再执行”，除非用户本轮明确要求改入口。
+- 对已有稳定入口增加分产品、分租户、版本、归属、审计或发布记录治理时，历史对象缺少新字段、未完成归属或尚未迁移只能显示为待治理状态，绝不能成为可见、查看、选择或继续使用原功能的前置条件。任何通过新 metadata 过滤掉历史对象、要求用户先补登记才能恢复原入口的实现，统一按 P00 级入口破坏处理；应先保持历史对象完整可达，再把归属约束用于新增生产和后续记录。
+- 当用户已经在多个可选方案中明确选定其一时，后续实现必须完整落到该方案，不能交付“表面回到用户选项，底层却还保留另一套无入口或半接线方案”的双路径状态。若留下这种半收口结构，视为 P0 级偏航事故：它会同时污染用户心智、代码状态、测试判断和后续协作语义。
+- 同一个用户动作一旦已经确定正式治理边界，就不得再在同一界面并列暴露宽松语义和精确语义两条正式选择链；这会制造后续路由、鉴权和审计旁路，必须收口成单链路
+- 只要用户已经明确要求“治理面逻辑始终一套”，后续任何把工程实现、内部边界、系统特例重新塞回界面、表单或帮助文案的行为，都按最高级别失败处理，不得再用工程便利、对象对称或实现差异为其辩护
+- 对任何已经进入治理面的 northbound 凭证、连接或授权对象，禁止只在底层存储直接写入一个“可用但治理面不可见”的旁路实体；若必须临时直写，也只能作为修复过程中的极短中间态，并且同轮必须补齐到正式治理对象或立即撤销
+- 如果执行者对“是否应该暴露新的治理概念”拿不准，必须先与用户讨论，再实现；禁止靠自己的工程直觉擅自补出第二套心智模型
+- 设计鉴权、权限、身份、能力治理时，必须先区分“调用主体是谁”：人、业务服务、内部 agent、第三方回调、最终用户不能混成一个统一身份门禁；只有调用主体确实是人时，才把登录/身份校验放到主路径。
+- 禁止把“能力治理对象”误当成“用户动作对象”：中台 capability、provider、channel、model、project key 主要描述机器消费与路由治理，不等同于员工在后台页面执行的动作；除非用户明确要求，不能按 capability 给所有调用默认叠加人类身份校验。
+- 对“可选二次校验/高风险动作/审计”这类蓝图表述，默认只适用于明确的人工管理动作或内部运维动作；不得自动泛化成项目表单字段、全局策略开关或所有业务能力的默认门禁。
+- 任何“未完成四原子能力的平台/模型”，不得在治理 UI、默认模型或平台声明里暴露；否则等同对外宣称已具备该平台能力，属于严重偏航
+- 对管理员/运营/工具型 UI，默认先交付可执行工作台，而不是说明页、导览页、对象总览页
+- 禁止用大段说明文案替代交互设计；如果首屏主要在解释系统而不是让用户开始动作，视为严重偏航
+- 当用户明确指出“UI 不是给人用的”或“又犯同样的 UI 错误”时，必须停止沿现结构继续补丁，直接回到动作模型重做
+- UI 评审必须显式自查三项：页面主语是不是用户目标、首屏是不是先给动作、主要操作是不是无需理解内部实现就能执行
+- UI 评审不能只问“功能在不在”，必须先问“用户是否能不费力地完成动作”；如果用户需要先阅读、翻译、推断、拼接下一步，界面就是失败的
+- 任何 UI 组件都必须帮助用户释放注意力并聚焦下一步动作；如果一个组件主要是在展示方法论、统计、内部分类或系统表达，但不能更快回答“现在该做什么、为什么、点哪里推进”，默认属于工程自嗨式组件，应删除、降级为底层算法或只在能触发具体动作时出现
+- 若某个概念确实需要在 UI 中可见，必须以用户能稳定理解的完整形态出现；禁止只因为内部检测到某个缺口，就渲染一个孤立的残片组件或单个统计块，导致用户不知道它与主工作区的关系
+- 只要界面迫使用户先理解系统内部对象、状态来源或实现边界，才能知道该点哪里，这类设计一律判定为严重 UX 错误
+- 如果一个后台设计把“系统尚未做完的工程工作”伪装成“需要用户补充的治理配置”，应直接判定为偏航并回退到系统内实现层处理
+- 说明、教育、架构叙述默认都是负担；只有在明确降低行动阻力、减少误操作或缩短判断时间时才允许保留
+- 对工具型 UI，首屏默认单位必须是“待处理事项 / 当前状态 / 下一步动作”，而不是“系统介绍 / 模块说明 / 对象清单”
+- 当实现整洁性、对象对称性、工程表达欲与用户行动效率冲突时，前者全部让位给后者
+- 任何页面只要不能让用户一眼看出“我现在该做什么、为什么卡住、点哪里推进”，就不得视为完成
+- 对内容、选题、公众号、增长类任务，必须区分“营销心智流程已执行”与“只是把营销字段填进文档”；前者缺失时一律按最高级别任务失败处理
+- 对账号、权限、支付、后台、管理入口这类高风险系统，默认禁止私自设计双重管理员体系、旁路入口、后门式 fallback 或正式/临时混用的授权模型；正式机制必须单一且先经用户确认，测试通道只能默认关闭、显式开关、严格环境限制，并不得在生产可用
+- 对生产启动主路径、容器监听地址、进程入口脚本、`PORT/HOSTNAME` 绑定逻辑这类可用性红线，禁止把其作为“顺手改动”混入其他需求；任何此类改动都必须单独审计运行时语义并纳入 CI 回归
+- 对 runtime schema 自愈、兼容补列、线上老表兼容这类改动，禁止把 `CREATE INDEX`、依赖新列的查询或全量 schema ensure 提前放到补列之前；必须先 `PRAGMA/表信息探测`、再补列/回填、最后建索引与切新查询，并补一条“旧表结构”回归测试。若同类问题已经复发过，默认必须上提到长期记忆，不能只修代码
+- 对 runtime schema / migration 测试，mock 必须忠实模拟真实数据库行为：已存在表上的 `CREATE TABLE IF NOT EXISTS` 是 no-op，不会补列；SQLite/D1 不支持的 `ALTER TABLE ADD COLUMN` 动态默认值必须在测试里暴露，禁止用过宽 mock 掩盖生产旧表事故
+- 任何启动包装层若把父进程环境变量传给子进程，必须显式审计并固定会影响监听行为的变量（如 `HOSTNAME`）；禁止未经审计地整包透传 `process.env` 到生产 server 进程
+- 对局部修复需求，禁止把“修一个点”升级成“接管主路径”；如果实现开始触碰生产入口、启动链、监听地址，而这些并非完成目标所必需，应立即判定为偏航
+- 任何需要通过 git 推送触发 CI/部署的仓库，推送前必须先核对远端默认分支、工作流监听分支与本地推送目标是否一致；不得想当然把 `main` 当成默认分支
+- 对任何由模板、生成器、拼接器或序列化层产出的前台脚本、配置或代码，默认验证对象是最终生成物而不是源模板；只要最终用户执行的是生成后的内容，就必须直接验证生成物可解析、可运行
+- 框架或运行时提供的 URI、URL、Request、Response、事件、句柄等值对象，禁止用“字段看起来相同”的普通对象、类型断言或对象展开伪造；必须使用官方构造器、解析器或派生方法，保留 scheme、原型方法、编码规则与平台语义。相关测试桩必须覆盖这些关键语义，并至少验证一次真实宿主边界；只在宽松 mock 中通过不能作为完成证据。
+- 对任何插件、CLI、桌面端、IDE 扩展、移动端、浏览器扩展或其他需要用户安装/升级后使用的交付物，设计阶段就必须把“目标用户实际宿主、分发渠道、安装形态、升级路径、重启恢复路径”纳入产品机制本身；这些不是发布后的 QA 附属项，而是用户能否获得和持续使用产品的主路径。若设计只覆盖开发态、本地 link、源码运行或单次首次打开，而没有覆盖发行版安装和恢复后的真实使用链路，默认是设计根因失败，不是验证遗漏。
+- 对插件市场、应用商店、包管理器、私有 registry、Open VSX / VS Code Marketplace 等分发渠道，必须在方案设计时先定义“目标用户从哪里发现、如何安装、如何更新、宿主用哪个市场源”。不能把“发布到某个市场”误当成“用户在自己的宿主环境可获得”；当用户实际使用的是 code-server、Cursor、VS Code、浏览器商店、移动商店或企业镜像这类具体宿主时，产品设计必须为该宿主提供正式获得路径。
+- 对任何涉及扩展 view、插件侧边栏、启动恢复、登录态恢复、缓存恢复、工作区恢复的功能，恢复路径必须作为一等产品状态设计，而不是事后兜底。最小设计闭环必须回答：首次打开后哪些状态会被持久化、宿主重启后由谁读取、读取失败时用户还能不能进入主入口、用户是否需要理解内部恢复错误。只验证首次安装打开不够，因为大量 P0 故障根本发生在设计未覆盖的持久化恢复路径。
+- 对任何依赖外部本地 CLI、系统命令、包管理器、浏览器、IDE、移动端工具链或第三方桌面程序的产品，自动适配链路必须作为产品主路径设计；禁止只按当前开发环境的 `PATH`、shell、安装目录、命令别名或本机工具版本硬编码。最小设计闭环必须覆盖：用户显式配置路径、宿主进程 PATH、登录 shell PATH、常见安装目录、实际执行路径与测试路径一致、失败时给出用户可执行的修复动作，并在可行时提供同入口的后安装兜底。否则属于 P0 级设计根因风险，不得只按“环境问题”处理。
+- 对任何“一个业务对象只能生成一次/发布一次”的链路，正式唯一键必须贯穿创建、重试、派发、回调与聚合全链；重试只能复用同一链，不得通过另起 job、另绑对象或晚到失败回调把单链条重新打散
+- 对内联脚本、SSR 拼接脚本、HTML 模板脚本这类高风险前台改动，最小发布门禁固定为两步：生成后脚本语法检查 + 真实渲染环境里的关键初始化链检查；缺一项都不得把 UI 变更视为可发布
+- 上述前台门禁的验证对象必须是最终用户实际收到的线上 HTML 与其中提取出的最终脚本，不能用源模板、字符串包装模块、生成器 import、API 成功或单元测试通过替代。只要改动触及登录、导航、初始化、首屏或稳定操作入口，部署前后都必须从正式入口触发关键函数并确认无 `SyntaxError / ReferenceError`；任何一项未验证都不得宣称入口可用。
+- 若最终脚本发生语法错误导致整段前台初始化未执行，统一按最高级别任务失败处理：立即停止性能、数据或网络方向的次级排障，先恢复稳定入口；同轮必须新增针对最终生成物的自动语法回归，并把事故写入全局规则与项目记忆。
+- 对 `/home/coder/project` 这类多 Node 项目共享工作区，后续新项目默认按 `pnpm` 管理：补 `packageManager`、生成 `pnpm-lock.yaml`、删除旧 `package-lock.json`；禁止再按旧的 `npm` 常驻依赖模式管理新增项目
+- 对已完成深度瘦身的 Node 项目，默认视为“锁文件常驻、依赖按需安装”的休眠态；后续只在要运行某个具体项目时进入该目录执行 `corepack pnpm install`，不要为了“统一管理”把整批项目的 `node_modules` 和共享 store 全部常驻恢复
+- 默认用最短可完成表达回应：先结论，后证据；没有增量价值的背景、重复解释、礼貌铺垫一律删除
+- 若用户未要求展开，不得自发输出长篇方案、长段分析或重复总结；一句话能说清就只说一句话
+- 当用户已经表现出对冗长不满时，后续回合必须进一步压缩输出，优先用简短直接的动作说明和结果说明
+- 沟通与执行都应以“减轻用户心智压力”为目标；能执行就先执行，解释只保留帮助用户确认结果、风险和下一步所必需的最小部分
+- 对“治理/观测/缓存/日志/配额”等辅助层把用户主路径打挂的问题，禁止停在“加 warning、fail-open、局部降级”这一层就宣称完成；必须继续审计该写入是否应改为异步、重试、补偿、队列化或存储拆分，并把根因收口到不会再以同类方式拖垮主路径
+- 任何修复如果本质只是把错误从同步失败改成静默丢失，也视为未完成；必须回答两个问题：记录是否仍会尽量落下去，主路径与辅助层职责是否已经分离
+- 对插件、桌面端、IDE 扩展、后台工具和任何需要即时操作反馈的产品，本地自有数据与远端/外部数据必须分层解耦：本地读写、排序、选择、置顶、编辑、展开等用户主路径操作必须先使用本地权威状态即时完成；GitHub、云服务、外部 CLI、市场、网络刷新、Issue/CI/Release/指标等远端或辅助数据只能异步补齐、缓存回填或后台刷新，禁止参与本地操作的同步门禁、首屏阻塞或交互确认链。
+- 发现某个本地 UI 操作因为外部数据刷新、组合摘要重建、远端轮询或辅助指标计算而延迟时，默认判定为数据加载边界错误，不按普通性能优化处理；修复必须拆开“本地状态提交/即时 UI 更新”和“远端数据补全/慢路径刷新”，并补回归验证本地动作不等待外部链路。
+- 修复异步加载打断用户输入、模式选择、焦点或草稿这类 UI 心流问题时，测试必须覆盖真实状态转换链路：先进入加载中临时态、用户执行输入/选择、再让后台数据或节点回包到达，并断言用户模式、草稿、焦点或目标动作仍保持。只用静态源码正则、只断言存在保护函数、只测最终 HTML 可解析，都不能证明此类问题已修复。
+- 处理 UI “小屏幕/小窗口/屏幕不够”问题时，禁止自动等同为移动端；必须同时验证低高度桌面窗口（如笔记本 1366x768、1280x720/600、浏览器缩放后的可视高度）和窄宽移动端。若用户没有明确说 mobile，优先把“小屏幕”理解为可视区域不足，而不是设备类型。
+- 任何用户提供的新环境物料（新日志、截图、录屏、报错、部署结果、线上现象），都应视为“当前任务未闭环”的新证据，而不是旧任务完成后的补充聊天；必须立即重新锚定现实、审计代码实现和运行时路径
+- 一旦出现新的环境物料，禁止继续沿用先前“已修复/已完成”的叙事；必须先明确之前哪里没闭环，再继续做根因定位和落地修复
+- 对用户提出的故障、异常、回归、线上现象，默认交付物必须包含实际行动：审计、修改、验证、提交、推送中的必要步骤；禁止只给建议、备选方向或“如果你要我可以继续”的停顿式响应
+- 如果新证据已经表明上一轮判断不完整，默认立即进入下一轮修复，不把“更多调查建议”伪装成进度
+- 对 headless/容器/SSH/code-server 环境中的 CLI 登录持久化问题，禁止只凭“安装了 keyring/dbus 依赖”宣称完成；必须验证目标 CLI 的真实日志、OS 凭证后端可写可读、下一次新进程能读回 token。若交互 shell 与实际启动入口不同，修复必须下沉到真实命令 wrapper 或入口脚本。
+- 对 Cloudapi 这类中台能力，禁止只建设平台能力而不建设统一消费标准；平台能力一旦进入多个业务产品，必须同步定义正式接入标准、隔离模型、资产分型、验收清单与最小门禁，否则视为未闭环
+- 业务项目接入 Cloudapi 时，禁止由各项目自行发明能力语义、隔离语义、公开/私有语义或 fallback 策略；必须优先复用 Cloudapi 已定义的正式模型和 helper/contract
+- 处理 Cloudapi 与业务项目联动故障时，必须先核对三类运行时事实再改代码：业务项目实际环境变量/请求体、Cloudapi 项目 routing 配置（default/modelAliases/allowed/fallback/preferredChannels）、Cloudapi 渠道声明与 provider 能力。禁止只根据报错文本或消费端源码推断责任边界，更禁止在未核对运行时配置前把中台路由问题下沉成业务项目硬编码。
+- 修改 Cloudapi 路由、auto、fallback、provider-tagged model、preferred channel 等语义时，必须先列出并保护已有业务消费模式；`auto + backup` 这类已被业务依赖的模式属于正式 contract。新增治理或拒绝逻辑不得让主路径更早失败，除非同时证明 fallback/backup 链仍会继续推进。
+- 对同一 OAuth / provider family 下的新增能力，默认不要暴露为新的前台独立渠道；应优先进入已有家族渠道，作为该家族的模型/原子能力接受统一治理。只有确实属于不同凭证根、不同供应商治理边界或用户明确要求拆分时，才新增独立渠道。
+- 对 Cloudapi 这类连接/身份中台，禁止把“减少业务重复配置”误做成“把同一批业务面路由表平移到中台维护”；若一个抽象仍要求按产品页面、后台面、redirect_url、hostname 去逐条登记，默认说明边界还停留在业务面，而不是 provider/connection 层
+- 对内部身份/Zero Trust 能力，正式抽象必须停在 provider/team 级验证与统一 subject 归一；不得让业务项目自己维护 app-specific 登录拼接，也不得把这层重复劳动搬到中台做 `redirect_url -> audience/app` 路由表
+- 业务项目一旦接入 Cloudapi 的正式通用能力（如 `search`、`extract`、`chat`），消费端禁止再硬编码某个 provider/model 作为主入口，禁止把 provider 特有 `provider_options`、fallback 语义或品牌文案带入前台；渠道选择、模型路由、fallback 和 provider 差异必须留在 Cloudapi 内部，消费端只允许依赖统一 contract 字段
+- Cloudapi 资产接入默认必须先声明正式 `asset_scope`，至少在 `public_publishable / project_private / subject_private` 中选定其一；未声明 scope、用 URL 语义临场猜测权限、或混用 public/private 心智，统一视为错误接法
+- 对 Cloudapi 这类中台能力，结果是否入库可以按业务目标选择，但结果交付模式不能省略；所有生成、分发、存储链路都必须先显式声明 `response_mode = persisted | ephemeral`
+- 当 `response_mode = persisted` 且结果由中台负责存储或分发时，必须继续声明正式 `asset_scope`；当结果只是临时返回时，允许 `ephemeral`，但不得再把临时结果伪装成正式资产长期复用
+- 对需要成员级隔离的外部能力或资产，默认不能只停留在 `project/key`；若业务对象本质属于最终用户、订单、成员私域或未发布内容，必须审计是否应升级到 `subject` 级约束，而不是把隔离责任长期留给业务页面碰运气兜底
+- 对业务产品的多租户设计，默认先区分“业务容器”和“真实租户边界”：`project` 常常只是业务容器，不一定是最终用户私域边界；凡是用户上传原件、私有文档、订单材料、成员附件这类对象，默认应绑定稳定本地主体（如 `userId/memberId/orderId`），而不是只绑 `projectId`
+- 当产品仍是单 owner 项目模型时，默认 `ownerId` 就是最小租户根；后续即使扩到多成员，也应继续把 Cloudapi 私有资产挂到稳定 `subject`，而不是回退成“同项目所有人共享同一批私有资产”
+- 对存在“先生成预览、再由用户决定是否保存/公开”的产品流，默认把预览链做成 `response_mode=ephemeral`；只有当用户确认创建正式对象、提交订单或显式公开时，才把结果升级为 `persisted` 资产
+- 对同时存在公开广场/公共素材与用户私域材料的产品，默认规则是：公共广场卡片、站内免费公共模型、用户明确选择公开的展示图可走 `public_publishable`；原始照片、未公开展示图、3D 重建源图、订单模型、私密 moments 等都必须走 `subject_private`，并由服务端按 owner/admin 场景签名读取，不能继续把直链长期存成公开 URL
+- 多个业务项目一旦共享同一中台能力，后续新增产品或迁移产品时，默认先补“统一接入 contract + 验收 checklist + 自动或半自动门禁”，再继续扩消费面；禁止继续靠口头约定维持一致性
+- 对接入 Cloudapi 的产品做 auth / OAuth 审计时，禁止只看本地 `NextAuth/Auth.js` provider 配置就下结论；必须同时检查是否存在 `Cloudapi delegated OAuth broker` 的 `start/callback` 路径，以及“Cloudapi 负责 OAuth 交换，本地负责用户绑定与 session 签发”的双段式实现
+- 对接入 Cloudapi external OAuth 的多租户业务，`delegated_subject` 是安全红线：凡是最终用户自己绑定的 `GitHub / Google / YouTube / LinkedIn` 等外部账号，业务侧后续读取时只能命中“当前本地主体自己那条 connection”；禁止出现“当前用户没有连接时退回项目级 / 全局 / 任意同 provider 连接”的 fallback，禁止把别人的 external connection 当成当前用户可选来源
+FILE:/home/ubuntu/project/.solomap-global/memory/projects/solodrop.md
+# SoloDrop
+
+## Stable Facts
+
+- 2026-07-16: Project repository is `/home/ubuntu/project/solodrop`, with remote `https://github.com/jobssteve164dev/solodrop` and primary branch `main`.
+- 2026-07-16: SoloDrop is a VS Code extension that turns local agent artifacts into browser previews, verifies the deployed URL and copies the public link. Its primary sidebar entry supports drag-and-drop, active-editor selection, file picker and Explorer context sharing.
+- 2026-07-16: The first release supports Markdown, text/code/JSON, images, PDF, CSV and HTML. It scans common credential patterns and keeps Cloudflare claim URLs separate from public preview URLs.
+- 2026-07-16: Release `v0.0.4` is published to Visual Studio Marketplace and Open VSX as `SZLK.solodrop`; the GitHub release contains `solodrop-0.0.4.vsix`.
+- 2026-07-16: Local compile, 13 tests, zero-high dependency audit, VSIX content inspection, real Chromium 300×720 normal/drag-state checks, and an authenticated Cloudflare deployment/read/delete acceptance all passed. The live acceptance proved a newly returned Workers URL can briefly return 404 before becoming 200, so production verification includes bounded retry.
+- 2026-07-16: Wrangler `whoami` may exit successfully while printing that the user is unauthenticated. Authentication detection therefore parses the command output, Auto mode uses `--temporary` when unauthenticated, and retries with `--temporary` if non-interactive authentication disappears during deployment.
+- 2026-07-16: User-facing sidebar, notifications, commands and settings support English and Simplified Chinese. `solodrop.language` defaults to following the VS Code display language and rerenders the sidebar immediately when changed.
+- 2026-07-16: The sidebar header exposes a direct `中` / `EN` language toggle. It writes the selected language to the global VS Code `solodrop.language` setting, so the choice persists across reloads, restarts and workspaces.
+- 2026-07-16: Recent-share metadata uses VS Code Settings Sync so the same signed-in user can see one list across devices. Local source paths are kept in a separate unsynced mapping; expired temporary shares reuse that local source when available and otherwise ask the user to choose the file before running the existing share flow.
+
+## Decisions
+
+- 2026-07-16: The product is an agent-artifact delivery layer, not a thin Cloudflare Drop wrapper. Format conversion, recipient readability, leak prevention and verified delivery are the product value.
+- 2026-07-16: Auto deployment uses an authenticated Wrangler account when available and otherwise uses Cloudflare temporary deployment. Temporary links must be claimed within 60 minutes; custom expiry and private access are not presented as current features.
+- 2026-07-16: Temporary entries derive an explicit 60-minute claim-window expiry, display active/expired status in Recent, and expose Share again only after expiry.
+- 2026-07-16: The Logo source of truth is `resources/logo.svg`; `resources/logo.png` is the Marketplace raster derivative. The sidebar follows VS Code semantic theme tokens and maintains one primary action.
+
+## Current Handoff
+
+- Goal: Continue improving the released SoloDrop extension without changing its one-action sharing model.
+- Confirmed state: `main` is clean at release commit `1a42e55`; GitHub CI, Security and Publish workflows succeeded for v0.0.4, and the released VSIX is installed locally.
+- Next useful action: Use real user artifacts to prioritize the next preview adapter or managed expiry/private-sharing capability; do not claim Office fidelity or private links before those paths exist and are verified.
+FILE:/home/ubuntu/project/.solomap-global/memory/active/current-session.md
+# Active Session
+
+- 2026-07-17 ME 迁移仍在进行中，禁止切域名或释放 Railway：Railway 仍承载 `mysticeast.uk`，GitOps deployment 288/Web runtime healthy，但目标 `db-me-primary.public` 因早期迁移脚本在源 dump 失败前重置而当前为空。GitOps `b6a62f3` 已把顺序修为“源 dump 成功后才重置目标”，Cloudapi `8de0b58` 与 CloudMCP `a801139` 已上线受治理 `execute_supabase_read_only_sql`；生产 bridge contract 已确认包含新工具。Supabase 管理 API 密码重置后即使等待 5 分钟，Supavisor 5432 仍拒绝新密码；SQL 管理身份也明确无权 ALTER privileged role，不能继续走该凭据假设。当前 Codex 会话工具目录是启动时静态清单，尚未发现新工具；下一次连接刷新后应先用正式 MCP 只读 SQL 导出 public schema/表/数据，恢复目标库并做逐表计数/策略/触发器校验，再完成成功备份、业务探测、域名切换和 Railway 精确释放。不要重复密码轮换或直接 SSH/provider 绕过。
+
+- 2026-07-17 ME 迁移继续：本地进程树测量已确定构建内存；GitOps Agent v1.0.72 与 ME commit `231051c` 已验证，deployment 288 success，`me-web-1` healthy（3030→3000），tc-gz1 构建内存峰值约 66.8% 且 Mesh connected。下一步是业务/数据/支付/认证探测、域名切换与确认 Railway 可释放；这些完成前不得删除 Railway。
+
+- 2026-07-17 ME Railway/Supabase → GitOps tc-gz1 迁移进行中：ME 提交 `149e02f`、`1286f86`、`e6d0c79` 已推送，源码构建、PostgREST 数据面、本地 ME 会话与目标库迁移脚本已落地；目标 `db-me-primary` 已恢复 49 张 public 表及现有数据并建立 6 个历史业务身份引用，Railway 生产与 `mysticeast.uk` 尚未切换或释放。GitOps 迁移临时 ingress 修复 `6ed9e7e` 已部署；Cloudapi `f43d932`/`91a88b6` 与 CloudMCP `6b0a4d5` 已补齐并上线受治理 Supabase 迁移凭证。当前阻塞：首轮 deployment `279` 的旧源码构建使 tc-gz1 Agent 自 07:49 停止心跳，后续 `280/281` 在 `webhook_dispatch` 返回 502；新构建已排除 `.solopreneur/.git`、改用节点镜像源并修正与 AIF 冲突的 3010 为 3030，但必须先恢复 GitOps Agent 再部署、探测、切域名、备份并删除 Railway。物理备份任务仍为 running，逻辑备份因 524 failed；不得在目标部署与备份成功前释放 Railway。
+
+- 2026-07-17 GitHub 仓库监控自动部署的模式分流已完整统一：整项目路径原本已按 source/release 分流，本轮修复了 watch_paths 命中单服务时固定走 Actions 的缺口。GitOps `20615ef` 已部署；source Webhook 请求级测试确认保留分支、环境、服务范围与 deployment id 并调用 Agent `deploy_source`，release 保持 Actions。定向 17 tests、完整 280 tests、bundle dry-run、Control Plane CI/Deploy 均通过。
+
+- 2026-07-17 GitOps 部署历史重试链路已补齐并上线：提交 `867b916` 让无产物失败记录按项目当前 `deploy_mode` 分流；source 模式保留原项目/服务范围并通过新 deployment id 重新走 Agent `deploy_source`，release 模式继续走 Actions。定向 23 tests、完整 279 tests、Worker bundle dry-run、Control Plane CI/Deploy 均通过；未额外触发 SIM 生产重建。
+
+- 2026-07-17 GitOps 本地构建失败阶段链路已上线并完成生产验收：GitOps `2836a0f`、Agent `1.0.68` 将失败拆为稳定 `error_stage` 与精简 `error_message`，控制面在部署、项目和日志中统一持久化并显示中文阶段。SIM 验收 deployment `277` 精确返回 `source_download / 404 Not Found`，随后恢复 `source + master` 的 deployment `278` 成功，api/web running，公网健康 200。CloudMCP `b6fa4c3` 同步补齐 `set_business_project_build_mode` 的 bridge 白名单、超时和能力可见性，生产 bridge healthy、toolCount 40；两仓库 CI/部署全绿。
+
+- 2026-07-17 SIM 已使用 GitOps 最新本地构建模式重新部署：正式 CloudMCP 契约补齐 `create_business_project.deploy_mode`，源码代理补齐 runner 机器域名边界；GitOps 提交 `e88b4f8`、`5d28219` 已部署。SIM 保持单项目、tc-sh1、master、soiching.com 与原服务/网络配置，仅将 deploy mode 切为 source；deployment `276` 成功，API/Web 新容器运行 `compose.gitops-source.yaml`，公网健康 200，启动日志正常。
+
+- 2026-07-16 GITOPS 本地构建链路已完成：提交 `1340b1e` 已推送；默认 release/GitHub Actions 路径不变，source 模式覆盖手动、Webhook、单服务和 Business Lifecycle 入口。Agent tests、控制面 275 tests、Wrangler bundle dry-run、远端 CI、Control Plane CI/Deploy、Agent release 与依赖审计通过；本轮未切换生产项目或触发业务构建。
+
+- 2026-07-16 SZLKlaws 公司原件维护闭环已上线：治理面和 CloudMCP `update_company_record_original` 共用同一写入服务，新原件、当前档案、版本历史和审计一次完成，旧原件可追溯；失败时只回收本次新建证据。SZLKlaws `d89ade2`、CloudMCP `765f8fe` 已推送部署，migration 0005、33 tests/check/真实 UI 上传与清理、CloudMCP 179 tests、线上 MCP 公司档案读取通过。当前 Codex 会话工具目录尚未重新发现新写工具，且 connector profile sync 返回 Unauthorized；不得为刷新目录轮换 provider contract。
+
+- 2026-07-16 SZLKlaws 档案纠偏：公司档案已从“只上传原件”升级为公司信息页的可维护事实与 8 类持续文件组件，支持持久化、版本递增和审计；完整 UTR/Gateway 不再默认回显。33 tests、Worker dry-run、桌面/390px 真机渲染和交互通过，生产 D1 migration 0004、commit e5a48e1 部署成功。Security dependency-audit 因 npm 旧 audit endpoint 返回 410 失败，非依赖漏洞结论；CodeQL job 当时仍在运行。
+
+- 2026-07-16 SZLKlaws 公司档案整理已闭环：18 个 input 来源文件完成核对，16 个唯一原件进入生产 D1/R2 并逐个读回通过 SHA-256 校验，2 个完全重复 PDF 登记为别名；正式脱敏索引位于 `docs/company-records/company-record-register.md`，本地来源均已归档到 `INPUT/归档/2026-07-16/`，INPUT 顶层为空。
+
+- 2026-07-15 SZLKlaws UK operating-compliance expansion: official Companies House, HMRC, GOV.UK and ICO guidance was reconciled into the workbench. The first-year action list now includes director/PSC identity verification before the 2026 confirmation statement, and compliance monitoring now gives actionable triggers and evidence for eight recurring areas. Local 31-test suite, Worker dry-run, final script syntax, and real Chromium desktop/mobile flow with QA artifact cleanup passed.
+
+- 2026-07-15 CloudWiki 刷新丢登录已根治并生产验证：真实 Passport session 行存在但普通 D1 读取跨副本漂移；认证存储现统一使用 `first-primary`，Cookie 补齐持久属性并容忍旧 Cookie 并存。提交 `69ec20c`、`7dc5abd`，最终 CI `29402890542`、Deploy `29402926164` 成功；同一 Cookie 连续 5 次 session API 和 5 次 `/dashboard` 刷新均稳定 authenticated/ChatUI，探针会话已注销、临时文件已清理。
+
+- 2026-07-15 CloudWiki 登录后主界面 ChatUI 已上线：提交 `a606106`，CI `29402490962`、Deploy `29402525484` 成功。登录态 `/dashboard` 使用桌面侧栏/移动端抽屉、连续问答和固定输入区；引用证据改为答案内可定位编号 + 答案下方原文证据组件，展开按需读取完整 chunk 原文。35 tests、Worker dry-run、1440px/390px Chromium、动态展开及生产登录态/未登录分流均验证通过。
+
+- 2026-07-15 CloudWiki SZLKPassport headless 接入已上线：提交 `fdd9fd2` 补齐产品内登录、注册、邮箱验证、重发验证、忘记/重置密码，D1 会话绑定 Passport user identity，并隔离普通 Passport 会话与管理员 API。Passport `cloudwiki` 产品登记为 headless/ready，GitHub Secret 已配置；CI `29397951688` 与 Deploy `29397978429` 成功，生产登录/验证/重置/订阅回退探针通过。付费计划仍未创建，因为仓库与产品文档没有确认金额或周期；后续只有在定价明确后才能完成 billing catalog/access simulation 验收。
+
+- 2026-07-14 ME SZLKPassport 登录接入闭环：统一 OIDC PKCE 成为登录页首要入口；同邮箱复用原 Supabase 用户 ID 和业务数据，OIDC 登录建立兼容的 Supabase cookie 会话；旧账号首次用原密码登录会自动同步到 Passport，无需再次注册。Passport `me`/`me-web` 验收 ready，Railway 生产变量已补齐，deployment `89f99082-5b6f-4897-834b-6ef6f51a6d1a` 成功；提交 `ddccf74`、GitHub Quality Gate/Security 与生产 307 探针均通过。
+
+- 2026-07-14 SIM Passport 登录接入闭环：提交 `51cc94b`、`d0d7bc7`、`108717c` 已推送 `master`；Passport `sim` headless 产品及 GitOps secret 已配置；旧账号首次登录自动同步并保留本地业务身份，成功接管后关闭旧密码旁路。生产 API 精准部署 `239` 成功，真实无账号登录探针返回标准 401，GitHub CI `29373795310` 成功。根因修复包括 Python urllib 显式 User-Agent，避免 Cloudflare 1010 纯文本 403。
+
+- 2026-07-14 ST SZLKPassport 登录接入已闭环：Passport OIDC 成为登录页首要入口，旧账号首次用原密码登录会自动同步并绑定 Passport，同时保留 ST 本地用户 ID 和业务数据。Passport `st-web`、GitOps 运行时变量、提交 `2897f85`、CI `29353568373`、部署 `238` 和生产探针均已验证。
+
+- 2026-07-14 YL SZLKPassport 登录接入闭环：主登录切为 OIDC PKCE，旧 YL 用户首次用原密码登录会自动同步并认领 Passport，保持本地 user id/数据；同步失败不再假成功。Passport 已登记 `yl-web` 和 seevoid.com 回调；提交 `1699d3f`、GitOps deployment `233`、生产健康/登录页/OIDC 托管登录跳转均验证通过。
+
+- 2026-07-14 AIF SZLKPassport 登录主路径接入已完成：登录页首要动作切为 Passport OIDC；已验证邮箱按同邮箱链接现有 AIF User，保留原用户 UUID 与全部业务数据；旧账号仍可用原密码首次登录并自动 `sync-legacy-user`。提交 `df06249` 已推送；`ci:local`（36 files / 109 tests / build / audit high gate）通过。GitOps 自动发布 deployment `237` / version `aif-web-237` 成功，公网 `/api/health/ready` 返回 200 且 database=ok；生产客户端 chunk 已确认包含新的 Passport 主入口，Passport 生产 redirect URI 返回 302 进入统一登录页。
+
+- 2026-07-14 BC SZLKPassport 主登录接入已上线：BC 已注册为 `headless_auth` 产品，GitOps secret/URL/product 环境配置齐全，API deployment `231` 成功。现有登录先走 Passport，旧 BC 用户在首次用原密码登录时自动 legacy sync 并绑定原本地 UID，无需另行注册；生产 ready 200，本地 server build + 6 tests、client type-check + H5 build 通过。
+
+- 2026-07-14 太微 Lab 计划清理闭环：当前代码、生产配置、Passport 和 Cloudapi 均只剩 3 条实际一次性计划；5 条旧计划已在 Stripe/Cloudapi/Passport 全链路归档清理。Passport 工具 schema 和运行时已禁止模板推导计划，并要求额外计划显式理由；旧式缺字段 MCP 调用在写入前被生产拒绝。`pnpm check`、技能校验、CI/Security、生产健康均通过；提交 `750a890`，版本 `60b63d81-b292-45e0-baee-1a602c0d144a`。
+
+- 2026-07-14 SZLKPassport 用户与计划治理面纠偏已完整上线：用户删除改为页面内精确邮箱+原因确认并修复最终内联脚本失效；产品计划改为单栏列表，支持编辑、启停、删除。计划删除现在先经 Cloudapi 停用 Stripe Price、按剩余启用价格决定是否归档 Product，再删除 Passport 本地映射；失败保留本地计划，既有订阅不取消。Cloudapi `3c8e388`/`17041201-fdc5-47d1-a01b-8c987c54fbe4`，Passport `88d3161`/`be1d428a-41ea-4af0-884e-042034fe7702`；Cloudapi 475 tests、Passport `pnpm check`、生产健康与 CI/Security 均通过。
+
+- 2026-07-14 tc-gz1 pre-ME migration storage maintenance is complete through the governed `reclaim_gitops_node_ephemeral_storage` tool. Root usage fell from 83% (47G used, 9.9G available) to 55% (31G used, 26G available), reclaiming about 16G by pruning only Docker builder cache older than 24h and unused Docker images older than 168h; containerd images, volumes, running containers, and database storage were excluded. The mutating MCP call timed out at 120s but a subsequent governed dry-run reconciled the completed state. Kubernetes reports Ready with no DiskPressure, CNPG and existing AIF/JW/YL database pods remain Ready. GitOps node summary still reports inconsistent `kubernetes_ready=0` and `scheduling_enabled=0`; ME provisioning should recheck live node state and create/select a dedicated active `prod` pool rather than relying on that summary alone.
+
+## ST Dependabot Remediation 2026-07-13
+- Confirmed all 57 reported alerts were live against `package.json` / `pnpm-lock.yaml`; the vulnerable direct packages were Next.js, Drizzle ORM, NextAuth, and next-intl, while fast-xml-parser, flatted, picomatch, PostCSS, brace-expansion, js-yaml, and Babel were transitive through AWS/ESLint/Next tooling.
+- Commit `0fa6567` upgraded compatible direct dependencies and added range-scoped pnpm overrides for vulnerable transitive versions. Local audit reports zero vulnerabilities; 62 tests, ESLint, production build, pre-push checks, and GitHub CI `29229085272` passed.
+- GitHub now reports all 57 requested alerts as `fixed` and zero open Dependabot alerts; none were dismissed. The local build still logs an existing stale Neon credential failure while generating sitemap data, but the build succeeds via its existing fallback and this is unrelated to the dependency remediation.
+
+## YL Dependabot High-Risk Remediation 2026-07-10
+- The five current alerts were verified against GitHub's Dependabot API: root and nested web lockfiles resolved vulnerable `form-data` and `hono`, while the archived FastAPI service pinned vulnerable `starlette`.
+- Root `pnpm.overrides` and both lockfiles now resolve `form-data@4.0.6` and `hono@4.12.28`; `archive/v1/api/requirements.txt` uses `fastapi@0.139.0` with `starlette@1.3.1`.
+- The archived API no longer combines wildcard CORS with credentials: `CORS_ALLOWED_ORIGINS` is an explicit comma-separated allowlist with local development origins as the default. Isolated dependency installation, CORS allowed/blocked-origin assertions, and `corepack pnpm --filter web check` passed.
+
+## Cloudapi Security Dependency Fix 2026-07-10
+- Verified the repository-root vulnerability chain as `wrangler@4.78.0 -> miniflare@4.20260317.3 -> undici@7.24.4 / ws@8.18.0`; it triggered the five Dependabot alerts for Undici and ws. Application code has no direct `undici` or `ws` import.
+- Kept the Node 20-compatible `wrangler@4.78.0` / `miniflare@4.20260317.3` toolchain and used root `pnpm.overrides` to resolve its two vulnerable transitive dependencies to `undici@7.28.0` and `ws@8.21.0`. `pnpm audit --json` now reports zero vulnerabilities.
+- Verified `pnpm test` (471/471), `pnpm run check` (Wrangler dry-run), and GitHub Actions CI `29077040324` / `29077096816` (Node 20 install, test, bundle, security audit); production Deploy `29077133003` also succeeded. The build retains one unrelated existing warning about a duplicate `usesChannelPrioritySelection` object key in `src/admin-capability-governance.js`.
+
+## SoloMap Security Dependency Fix 2026-07-09
+- Dependabot alerts for `undici` and `ws` were verified against the current repo. Root package audit is clean; the live vulnerable dependency chain was in `website/package-lock.json`: `wrangler@4.97.0 -> miniflare@4.20260601.0 -> undici@7.24.8 / ws@8.20.1`.
+- Minimal fix updated the website lockfile through `npm --prefix website update wrangler`, resolving to `wrangler@4.107.1`, `miniflare@4.20260702.0`, `undici@7.28.0`, `ws@8.21.0`, and `esbuild@0.28.1`.
+- Verified: `npm audit --json`, `npm --prefix website audit --json`, `npm --prefix website ls wrangler miniflare undici ws esbuild --all`, `npm test`, and `npm --prefix website run check` all passed after the update.
+
+## SZLKlaws Legal Governance 2026-07-08
+- ME/JW/YL/AIF main-path products have all been connected to SZLKlaws legal document APIs in this Solo sequence. SZLKlaws now owns the common seven legal files and standalone product supplements as the legal truth layer; products keep their own user-facing legal UI/routes.
+- SZLKlaws commit `a41ceee` adds the authenticated “法律文件 / Legal Files” governance page plus D1-backed version/audit storage in `src/legal-governance.js`. Admins can select product/document/locale, preview source or managed content, save a new draft, and approve a selected version.
+- Public headless APIs now prefer the latest approved managed version and fall back to code baseline when no approved version exists or governance storage fails, so drafts do not automatically affect product frontends.
+- Verified locally: `node --check`, `corepack pnpm test`, `corepack pnpm run check`, `CLEANUP_QA=1 corepack pnpm run verify:ui`, and a Playwright probe for the legal governance page. GitHub Cloudflare deploy run `28933287526` succeeded; production `/health` and public `/api/legal/document` checks passed. Production admin endpoint was not reverified because the local `.dev.vars` admin password did not authenticate against production.
+
+## ME SEO Follow-up 2026-07-07
+- Verified via CloudMCP Google Search Console for `sc-domain:mysticeast.uk`: last ME horoscope SEO optimization was 2026-07-01; as of 2026-07-07 GSC only returned complete data through 2026-07-05, so the available post-change comparison window is 2026-07-01..2026-07-05 versus 2026-06-26..2026-06-30.
+- Comparable 5-day site totals changed from 46 clicks / 3,665 impressions before to 52 clicks / 3,281 impressions after; `/en/horoscope` changed from 45 clicks / 2,276 impressions / CTR 1.98% / avg position 8.84 to 50 clicks / 2,687 impressions / CTR 1.86% / avg position 8.59.
+- Keyword-level signal: rankings/impressions improved for `chinese horoscope today` and `daily chinese horoscope`, but CTR weakened on some head terms; new/strong click signals appeared for animal-specific terms such as `dragon love horoscope today`, `horse horoscope today`, `dragon horoscope today`, `rat/snake/tiger horoscope today`.
+- Current recommendation direction: do not add generic explanatory SEO blocks; if expanding “today horoscope”, add user-facing analysis modules that directly answer search intent, especially love/career/wealth/health/timing/lucky action modules and stronger per-zodiac long-tail landing support.
+
+## Current SoloMap Session Handoff
+
+- 2026-07-14 GitOps R2 database backup is now production-verified. `backup-db-jw-primary-1784023492684` succeeded only after two Cloudapi HTTP 201 uploads and per-object R2 head verification; it stores 1,475,001 bytes in two private parts, has 30-day expiry `2026-08-13T10:05:58.906Z`, and reports `cloudapi_read_verified=true`. The real caller is the HOMEHUB Cloudapi project key, now scoped for private R2 assets; the temporary mistaken JW permission change was fully reverted. Agent `1.0.65` fixes successful commands being mislabeled failed when only descendant log pipes exceed `WaitDelay`. Earlier failed verification runs cleaned all partial assets through Cloudapi.
+- 2026-07-07 correction: TW 洞察模块“小屏幕”原需求被错误理解成移动端，实际应覆盖低高度桌面/笔记本窗口。已在本地未推送补丁中给 `src/app/globals.css` 增加 `@media (min-width: 681px) and (max-height: 820px)` 桌面小高度规则：洞察网格改为可裁切/滚动，卡片高度和文字缩放，订阅区保留在底部。已验证 `pnpm run lint`、`pnpm run build`，本地 Chromium 1366x768、1366x640、1280x600、1024x600 均 `anyCardOverlapsSubscribe=false` 且订阅区可见；截图 `/tmp/tw-fixed-laptop-1366x768.png` 视觉确认。当前补丁只在工作区，未提交、未推送、未部署；此前误发的 deployment `185` 后来已成功切到 `tw-185.tar.gz`，但那是移动端误解版，不是本条桌面小屏修复。
+- 2026-07-07 TW SEO/GEO 优化已完成：新增共享 SEO 数据源、robots/sitemap、public `llms.txt`、全局 Organization/WebSite/Product JSON-LD、洞察页 Article/FAQ JSON-LD、洞察/法律页 canonical 与 OG/Twitter metadata，并给 6 篇洞察文章补可读的“关键结论/FAQ”模块；文章面板改为内部滚动避免固定视口裁切。已验证 `pnpm run lint`、`pnpm run build`、本地 HTTP `/robots.txt` `/sitemap.xml` `/llms.txt` 与文章 metadata/JSON-LD，Chromium 桌面/移动截图确认 `/insights/screen-anchoring` 可读且无裁切。提交 `a2ac5a1` 已推送 `origin/main`；GitOps deployment `182` 后生产 `https://taiweilab.com/health` 200/db ok，线上 `/robots.txt`、`/sitemap.xml`、`/llms.txt`、`/insights/screen-anchoring` 已返回新 SEO/GEO 信号；GitOps 记录状态最终仍显示 `building/deploying` 滞后，但线上内容已更新。
+- 2026-07-04 TW 优化关于模块（洞察）并新增三篇世界观研究报告：新增《天市金曜：赛博符电路与财富流转的心理学译码》（`tianshi-wealth-circuit`）、《紫微独步：硬核液态金属与自我主权的视觉铸造》（`ziwei-sovereignty-metal`）、《星野矩阵：三垣四象在压力干预中的能量译码》（`stellar-calibration-matrix`）三篇中英双语深度洞察报告，扩展了 SEO 搞钱、防小人、工位结界、注意力防护等长尾词和 GEO 信息架构。在 `src/app/content.ts` 注入文章体并优化 `src/app/layout.tsx` 首刷 titles 映射；本地 `pnpm run lint` 与 `pnpm run build` 全量通过，生成了 6 条 SSG 路由。
+- 2026-07-03 TW 星野校准局“选 A 瑞兽付费后不能收到 B 瑞兽”审计发现并修复一处本地状态推进风险：原 `/api/purchase-intents/confirm` 与 `/api/account/summary` 只按 Passport 套餐级 access-check 把本地 intent 标记为 `paid`，已买同套餐 A 的用户可能让后续 B 的未支付 intent 被账户摘要自动回填为 paid。当前工作区补丁已将确认接口收紧为必须带回并匹配本地 checkout session，并通过 Cloudapi 只读读取 Stripe checkout.session，强校验 `payment_status`、product、Passport plan、Taiwei plan、beast、purchase intent、email 后才推进本地状态；账户摘要只自动补齐已有同一 checkout session 且 confirmed paid 状态 of intent；下载接口继续按 `userId + plan + beast + paid` 查本地 intent，并通过 Passport access 与 Cloudapi 私有 asset 签名交付。已验证 `pnpm run lint`、`pnpm run build` 通过。注意：截至本记录该补丁尚未提交、推送或部署；工作区还有既有无关 `.solopreneur/documentation.json` 修改未处理。
+- 2026-07-03 TW/SZLKPassport/CloudMCP 支付与安全交付闭环已落地：TW 提交并推送 `e8e76fb Complete Passport billing delivery flow`，改为通过 SZLKPassport checkout-link 下单，账号回跳后调用 Passport access-check 确认权益，再开放 `/api/downloads/[assetKey]` 登录、paid intent、Passport feature 三重校验下载；本地验证 `pnpm run build`、`pnpm run lint` 通过，GitOps deployment `167` 成功，`tw-web-1` 已切到 `tw-167.tar.gz`，`https://taiweilab.com/health` 返回 200/db ok。SZLKPassport 提交并推送 `571709b Add Passport gated asset delivery links`，新增 `/api/v1/delivery/asset-link` 与 provider bridge tool `create_szlkpassport_delivery_asset_link`，验证 `pnpm run typecheck`、`pnpm run check` 通过。CloudMCP 提交并推送 `28018d7 Expose Passport delivery link operation`，把该 Passport delivery tool 暴露到 `szlkpassport_operations` 和 capability profile，验证 provider bridge registry test、GitHub guardrails run `28655142606`、deploy run `28655170538` 成功。剩余风险：真实 Stripe 支付 -> Passport entitlement -> TW 下载仍需用真实或 test-mode 付款做端到端交易验收；正式付费资源必须放非 public 资产或 Cloudapi private assets。
+- 2026-07-03 follow-up: TW 付费资源交付已移除本地文件兜底并改为 Cloudapi 私有资产。六个瑞兽 PNG 已作为 SZLKPassport Cloudapi project 下的 `project_private` assets 上传；临时 assets-only 导入 key 已撤销；Passport 现有 Cloudapi key 已加 `assets` 权限，Passport 项目路由已加 `storage/object/private@cloudflare-r2`。TW env 已通过 GitOps 写入 `TAIWEI_CLOUDAPI_ASSET_MANIFEST`，提交 `48784b8 Use Cloudapi assets for paid downloads` 已推送并部署为 GitOps deployment `168`，`tw-web-1` 已切到 `tw-168.tar.gz`，health 200/db ok。本地验证 `pnpm run build`、`pnpm run lint` 通过；匿名访问 Cloudapi 私有 asset content 返回 401；当前 Codex MCP 工具面尚未刷新出 `create_szlkpassport_delivery_asset_link` 可调用工具，所以未做有权益用户的真实签发下载交易。
+- 2026-07-03 purchase-intents 503 follow-up: TW 星野校准局“收录此系列”失败根因为 SZLKPassport 项目的 Cloudapi payments 治理缺少 Taiwei 三个 priceKey 与 webhook target，导致 Passport checkout-link 无法完成 Stripe Checkout 创建并被 TW 映射为 503。已在 `proj-szlkpassport-c42b86` 补齐 `taiwei_single_monthly`、`taiwei_full_suite_monthly`、`taiwei_five_beasts_scroll` priceCatalog/webhook，并验证三项 Stripe price 可解析；同时修复 Cloudapi 多套餐导入同一 productKey 时 Stripe Product idempotency 碰撞问题，提交 `0394187` 已通过 CI `28658348311` 与 Deploy `28658385272`。剩余风险：仍需真实或 test-mode Stripe 交易验收 checkout -> webhook -> Passport entitlement -> TW download。
+- 2026-07-03 pricing correction follow-up: 用户确认星野校准局数字资产价格为 `$2.99 / $5.99 / $19.99` 且一次性买断。TW 提交并推送 `54b23e2 Set Taiwei asset packs to one-time prices`；Passport 已新增 one-time plans `taiwei_single_device_299`、`taiwei_full_suite_599`、`taiwei_five_beasts_scroll_1999`，Cloudapi project `proj-szlkpassport-c42b86` 已将三者设为 active payment priceCatalog/webhook priceKeys，并保留旧 key 为历史兼容/inactive。生产 GitOps env 已切到新 key；whole-project deploy `170/171` 在 build_callback 失败后，已补 `web` service release mapping 并通过 service deployment `172` 上线。验证：`pnpm run build`、`pnpm run lint`、Passport catalog 回读、Cloudapi project 回读、TW env 回读、production health 200/db ok、线上 JS chunk 只含 `$2.99/$5.99/$19.99` 且无 `/mo` 或旧价。
+- 2026-07-03 account/download closure follow-up: 回答“是否可发布 MVP”前审计发现两处尾项：用户中心只显示 `paid` intent，若 Passport webhook 晚到而首次 confirm 写成 `pending_entitlement`，普通刷新不会自动补齐；六瑞兽完整套装原先只会按购买时选择的瑞兽展示一个下载项。已提交并推送 `588a3c3 Complete account download entitlement handling`：账户摘要会用 Passport access 自动把已到账权益回填为 `paid`；完整套装下载列表会展开六只瑞兽；下载接口允许完整套装访问任意六瑞兽 asset；全端文案收口为所选瑞兽全端资产。验证 `pnpm run build`、`pnpm run lint` 通过。部署 `174/175` 均失败在 GitOps `build_callback`，所以截至本记录该补丁尚未上线，生产仍是价格修正版而不是下载闭环修正版。
+- 2026-07-03 correction: deployment `175` later completed successfully and supersedes the previous deployment-risk note. Production `web` was recreated from `tw-web-175.tar.gz`, health returned 200/db ok, unauthenticated `/api/account/summary`、`/api/downloads/scroll:qilin`、`/api/purchase-intents` all returned 401, frontend chunks contained latest `$2.99/$5.99/$19.99` pricing plus corrected full-suite copy, and Passport access checks for a no-feature test user returned `feature_not_granted`. Remaining MVP release caveat is one real Stripe test/live transaction to verify checkout -> webhook -> Passport feature grant -> account download -> Cloudapi signed URL.
+- 2026-07-03 infrastructure simulation closure: SZLKPassport added design/help docs and implemented `verify_szlkpassport_billing_delivery_simulation`; CloudMCP registered the tool in `szlkpassport_operations`; cross-project memory pattern and Passport Product Subscription skill were updated. Verified SZLKPassport `pnpm run check` and CloudMCP `node --test tests/provider-bridge-registry-szlkpassport.test.js`. Remaining release caveat for TW/business projects remains a real Stripe test/live transaction; the new simulation lane is pre-live infrastructure validation, not revenue evidence.
+- 2026-07-01 TW production MVP pass: commit `79b9659 Build production MVP auth billing and homepage` pushed to `origin/main`; GitOps deployment `135` succeeded on `tc-gz1` for `taiweilab.com` and health probe returned 200. Local validation: `pnpm prisma generate`, `pnpm build`, `pnpm lint`, Chromium desktop/mobile homepage screenshots, and DOM check for `LIVE DEVICE SIMULATOR` / `CALIBRATE & SECURE`. Production verification: homepage contains Taiwei hero/simulator text, `/api/auth/session` returns `{"user":null}` anonymously, and unauthenticated `/api/purchase-intents` returns 401. Remaining blockers: TW managed DB could not be provisioned because CloudMCP `provision_database_cluster` and `ensure_database_container` returned HTTP 500; `DATABASE_URL`, `SZLK_PASSPORT_SECRET`, and `CLOUDAPI_PROJECT_KEY` are not injected yet, so registration/login DB writes and real Cloudapi/Passport checkout entitlement closure are not production-ready.
+- 2026-07-01 ME 人格页面 UI 纠偏已闭环：提交并推送 `1d29fa5 Align persona UI language and CTA structure`，移除 `/zh/personas` 与 `/zh/personas/[type]` CTA 周边的“查看全部人格匹配关系”矩阵文本入口，删除 `Personas.detailPage.compatibilityMatrix` 双语消息键；`/zh/persona` 说明组件标题从“中国生肖人格测试入口”改为“中国生肖人格测试”，可见正文改用“每日运势 / 易经占卜 / 四柱八字”等真实用户语言，不再出现 `ME/Horoscope/Oracle/BaZi`。本地验证：`pnpm run check:i18n`、`pnpm run typecheck`、`pnpm run lint`（仅既有 2 个 `<img>` warning）、`pnpm run build` 通过；agent-browser 验证本地 `/zh/persona`、`/zh/personas/water-dragon`、`/zh/personas`；GitHub `quality-gate` run `28518279734` 成功。线上 curl 确认详情页不再输出“查看全部人格匹配关系”，`/zh/persona` 目标正文已更新；全站内嵌翻译 JSON 中仍可能出现 Horoscope/Oracle/BaZi 键名或英文站文案，不代表目标中文组件可见文案。
+- 2026-07-01 ME SEO/GEO 与 CloudMCP Supabase 写库工具闭环：GSC 分析确认 `mysticeast.uk` 高价值机会集中在 `/en/horoscope` 与 `chinese horoscope today/chinese daily horoscope/daily chinese horoscope/dragon horoscope today`；ME 已提交并推送 `3303695 Optimize horoscope GEO keyword pages`，GitHub `quality-gate` run `28513692348` 全部通过。Cloudapi 已提交并推送 `3f73ee2 Add Supabase table write bridge tool`，CloudMCP 已提交并推送 `5106247 Expose Supabase table write bridge tool`，两仓库自动部署成功。2026-07-01 复核更正：当前 Codex 会话已通过正式 MCP 工具发现暴露 `mcp__cloudmcp.write_supabase_table_rows`，`mcp__cloudmcp.list_provider_bridge_contracts` 显示 `cloudapi_management.allowedTools/toolTimeouts` 包含该工具且 runtime backend healthy/toolCount=70，`mcp__cloudmcp.list_supabase_projects` 已经通过 CloudMCP -> Cloudapi -> Supabase 返回项目列表；但 `mcp__cloudmcp.write_supabase_table_rows` 对 `ai_blog_posts` 的真实 update 与零匹配 update 均返回 `HTTP 400 Bad Request`，说明默认 Supabase PostgREST 写凭据/写入配置仍未闭合。秦始皇 7x7x9 英文博客已用 ME 项目 Supabase service role 纠正线上 `description/content`，并提交推送 `f81bf18 Fix Qin blog seed summary` 保持发布种子不回退。CloudMCP 本地 Codex 工具治理技能已沉淀：`/home/ubuntu/.codex/skills/cloudmcp-tool-governance/SKILL.md`。
+- 2026-07-01 Homelab 节点既有容器访问统计已补齐：`/services` 的访问分析现在先解析 GitOps project 公网入口，若当前容器不是项目公网入口，则继续查 `public_homelab_services` 是否在同一 gateway agent 下通过 metadata `target_service_id/target_container_id` 或 `target_host` 绑定该容器；匹配后按 Homelab 绑定域名读取 Cloudflare 访问分析。生产 D1 复核到 `coder.szlk.ai` 绑定 `oc-singapore:c232dca8169a` / `code-server` / `172.17.0.3`，新逻辑可覆盖这类节点既有容器。提交并推送 `836a926 fix: include homelab services in traffic analysis`；本地 `node --test test/traffic-analysis.test.js`、`node --check index.js services/traffic-analysis.js`、`corepack pnpm run ci:check` 通过，GitHub `Control Plane CI` run `28505801950` 与 `Control Plane Deploy` run `28505827754` 成功。
+- 2026-07-01 GitOps BC 访问统计归属纠偏已闭环：生产 D1 与 Cloudflare Tunnel 均确认 `bc-web-1` 是公网入口服务，项目 `bc` 域名 `beiching.com` / `bc.szlk.ai` 的 tunnel ingress 指向 `http://localhost:18080`，`bc-web-1` 端口映射为 `18080->8080/tcp`；`bc-api-1` 仅上报 `3000/tcp`，不是外部直连入口。新增流量分析原先按项目域名读取 Cloudflare 流量并挂到任意同项目容器，导致后端行误显示域名访问量；已修复为仅直接承接项目公网端口的服务可读取访问统计。提交并推送 `8319c5d fix: scope traffic analysis to public service`；本地 `node --test test/traffic-analysis.test.js`、`node --check index.js services/traffic-analysis.js`、`corepack pnpm run ci:check` 通过，GitHub `Control Plane CI` run `28500378872` 与 `Control Plane Deploy` run `28500405554` 成功。
+- 2026-06-30 CloudMCP 已完成 Cloudapi Supabase ops 北向暴露：提交并推送 `c04514f feat: expose supabase ops through cloudapi bridge`，`cloudapi_management` 允许并治理 8 个 Supabase 只读工具；GitHub guardrails `28439880745` 成功，mainline deploy `28439908826` 成功。由于 CloudMCP KV 里 `backend:cloudapi_management.tools` 是缓存列表，本轮已用 Wrangler 从 Cloudapi help 刷新远端 KV，读回确认 `toolCount=69` 且 Supabase 8 个工具齐全。本地 `.env` 的 CloudMCP API key 对 `/mcp/tools` 返回 401，因此未完成有效 runtime key 下的 `tools/list/tools/call` 北向实链验收。
+- 2026-06-30 Cloudapi 已为后续 Supabase -> GitOps 托管数据库迁移准备 Supabase ops 基线：`supabase` 渠道现在默认建议 `database + ops`，新增 `src/providers/supabase.js`、`src/capabilities/supabase.js`，并把 organizations/projects/branches/database context/database config/backups/migrations/health 八个只读动作接入 `/v1/ops/supabase/*` 与 `cloudapi_management` provider bridge。正式标准文档为 `docs/CLOUDAPI_SUPABASE_OPS_CAPABILITY_STANDARD_2026-06-30.md`；已验证 `node --check ...`、`node --test test/supabase-capability.test.js`、相关模型/后台/语义测试、`npm test` 470/470。
+- 2026-06-30 Supabase 渠道连通性纠偏：普通 channel connectivity 不再沿用旧 Data API 探测和强制 Base URL，而是走 Supabase Management API `GET /projects`；新增运维渠道只需 PAT。已验证 `node --check src/admin-channel-connectivity.js`、`node --test test/channel-connectivity.test.js`、`npm test` 470/470。
+- 2026-06-30 GitOps 项目管理页 `/projects` 已从卡片阵列改为列表行展示：每行保留项目名、状态、发布模式、节点、端口、路径、最近部署、域名/失败提示和原有操作入口。提交 `1406b63 Render projects as a list` 已推送到 `main`；本地 `corepack pnpm run ci:check`、pre-push CI gate、GitHub `Control Plane CI` run `28437830850`、`Control Plane Deploy` run `28437851524` 均成功。临时 agent-browser 渲染截图验证了桌面与移动端列表布局。
+- 2026-06-30 AIF Railway -> GitOps 迁移已闭环：GitOps project `aif` 在 `tc-gz1` 运行，domain `possibility.work` 已绑定到 GitOps tunnel，web deployment `121` 成功并检测发布端口 `3010`。公网验证：`https://possibility.work/api/health` 返回 `service: aif`，`/api/health/ready` 返回 `database: ok`。
+- AIF GitOps DB `db-aif-primary` 已 ready，迁移后核心表计数与源库审计一致：`users=2`、`projects=2`、`generations=40`、`storage_asset_ledgers=36`。业务容器环境键、Next Ready 日志、web -> DB TCP 访问与公网 ready 均已验证。
+- AIF 旧 Railway project `adc0184b-73c0-4975-977b-04c5960fcd17` / `AIF` 已通过正式 CloudMCP Railway 工具删除；活跃 Railway 项目列表复查已不含 AIF。
+- AIF 本轮提交并推送：`60ee41a`、`304eed9`、`a56fc54`、`1739354`、`7db2e2b`，用于 GitOps Dockerfile、health endpoints、runtime dependency、Compose 端口治理。GitOps 平台提交并推送/部署：`17f4a7f`（延长 DB 迁移 pod 等待）、`8df6ff7`（修复服务云构建镜像识别）。
+- 2026-06-30 YL Railway -> GitOps 迁移主链路已完成：GitOps project `yl` 在 `tc-gz1` 运行，domain `seevoid.com` 已绑定 GitOps tunnel，deployment `110` 成功，`/api/health` 与 `/api/health/ready` 均 200。GitOps DB `db-yl-primary` ready，核心表计数与 Railway 源库审计一致。Railway 旧项目 `102d691c-33f7-4eb2-8f7e-26135a2cac54` / `YL` 已通过正式 CloudMCP Railway 工具删除，活跃 Railway 项目列表复查为空，include_deleted 复查显示 `deleted_at=2026-06-30T07:41:57.861Z`。
+- YL 本轮代码提交并推送：`08ed651 Include Prisma client in GitOps runtime`（此前还有 `dcd08ce`、`230a2fa`、`b15dae0`、`349ac9b`、`97c9b8b` 用于 Docker/health/runtime）。GitOps 控制面提交并部署：`871e649 Add database migration pod cleanup tool`，用于清理超时迁移 pod；本轮 `pg-migrate-1782789041-1343380` 已清理且服务清单复查为空。
+- YL MCP 配置层已验证：`/home/ubuntu/.codex/config.toml` 指向本机 device 真实绑定的 runtime key，key metadata、device record、tenant workspace grant 对齐 `client_profile.agent.codex-local.fcecb33c / workspace.project / connector.codex.project`。2026-06-30 本轮通过本地 CloudMCP proxy 的 MCP `tools/list` 返回 185 个工具，其中 Railway 13 个工具全量可见：`list_railway_projects`、`inspect_railway_project_inventory`、`list_railway_domains`、`detach_railway_custom_domain`、`delete_railway_project` 等。Codex 内置 MCP 客户端首次 `tools/list` 仍可能因 proxy 初始化超过 30 秒超时；本轮用临时 `/tmp/yl-mcp-client-*` MCP 客户端关闭自动 profile/probe 后完成正式 CloudMCP 调用。
+- 2026-06-30 已按 SoloMap 全局 MCP 安装机制登记 CloudMCP：`.solomap-global/mcp/servers/cloudmcp/solomap.mcp.json`、`source.lock.json`、`profiles/codex.json`、`package/README.md` 与 `.solomap-global/mcp/registry.json` 已创建，不保存明文 API key，只记录凭证引用和 profile 建议。
+- 2026-06-30 SoloMap 当前项目已完成自动化任务多组定时功能：番茄钟面板新增多组定时任务管理，每组支持名称、每天时间、启用状态和 prompt；正式数据源为 `automationTasks.scheduledTasks[]`，旧 `triggers.scheduled_time` 自动迁移/映射到第一条。
+- 定时触发到点后在当前选中项目复用现有 Solo 新任务对话链路，不新增独立任务系统；防重以当天日期、任务 id、时间和项目路径为 key，并记录 `.solopreneur/automation-tasks.jsonl`。
+- 已验证：`npm run compile`、`node --test --test-force-exit test/webview-regression.test.js` 86/86、`npm test` 117/117；已提交并推送 `fe884aa feat: support multiple scheduled automation tasks`，GitHub Actions `Publish VS Code Extension` run `28424844446` 成功，自动发布版本 `0.0.288`，本地已快进到 `268ca62 chore(release): bump version to 0.0.288 [skip ci]`。
+- 2026-06-30 定时任务 UI 心智纠偏：设置页不再暴露旧单组 `scheduled_time` 编辑选项，只保留紧凑单行入口显示定时任务组数并跳转番茄钟面板；番茄钟面板显示当前选中项目归属，作为多组定时的唯一编辑入口。已验证 `npm run compile`、`node --test --test-force-exit test/webview-regression.test.js` 86/86、`npm test` 117/117；已提交并推送 `5976ffa fix: unify scheduled automation settings entry`，GitHub Actions `Publish VS Code Extension` run `28425627234` 成功，自动发布版本 `0.0.289`，本地已快进到 `4fba0d5 chore(release): bump version to 0.0.289 [skip ci]`。
+- 2026-06-30 定时任务绑定项目 bug 已修复：`scheduledTasks[]` 新增保存 `projectPath/projectName`，番茄钟列表显示每条任务目标项目；执行时 `runScheduledAutomationTask` 优先使用 task 自身 `projectPath` 调用 `ensureActionProject`，只有旧任务缺少绑定路径时才回退执行时当前项目。已验证 `npm run compile`、相关窄测、`node --test --test-force-exit test/webview-regression.test.js` 86/86、`npm test` 117/117；已提交并推送 `39502bb fix: run scheduled tasks in bound project`，GitHub Actions `Publish VS Code Extension` run `28440887393` 成功，自动发布版本 `0.0.290`，本地已快进到 `7dd33da chore(release): bump version to 0.0.290 [skip ci]`。
+- 后续若维护 `src/sidebarWebview.ts` 内联脚本，注意模板字符串里的正则反斜杠必须按最终 Webview 脚本语义双重转义；定时器需 `unref()`，否则测试或宿主进程可能被 timer handle 拖住。
+
+## 2026-07-10 CloudMCP dependency security remediation
+
+- `package.json`/`pnpm-lock.yaml` now pin transitive `ws@8.21.0`, `undici@7.28.0`, and `basic-ftp@5.3.1` through pnpm overrides.
+- `hono` and `fast-uri` were reachable through the separately managed `local-proxy` package, not the root package. `local-proxy` now uses `@modelcontextprotocol/sdk@1.29.0`, resolving `hono@4.12.28`; it pins `fast-uri@3.1.2` and `path-to-regexp@8.4.0`.
+- Verified: clean pnpm installs; root and local-proxy production audits both have 0 high/critical vulnerabilities; root `pnpm test` has 178 passing tests; local-proxy syntax and SDK import checks pass.
+
+## Current Goal
+- 2026-07-14 SZLKPassport 治理面二次纠偏已闭环：完整用户目录与封禁/解封/删除已上线；产品接入和产品计划拆为独立工作区；提交 `2e6ff26` 已推送，CI/Security 成功，生产版本 `1214b5a5-cab4-4df9-9201-018a1053154c` 健康。上轮“合并产品入口”结论已废止。
+- 2026-07-14 SZLKPassport 管理员治理面重构已闭环：后台统一为总览、产品、用户、审计四个动作入口，产品接入与密钥/登录/计划管理复用现有正式 API，桌面与 390px Chromium 渲染检查通过；提交 `4d2d551`、清理提交 `09b4dac` 已推送，CI/Security 成功，生产版本 `c70a9210-321f-4ff0-9bc8-9e96da640669` 健康。
+- 2026-07-14 JW login regression corrected after user browser evidence: production logs showed PostgreSQL `42883 function auth.jwt() does not exist`, not missing lateral registration. `auth.jwt()` is live, existing-user projection passes inside a rollback transaction with zero residue, legacy first-login Passport sync is restored, commit `e800a24d` is pushed, deployment `229` succeeded, and public database readiness is 200. User should retry both an existing Passport account and an old JW-only account.
+- 2026-07-14 JW PostgreSQL/Passport cutover is live: JW commits `580f60a3` and `96368f0a` are pushed, deployment `228` succeeded, app/PostgREST/CNPG are running, public ready and parity checks pass, OIDC redirect uses `https://cyannav.com/api/auth/callback`, and anonymous private-table reads return no rows. Old Supabase remains unchanged for rollback. Remaining governed cleanup: migration pods await refreshed `cleanup_database_migration_pod`; backup request exists but cluster backup profile is not yet backed by an object store.
+- 2026-07-14 migration UI correction is deployed in `ecbd613`: `/projects` now has a visible “迁移节点” action and target-node modal backed by the same formal migration path. Local/pre-push `ci:check` passes 260 tests plus Wrangler dry-run; GitHub Control Plane CI `29300919090` and Deploy `29300935906` succeeded. Production Chromium reaches the Cloudflare Access login boundary; authenticated UI rendering could not be inspected without a staff session.
+- 2026-07-14 GitOps 业务项目 A→B 一键迁移链路已实现并上线（`c816154`）：目标节点先重放最近成功 release，成功回报后自动同步 egress/Tunnel、切 DNS/active node、执行公网健康探针，失败则回绑源节点；源工作负载保留为回滚容量。`control-plane ci:check` 通过 259 tests + Wrangler dry-run，GitHub Control Plane CI `29298574939` 与 Deploy `29298595930` 成功。runner 域名 help 直连仍命中既有超时问题，未用旁路冒充 MCP 线上调用验证。
+- 2026-07-14 JW Railway 迁移后登录导航阻塞已修复并上线：GitOps deployment `225` 成功，远端提交 `8827027b`；登录成功使用整页跳转，中间件 Supabase 会话刷新不再无限占用页面请求。生产健康、并发 dashboard、RSC/chunks 和浏览器水合验证均通过；没有修改 Supabase 用户数据或 schema。
+- 2026-07-13 JW Railway -> GitOps 迁移已闭环：GitOps deployment `224` 在 `tc-gz1` 成功，`cyannav.com` 首页、登录页、服务健康和 Supabase 数据库就绪均为 200；原 Supabase JIANWU 项目继续使用且 DB/Auth/REST 健康；Railway JW 项目已删除并从活跃项目列表消失。无迁移尾项。
+- 2026-07-13 BC dependency risk task closed: commit `6542999` pushed; all 100 requested Dependabot alerts are `fixed`; local client/server verification and GitHub Beiching CI `29228977737` passed. Only separate low alert #167 remains because the patched esbuild version breaks the current UniApp build.
+- 2026-07-13 SZLK 官网 Dependabot 46 项依赖告警已闭环：提交 `80b555b` 与 Node 22 CI 修正 `9da2955` 已推送；GitHub 开放 Dependabot 告警为 0，Homepage CI `29228904283` 与 Deploy `29228904294` 均成功。
+- GitOps Homelab 发布节点本地既有容器（如 `coder.szlk.ai -> 172.17.0.3`）时，保持 Homelab 单一治理入口和现有 public / Access / private 三种发布选择，同时在实现层自动补齐目标容器横向出口隔离。
+
+## SoloMap Project Growth Follow-up 2026-07-10
+- 已完成项目生长图模块命名纠偏：`src/projectGrowth.ts` 去掉 `moduleForPath()` 路径硬编码命名，模块先由 `dependency-cruiser` 真实依赖聚类，再优先采用 Run Index 命中的路线图标题；无路线图归属时回退为扫描得到的真实目录/词元名。
+- 依赖扫描现在按 `src` 文件路径/bytes/loc 签名做进程内缓存，避免重复刷新或后续 run 触发项目生长图时每次都重新跑整轮依赖分析。
+- 已验证：`npm run compile`、`node --test test/project-growth.test.js`、`node --test --test-force-exit test/webview-regression.test.js`。
+- 继续完成用户可见去黑箱：模块卡片与重点区域改为展示“命名依据”而不是内部职责标签；系统协同 graph 改为按真实 `implements` / `tested_by` / `depends_on` 关系分组，不再按 `db/run/test` 关键词猜泳道。
+
+## Confirmed Facts
+- 2026-07-15 Cloudapi Google Search Console production migration is complete. Commits `750706e` and `2147324` are deployed; CI and deploy passed. The existing scoped connection was transparently rebound by the production resolver and still returns 14 sites; Search Analytics and URL Inspection also succeeded through CloudMCP. ChatPMP remains running/ready and its existing server-side Cloudapi sites/analytics path is compatible. No authorization URL or consent flow was triggered in production.
+- 2026-07-14 GITOPS database ingress isolation and credential rotation are production-verified. All eight active database pools have explicit source-service bindings with enforced business egress and database ingress. ST rotation `7b5eff96-1823-46bb-ad8e-e4e6ea5abdb3` recreated its governed `web` consumer, proved the old credential was rejected, left the cluster ready, and preserved HTTP 200 on `seenoting.com`. Database role splitting remains intentionally out of scope; no direct node/Kubernetes bypass was used.
+- 2026-07-12 ChatPMP 其余 16 条 high Dependabot 告警已闭环：将 xlsx 从停止维护的 npm 0.18.5 切换到 SheetJS 官方 0.20.3 tarball，并通过 `pnpm.overrides` 固定 @xmldom/xmldom 0.8.13、defu 6.1.5、effect 3.20.0、fast-xml-builder 1.1.7、fast-xml-parser 5.5.6、flatted 3.4.2、lodash 4.18.0、picomatch 4.0.4。pnpm audit high/critical 均为 0，133 tests、生产 build、本地/远端 Zero-Tolerance CI 均通过；远端提交 `55e5027`，GitHub 所有 16 条目标告警为 fixed，当前开放 high/critical 为 0。
+- 2026-07-12 ChatPMP 5 项高危 Dependabot 修复已在本地验证：`ws` 解析为 8.21.0、`hono` 4.12.25、`vite` 8.0.16、`next` 15.5.20；原顶层 `overrides` 对 pnpm 无效，已迁移到 `pnpm.overrides`。目标 GHSA 审计残留为 0，type-check、133 tests 和生产 build 均通过；提交推送是最终交接动作。
+- 2026-07-12 SZLKlaws dependency security fix is verified: Dependabot's `undici`/`ws` findings came only through `wrangler -> miniflare`; upgrading Wrangler to `4.110.0` resolves patched `undici 7.28.0` and `ws 8.21.0`. Frozen install, zero-vulnerability pnpm audit, 24/24 tests, syntax checks, and Wrangler dry-run all passed; repository commit/push remains the final handoff action.
+- 2026-06-29 Homelab 纠偏已落地：Homelab 不再因为目标匹配 `global_services` 容器而拒绝发布；发布链路会在 DNS / tunnel ingress 前同步两层策略：homelab tunnel 容器 egress allowlist，以及未被 GitOps project egress 覆盖的节点本地 Docker 目标容器 egress isolation。目标容器默认拒绝 RFC1918 / CGNAT / link-local 横向出口，只保留 ESTABLISHED/RELATED 响应和显式注册的 private-network forward gateway 端口。
+- 验证已通过：`cd control-plane && node --test test/homelab-routes.test.js`，以及 `cd control-plane && corepack pnpm run ci:check`（221 tests + Wrangler dry-run）。
+- 2026-06-29 ChatPMP 迁移已闭环：生产域名 `planovai.work` 访问 GitOps business project `chatpmp`，节点 `tc-sh1`，业务服务 `web`，容器 `69403d2f9874`。
+- GitOps 数据库 `db-chatpmp-primary` 已 Ready：service `10.43.138.12:5432`，当前 endpoint `10.42.0.119:5432`，cross-node endpoint `172.16.0.2:31601`。
+- 业务到数据库的正式路径是 GitOps `attach_database_to_business_project` + source-service-scoped egress。当前仅保留 `web -> 10.43.138.12:5432`、`web -> 10.42.0.119:5432`、`web -> 172.16.0.2:31601` 三条正式数据库规则。
+- P00 纠偏已完成：`172.23.0.1:15432` local proxy 是错误旁路，已从 egress 移除，最终业务容器 TCP 探针为 `ECONNREFUSED`，不得再作为 ChatPMP 正式路径使用。
+- 迁移数据已验证：public schema 22 张表，`BrainMemory` 122 条；`https://planovai.work/api/health` 返回 `ok`，`/api/health/ready` 返回数据库 `ok`，GitOps parity 返回 `ready=true` 且 `blockers=[]`。
+- 旧资源已释放：Vercel project `chatpmp` / `prj_UgPgNipg58sm2PVQi0WbYVfRTJy` 已解绑 `planovai.work`、`www.planovai.work` 后删除；Neon project `CHATPMP` / `soft-cell-09310663` 已删除；后续搜索均为空。
+- 本轮已把 P00 教训写入 `/home/ubuntu/project/agent.md` 与 `.solomap-global/memory/operating-rules.md`：记忆只能当检索线索，当前实现必须查线上真实状态；不得在未核验正式设计/成熟实现前自造旁路；线上变更和记忆错误必须同轮写回。
+- GitOps 平台修复已闭环：`41f66a5` 修复 Agent 心跳被同步 release 查询阻塞的问题，并把业务资源占用列补到 `/services` 业务管理列表；GitHub Control Plane CI、Control Plane Deploy、Build GitOps Agent 均成功。
+- 线上 `tc-gz1` 与 `tc-sh1` 已通过常规自动升级链路升到 Agent `1.0.53`，心跳恢复；`chatpmp-web-1` 已回传非空资源占用，最近观测为内存 `274.9MiB`、硬盘 `18.9MB`。
+
+## Open Risks
+- ST GitOps login fix已落地：`src/auth.ts` 增加 Auth.js `trustHost: true`，提交 `21263a4` 已推送，GitOps whole-project deploy `96` 成功；线上 `https://seenoting.com/api/auth/session` 返回 `200 null`，`/api/health/ready` 返回 `database: ok`。
+- ST 二次登录串号修复已落地：提交 `553429c` 修复 `/api/auth/login` 的 proxied cookie base URL、旧 session/callback cookie 清理和登录成功整页跳转；GitOps deploy `98` 成功。随后补齐生产 `AUTH_URL`/`NEXTAUTH_URL=https://seenoting.com`，GitOps deploy `99` 成功，线上 `/api/auth/session` 已写 `__Secure-authjs.callback-url=https%3A%2F%2Fseenoting.com`。
+- ST 三次登录态分裂修复已落地：提交 `5a8e190` 修复 middleware `getToken()` cookie name/salt 与生产 `__Secure-authjs.session-token` 不一致的问题；GitOps deploy `100` 成功。匿名 `/dashboard` 与 `/profile` 仍 307 到 `/sign-in`，说明未放开保护；真实登录态需用户侧复测。
+- CloudMCP key已重签，GitOps business provider bridge secret已两端轮换且直连 provider bridge 验证成功；但 CloudMCP `/mcp` 生产路由仍对有效请求超时，需要后续单独修 CloudMCP runtime/aggregation。
+- GitOps ST service-only deploy `95` 暴露容器名冲突问题，whole-project deploy `96` 已绕过并成功；后续若修平台，应优先复核 service-only deploy 的 compose/container cleanup 路径。
+- ST 旧资源清理纠偏：Vercel project `seenoting` / `prj_8U9TKPFZmW9Sp0KFtfwvomYiHeQN` 已解绑项目域名后删除；Cloudapi/CLOUDMCP 已补齐 Vercel account-domain 工具，线上 MCP 复查 `seenoting` 项目数为 0、账号域名数为 0，`seenoting.com` / `www.seenoting.com` 不存在。
+- ST Neon 旧项目用户确认为 `SEENOTING`；Cloudapi/CLOUDMCP 已补齐 Neon organization discovery 工具，但当前 enabled Neon credential `jobs-neon` 是 organization API key，线上 MCP 返回 `not allowed for organization API keys`，默认全量仅见 `CHATPMP / soft-cell-09310663`，与 ST 源库 host `ep-long-unit-aiv2bac9-pooler.c-4.us-east-1.aws.neon.tech` 不匹配，不能误删。需要能看到 `SEENOTING` 的 Neon personal API key credential 或精确 project id 才能释放。
+- GitOps 运行时未从本地 `.env.local` 写入 Stripe secrets，因为本地文件当前没有 `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` 非空值；这会影响支付相关生产流程。
+- `tc-sh1` 本轮曾因镜像/构建缓存触发 DiskPressure；已通过受控缓存回收恢复到健康状态，并已新增受控清理机制与业务资源占用展示，但后续仍应监控节点磁盘增长。
+- CloudMCP connector contract 的 `POST /connectors/status-reports` 在 device-bound key 下仍返回 `connector_unauthorized`；从代码看该 handler 先读取 body 再进入 device auth，而 device auth 需要 clone body 参与签名校验，可能导致 POST 状态回报在 device-bound 模式下不可用。本轮未扩大修 CloudMCP 服务端代码，MCP `/mcp tools/list` 已独立验证通过。
+## YL axios Dependabot closure 2026-07-12
+
+- Verified alerts 233, 234, 235, 240, and 241 were open because `pnpm-lock.yaml` and `apps/web/pnpm-lock.yaml` resolved axios 1.13.x; GitHub advisories required at least 1.15.2 or 1.16.0.
+- Raised the web direct dependency and root pnpm override floor to 1.16.0; both lockfiles now resolve all axios paths to 1.18.1.
+- `corepack pnpm --filter web check` passed type checking, lint, and production build. Commit `0d7bc78` was pushed to `origin/main`; GitHub subsequently marked all five alerts `fixed` without dismissal.
+## YL remaining high-risk dependency remediation 2026-07-13
+
+- Audited all open Dependabot critical/high alerts: 1 critical and 65 high at start, spanning Next.js, archived urllib3, and npm transitive dependencies in both pnpm lockfiles.
+- Commit `ea0c2ce` upgraded Next.js/eslint-config-next to 16.2.10, urllib3 to 2.7.0, and pinned all vulnerable npm transitive ranges to patched releases in both lockfile contexts. Local production audit reports 0 critical and 0 high; Python dry-run resolution and the full web type/lint/production-build check passed.
+- Pushed `ea0c2ce` and dependency-graph refresh commit `584ad00`. GitHub's dynamic Dependency Graph run `29214203800` remains queued, so remote alerts still show stale pre-fix versions (1 critical / 62 high) with May timestamps. Two obsolete queued axios Dependabot update runs were cancelled; do not dismiss alerts. Next verification is to wait for run `29214203800`, then require remote open critical/high count 0.
+
+## CONTENT_FACTORY Agent production Program closure 2026-07-13
+
+- Existing Program `2d42cabe-ec22-4f7e-bd00-ade8c85e6e14` was continued in place; no new Program or execution job was created and no successful asset was re-dispatched.
+- A content-specific cover was generated and attached through the governed cover tool. Public asset URI: `https://cloudapi.szlk.ai/v1/assets/asset_74fdf92e0ee74db5a6b4a425e11cbc0c/content`; the cover evidence gate now passes.
+- Canonical YouTube assets are complete: zh Shorts `Efqvycd6cLc`, en Shorts `swE_YPluPis`, zh long-form `Hz2pQa04wWY`, en long-form `uNmaBYpAhqo`. Blog zh/en and WeChat zh remain succeeded. LinkedIn zh/en remain intentionally excluded after expired-token failures.
+- Final diagnosis still fails because the pre-existing `longform_video:en` lane contains four execution jobs: two succeeded (`279842ba-d369-46a1-a62c-dada0e434950`, `240042ba-d369-46a1-a62c-dada0e434950`) and two were still running (`4be8e56f-eba2-42fc-bdd5-b81245a3f985`, `f7a28af8-2988-4676-a4ac-4521180ba264`) at the last check. This is a realized duplicate-publication incident/risk; do not delete existing production assets without explicit user authorization.
+## GITOPS R2 database backup rollout (2026-07-14)
+
+- Implemented and deployed the governed `CloudMCP -> GitOps -> Cloudapi assets -> R2` logical-backup path, 30-day retention cleanup, checksum manifest, distinct-target restore contract, and Cloudapi asset deletion; no direct R2/S3 credentials or endpoint were added.
+- Production acceptance on `db-jw-primary` proved synchronous requests hit Cloudflare 524, so backup execution was converted to managed asynchronous Agent jobs with polling, lost-job reconciliation, 20-minute process-group termination, and 1 MiB Cloudapi chunks.
+- Superseded by production acceptance: `backup-db-jw-primary-1784025760330` reached `status=success` with SHA, size, two parts, expiry, and `cloudapi_read_verified=true`. Backup governance is now deployed with pool defaults, cluster inherit/override, manual backup, asynchronous restore, status/error evidence, and retryable 30-day cleanup.
+- GitOps `0d9d47f` and CloudMCP `5ad275f` are deployed and their test/deploy gates passed. Production browser automation reached the expected Cloudflare Access login boundary; authenticated visual inspection was not possible without a user session, while final HTML/script behavior remains covered by the UI regression suite.
+- 2026-07-14 load-governance follow-up is complete: GitOps `9de3072` adds deterministic four-hour staggering, D1 atomic global 2 / per-Agent 1 leases, queued admission for manual and scheduled requests, stale-start recovery, and five-attempt Cloudapi upload backoff. Cloudapi `f35a78e` adds project-scoped idempotent private asset creation; `96eb49e` leaves CodeQL analysis enabled while disabling unsupported SARIF upload. Four simultaneous production acceptance backups proved 2/1 limits, queue handoff, final success, and R2 read verification. All relevant GitHub workflows are green.
+# 2026-07-14 SZLKPassport 产品治理面纠偏
+
+- 已将接入闭环健康矩阵从生态产品页迁至控制台总览。
+- 生态产品页已改为单栏，并以完整管理表格替代产品卡片；逐行支持编辑配置、OIDC、计划、轮换密钥和打开产品。
+- OIDC Clients 也已从卡片改为完整管理表格，逐行支持编辑与真实启停，并显示回调、认证和安全状态。
+- 审计中心已使用服务端筛选和分页的完整表格，展示 session、User-Agent、metadata 等完整证据，不再截断。
+- 管理后台共享容器已改为全宽响应式：桌面使用侧栏后的全部宽度，超宽屏保留 48px 安全边距，移动端保持原边距。
+- `pnpm check`、最终脚本语法、真实 Chromium 390px 交互/溢出验证、GitHub CI/Security 均通过；生产版本为 `46d21f1c-58e0-4b54-952e-d60466ffb637`。
+
+# 2026-07-14 SZLKanalytics UI、数据与告警闭环
+
+- 提交 `6c46861` 已推送，生产 Worker 版本为 `3c075189-4e49-403d-8bca-6b87de3c23a3`；健康与状态端点均为 200。
+- 后台已对齐治理面侧栏/顶部范围选择/全宽画布心智，1920px 与 390px Chromium 渲染通过，最终内联脚本语法有效。
+- 告警误报根因是无有效注册分母仍生成 0% 激活率；代码已阻止无分母比率、按原始事件评估全局比率并保留 resolved 历史。生产四条误报已恢复，开放告警为 0。
+- 外部 Telegram / 邮件通知发送器仍未实现；项目文档已纠正旧有过度声明，当前正式能力是后台告警列表。
+
+# 2026-07-15 ChatPMP SZLKPassport 登录接入闭环
+
+- ChatPMP commits `563b31d`, `8bf536e`, `ed50135` 已推送；Zero-Tolerance CI 成功，GitOps deployment `251` 运行中且版本正确。
+- 生产数据库已新增 `User.passportUserId` 唯一可空列；受治理 `prisma db push` 二次确认 schema in sync。有效数据库入口为 `10.0.4.16:31601`。
+- `https://planovai.work/api/health/ready` 返回 database ok；Passport start 返回 307 到 `passport.szlk.ai`，client、callback、PKCE 均正确；登录页显示 Passport 主按钮和旧账号首次登录入口。
+
+# 2026-07-15 ME 登录路径纠偏
+
+- 用户确认 ME 应恢复 Cloudapi Google 登录入口，并让 SZLKPassport 使用产品内原生 headless 邮箱/密码表单，不使用 OIDC 按钮跳转。
+- 代码与治理已按该边界收口：Google 登录/注册统一由 Cloudapi delegated OAuth 承接；Passport 注册为 `headless_auth`，旧 OIDC client 已停用；旧 Supabase 密码账号仍能验证后自动同步 Passport并保留原 user id。
+- 本地 typecheck、i18n、lint、21 suites / 464 tests、production build 已通过；主提交 `b60195e` 和公开域名重定向修复 `bde9f0e` 已推送。Railway deployment `a073204f-342b-4a87-8882-bf3ffd2aa4f0` 成功；生产 Google start 已验证 307 到 Cloudapi 管理的 Google authorize，含 state HttpOnly cookie；旧 `/api/auth/passport` 已验证 307 回 `https://mysticeast.uk/login`。GitHub Security 的依赖审计因 npm 官方 audit endpoint 返回 410 失败，非本次认证代码失败。
+
+# 2026-07-15 Cloudapi Google OAuth 模型拆分
+
+- Cloudapi `fa09091` 与 CloudMCP `7684fa2` 已部署：普通 Google 登录只申请 `openid/email/profile`，Search Console 使用独立 `/v1/google/search-console/oauth/start` 和新 MCP 工具 `start_google_search_console_oauth`。
+- ME 生产授权 URL 已验证不再包含 `webmasters.readonly`；原 CloudMCP Search Console 连接继续正常列出 14 个站点。
+- 新工具已进入生产 bridge contract 且 backend healthy。后续生产闭环不得在 Agent 对话中生成授权链接或要求账号持有人二次登录；原 Search Console 连接已具备 `webmasters.readonly` 且仍能列出 14 个站点，应审计并通过正式治理链把该既有连接迁移/绑定到 `google/search_console` 授权模型，再验证 ChatPMP 与 CloudMCP 透明续用。只有代码与线上证据证明既有授权无法迁移时，才可把重新 consent 作为明确风险上报，不能先假定需要人工授权。
+
+# 2026-07-15 CloudWiki 首页登录态闭环
+
+- CloudWiki 首页静态固定显示登录按钮的问题已修复：`/` 与 ChatUI 共用 D1 主副本一致的会话读取入口，登录后显示当前账户、进入智库和退出操作。
+- 提交 `957e3a7` 已推送；CI `29403627650`、Deploy `29403665628` 成功。生产已验证匿名、连续三次登录态刷新和退出后三种状态均正确。
+
+# 2026-07-16 SoloMap 侧边栏项目切换
+
+- 已将项目切换时两套重叠对话加载合并为一次本地快照，并按项目隔离 Solo 最近对话缓存；乱序回包不再污染当前项目或造成 30 秒 TTL 等待。
+
+SKILL:global-execution
+---
+name: solomap-global-execution-guide
+description: Use for SoloMap project work by default. Guides agents to anchor reality, read relevant memory, keep user goals higher than implementation preference, make minimal verifiable changes, validate final artifacts, and preserve reusable lessons.
+---
+
+# SoloMap Global Execution Guide
+
+Use this skill for SoloMap roadmap steps, Solo conversations, roadmap revisions, and project work unless the user is only making casual conversation.
+
+## Execution Contract
+
+1. State the concrete deliverable in one sentence before implementation.
+2. Anchor on real files, commands, logs, tests, or current user-provided evidence before judging current implementation.
+3. Read the relevant SoloMap memory files when the task needs project or cross-project context; treat memory as context, not stronger evidence than current files.
+4. Preserve the user's goal, wording, boundaries, and requested path. Do not replace the task with a more familiar engineering problem.
+5. Make the smallest change that directly advances the goal. Avoid unrelated architecture changes, route changes, roadmap edits, or broad rewrites.
+6. For user-facing UI or content, optimize for the final user's action and comprehension. Remove engineering self-description, template language, implementation traces, and maintenance-facing copy.
+7. Validate the actual artifact the user will rely on. For generated scripts, templates, webviews, or configs, validate the generated output, not only the source template.
+8. Close the loop: classify temporary run artifacts, explain verification, and record reusable stable lessons in the appropriate memory location when they will matter later.
+
+## Before Acting
+
+- Identify the user's intended result.
+- Identify any explicit consistency, path, interface, or boundary the user wants preserved.
+- Identify anything the user explicitly rejected or is correcting.
+- Decide whether the user wants a result, a correction, a discussion, or a durable rule update.
+
+## Memory Use
+
+- Prefer the memory paths injected by SoloMap for the current run.
+- Read only high-signal memory files that can change the current decision.
+- Write stable reusable lessons to memory only after they are verified and broadly useful.
+- Put temporary observations in active or inbox-style memory rather than stable project, pattern, or decision files.
+
+## Completion Standard
+
+The task is not complete until the requested result is landed, the narrow relevant verification has run or is explicitly impossible, known tail items are classified, and the final response states what changed, what was verified, and remaining risk.
+
+PROJECT_DOCS
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jobssteve164dev/solodrop/main/resources/logo.png" width="128" alt="SoloDrop Logo" />
+</p>
+
+<h1 align="center">SoloDrop — Share Agent Artifacts in One Click / 一键分享 Agent 产物</h1>
+
+<p align="center">
+  <strong>Your Agent made the file. SoloDrop makes it ready to share.</strong><br />
+  <strong>Agent 负责产出，SoloDrop 负责让别人看懂。</strong>
+</p>
+
+<p align="center">
+  Turn local Markdown, code, images, PDFs and more into a clean, verified browser preview—without leaving VS Code.<br />
+  无需离开 VS Code，即可把本地 Markdown、代码、图片、PDF 等文件变成清晰、已验证的网页预览。
+</p>
+
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop"><img src="https://img.shields.io/badge/VS%20Code-Marketplace-blue?style=flat-square&logo=visual-studio-code" alt="Visual Studio Marketplace" /></a>
+  <a href="https://open-vsx.org/extension/SZLK/solodrop"><img src="https://img.shields.io/badge/Open%20VSX-Install-purple?style=flat-square" alt="Open VSX" /></a>
+  <a href="https://github.com/jobssteve164dev/solodrop/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-emerald?style=flat-square" alt="MIT License" /></a>
+</p>
+
+---
+
+## From “done” to “delivered” / 从“做完了”到“交付了”
+
+Coding agents can create a report, prototype, chart or document in seconds. Sharing the result still means finding the file, checking it for secrets, choosing how to render it, publishing it and confirming the link actually works.
+
+编程 Agent 几秒钟就能生成报告、原型、图表或文档，但真正分享时，你仍要找文件、检查敏感信息、处理预览格式、完成发布，还要确认链接真的能打开。
+
+**SoloDrop turns that entire handoff into one action:** choose or drop the file, then share a browser-ready preview.
+
+**SoloDrop 把整段交付流程收成一个动作：** 选择或拖入文件，然后分享一个任何人都能直接打开的网页预览。
+
+## Why SoloDrop / 为什么选择 SoloDrop
+
+### ⚡ Share without breaking your flow / 不打断工作流
+
+Drag a file into the sidebar, share the active editor, choose a file, or use the Explorer context menu. SoloDrop builds the preview and copies the public link to your clipboard.
+
+拖入侧边栏、分享当前编辑器文件、手动选择文件，或直接使用资源管理器右键菜单。SoloDrop 会生成预览，并把公开链接复制到剪贴板。
+
+### 👀 Make artifacts easy to read / 让产物打开就能看
+
+Give recipients a clean browser experience instead of asking them to download a raw file or install the right application.
+
+无需让接收者下载原始文件或安装对应软件，打开浏览器就能清晰查看内容。
+
+Supported previews / 支持的预览类型：
+
+- Markdown, text, code and JSON / Markdown、文本、代码与 JSON
+- Images and PDF / 图片与 PDF
+- CSV tables / CSV 表格
+- HTML / HTML 页面
+
+### 🛡️ Catch risky content before it goes public / 公开前先检查风险
+
+SoloDrop checks common credential and secret patterns before publishing. You always see the exact filename and size before upload unless you choose to disable confirmation.
+
+SoloDrop 会在发布前检查常见凭据和密钥特征。默认情况下，上传前会明确显示文件名和大小，由你做最后确认。
+
+### ✅ Share a link that has already been checked / 分享一个已经验证过的链接
+
+A successful deployment is not enough. SoloDrop opens the published URL over HTTP first and only then copies the public preview link.
+
+部署成功不等于交付成功。SoloDrop 会先通过 HTTP 确认预览地址可访问，再复制公开链接。
+
+### 🌍 Start now, sign in when you need more / 无需登录也能开始
+
+If Wrangler is signed in, SoloDrop uses your authenticated Cloudflare account for a persistent preview. Otherwise, it creates a temporary preview that you can claim within 60 minutes.
+
+Wrangler 已登录时，SoloDrop 会使用你的 Cloudflare 账户生成长期预览；未登录时，则直接生成可在 60 分钟内认领的临时预览。
+
+## Quick start / 60 秒开始分享
+
+1. Install SoloDrop and open it from the VS Code Activity Bar.<br />
+   安装 SoloDrop，并从 VS Code 活动栏打开。
+2. Drop a file, use the active editor, or choose a local file.<br />
+   拖入文件、使用当前编辑器文件，或选择本地文件。
+3. Select **Share preview / 分享预览**.<br />
+   点击 **Share preview / 分享预览**。
+4. Send the verified link already copied to your clipboard.<br />
+   将已复制到剪贴板的有效链接发给对方。
+
+## Built for the handoff / 为真正的交付而设计
+
+- **Public link and ownership link stay separate.** A sensitive claim URL is never copied as the link you send to others.<br />
+  **公开链接与所有权链接严格分开。** 敏感的认领地址绝不会被当作分享链接复制。
+- **Recent previews stay useful across devices.** Share metadata follows VS Code Settings Sync, while local source paths remain on the device where they belong.<br />
+  **最近分享可跨设备查看。** 分享记录跟随 VS Code 设置同步，本地源文件路径仍只保留在原设备。
+- **Expired temporary previews can be shared again.** SoloDrop reuses the local source when available, or asks you to choose it again on another device.<br />
+  **过期的临时预览可以再次分享。** 原文件仍在本机时直接复用；换到其他设备时，只需重新选择文件。
+- **English and Simplified Chinese are built in.** Use the **中 / EN** button for instant switching, or follow the VS Code display language automatically.<br />
+  **内置英文与简体中文。** 点击 **中 / EN** 即时切换，也可以自动跟随 VS Code 显示语言。
+
+> Temporary previews must be claimed within 60 minutes to remain online. SoloDrop does not describe public previews as private links.<br />
+> 临时预览需要在 60 分钟内完成认领才能持续在线。SoloDrop 不会把公开预览描述成私密链接。
+
+## Feedback and support / 反馈与支持
+
+SoloDrop is built for developers who want Agent output to reach teammates, clients and users with less friction.
+
+SoloDrop 服务于希望把 Agent 产物更顺畅地交付给同事、客户和用户的开发者。
+
+- Found a problem or have a format request? [Open a GitHub issue](https://github.com/jobssteve164dev/solodrop/issues).<br />
+  遇到问题或希望支持新的文件格式？欢迎[提交 GitHub Issue](https://github.com/jobssteve164dev/solodrop/issues)。
+- If SoloDrop saves you time, leave a rating on the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop).<br />
+  如果 SoloDrop 帮你节省了时间，欢迎在 [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop) 留下评价。
+
+---
+
+## Development / 开发
+
+```bash
+npm ci
+npm run check
+npm run package
+```
+
+Press `F5` in VS Code to run the Extension Development Host.<br />
+在 VS Code 中按 `F5` 启动插件开发宿主。
+
+## Publishing / 发布
+
+Pushes to `main` run CI and security checks. The publish workflow increments the patch version, packages the VSIX, publishes to Visual Studio Marketplace and Open VSX, and creates a GitHub release.<br />
+推送到 `main` 会运行 CI 与安全检查。发布工作流会递增补丁版本、打包 VSIX、发布到 Visual Studio Marketplace 与 Open VSX，并创建 GitHub Release。
+
+Repository secrets required / 所需仓库密钥：
+
+- `VSCE_PAT`
+- `OVSX_PAT`
+
+## Research / 调研
+
+See [the Cloudflare Drop research report](docs/research/cloudflare-drop-vscode-plugin.md).<br />
+参阅 [Cloudflare Drop 调研报告](docs/research/cloudflare-drop-vscode-plugin.md)。
+
+PROJECT_MEMORY
+# PROJECT_MEMORY.md
+
+This file stores stable project facts future agents should reuse. Do not paste run logs, prompts, terminal output, or one-off debugging notes here.
+
+## Project Identity
+
+- Name: solodrop
+- Type: Infrastructure / tooling foundation
+- Users:
+- Current stage:
+
+## Stable Decisions
+
+-
+
+## Architecture Boundaries
+
+-
+
+## Verification
+
+- Default CI: `.github/workflows/ci.yml`
+- Default security checks: `.github/workflows/security.yml`
+
+## Handoff Notes
+
+-
+
+[35m[3mcodex[0m[0m
+启动包判定：`CloudMCP Cloudapi Bridge Contract`、`Passport Product Subscription`、`Project Docs Lifecycle`、`Roadmap Planning` 均与本次短链判断无关，记为 skipped-not-applicable；`Cross-Project Memory` 暂不使用，除非本轮形成已验证且值得长期复用的项目决策；`SoloMap Global Execution Guide` 已使用。  
+本轮约束是：缩短用户最终复制/发送的公开链接，保持“一键分享、公开链接与认领链接分离”的既有边界，优先复用 Cloudflare 现有部署面，最窄验证是确认真实 URL 生成代码与供应商当前官方能力。
+[35m[3mexec[0m[0m
+[1m/bin/bash -lc 'for f in /home/ubuntu/project/.solomap-global/memory/projects/solodrop.md /home/ubuntu/project/.solomap-global/memory/active/current-session.md; do if [ -f "$f" ]; then echo "FILE:$f"; sed -n '"'1,320p' \""'$f"; else echo "SKIPPED:$f"; fi; done
+printf '"'\\nURL RELATED FILES\\n'; rg -n \"https?://|preview|claim|workers.dev|pages.dev|url|publicUrl|shareUrl\" --glob '"'!node_modules/**'"' --glob '"'!*.vsix'"' src resources test package.json docs | head -n 240"[0m in /home/ubuntu/project/solodrop
+[32m succeeded in 0ms:[0m
+FILE:/home/ubuntu/project/.solomap-global/memory/projects/solodrop.md
+# SoloDrop
+
+## Stable Facts
+
+- 2026-07-16: Project repository is `/home/ubuntu/project/solodrop`, with remote `https://github.com/jobssteve164dev/solodrop` and primary branch `main`.
+- 2026-07-16: SoloDrop is a VS Code extension that turns local agent artifacts into browser previews, verifies the deployed URL and copies the public link. Its primary sidebar entry supports drag-and-drop, active-editor selection, file picker and Explorer context sharing.
+- 2026-07-16: The first release supports Markdown, text/code/JSON, images, PDF, CSV and HTML. It scans common credential patterns and keeps Cloudflare claim URLs separate from public preview URLs.
+- 2026-07-16: Release `v0.0.4` is published to Visual Studio Marketplace and Open VSX as `SZLK.solodrop`; the GitHub release contains `solodrop-0.0.4.vsix`.
+- 2026-07-16: Local compile, 13 tests, zero-high dependency audit, VSIX content inspection, real Chromium 300×720 normal/drag-state checks, and an authenticated Cloudflare deployment/read/delete acceptance all passed. The live acceptance proved a newly returned Workers URL can briefly return 404 before becoming 200, so production verification includes bounded retry.
+- 2026-07-16: Wrangler `whoami` may exit successfully while printing that the user is unauthenticated. Authentication detection therefore parses the command output, Auto mode uses `--temporary` when unauthenticated, and retries with `--temporary` if non-interactive authentication disappears during deployment.
+- 2026-07-16: User-facing sidebar, notifications, commands and settings support English and Simplified Chinese. `solodrop.language` defaults to following the VS Code display language and rerenders the sidebar immediately when changed.
+- 2026-07-16: The sidebar header exposes a direct `中` / `EN` language toggle. It writes the selected language to the global VS Code `solodrop.language` setting, so the choice persists across reloads, restarts and workspaces.
+- 2026-07-16: Recent-share metadata uses VS Code Settings Sync so the same signed-in user can see one list across devices. Local source paths are kept in a separate unsynced mapping; expired temporary shares reuse that local source when available and otherwise ask the user to choose the file before running the existing share flow.
+
+## Decisions
+
+- 2026-07-16: The product is an agent-artifact delivery layer, not a thin Cloudflare Drop wrapper. Format conversion, recipient readability, leak prevention and verified delivery are the product value.
+- 2026-07-16: Auto deployment uses an authenticated Wrangler account when available and otherwise uses Cloudflare temporary deployment. Temporary links must be claimed within 60 minutes; custom expiry and private access are not presented as current features.
+- 2026-07-16: Temporary entries derive an explicit 60-minute claim-window expiry, display active/expired status in Recent, and expose Share again only after expiry.
+- 2026-07-16: The Logo source of truth is `resources/logo.svg`; `resources/logo.png` is the Marketplace raster derivative. The sidebar follows VS Code semantic theme tokens and maintains one primary action.
+
+## Current Handoff
+
+- Goal: Continue improving the released SoloDrop extension without changing its one-action sharing model.
+- Confirmed state: `main` is clean at release commit `1a42e55`; GitHub CI, Security and Publish workflows succeeded for v0.0.4, and the released VSIX is installed locally.
+- Next useful action: Use real user artifacts to prioritize the next preview adapter or managed expiry/private-sharing capability; do not claim Office fidelity or private links before those paths exist and are verified.
+FILE:/home/ubuntu/project/.solomap-global/memory/active/current-session.md
+# Active Session
+
+- 2026-07-17 ME 迁移仍在进行中，禁止切域名或释放 Railway：Railway 仍承载 `mysticeast.uk`，GitOps deployment 288/Web runtime healthy，但目标 `db-me-primary.public` 因早期迁移脚本在源 dump 失败前重置而当前为空。GitOps `b6a62f3` 已把顺序修为“源 dump 成功后才重置目标”，Cloudapi `8de0b58` 与 CloudMCP `a801139` 已上线受治理 `execute_supabase_read_only_sql`；生产 bridge contract 已确认包含新工具。Supabase 管理 API 密码重置后即使等待 5 分钟，Supavisor 5432 仍拒绝新密码；SQL 管理身份也明确无权 ALTER privileged role，不能继续走该凭据假设。当前 Codex 会话工具目录是启动时静态清单，尚未发现新工具；下一次连接刷新后应先用正式 MCP 只读 SQL 导出 public schema/表/数据，恢复目标库并做逐表计数/策略/触发器校验，再完成成功备份、业务探测、域名切换和 Railway 精确释放。不要重复密码轮换或直接 SSH/provider 绕过。
+
+- 2026-07-17 ME 迁移继续：本地进程树测量已确定构建内存；GitOps Agent v1.0.72 与 ME commit `231051c` 已验证，deployment 288 success，`me-web-1` healthy（3030→3000），tc-gz1 构建内存峰值约 66.8% 且 Mesh connected。下一步是业务/数据/支付/认证探测、域名切换与确认 Railway 可释放；这些完成前不得删除 Railway。
+
+- 2026-07-17 ME Railway/Supabase → GitOps tc-gz1 迁移进行中：ME 提交 `149e02f`、`1286f86`、`e6d0c79` 已推送，源码构建、PostgREST 数据面、本地 ME 会话与目标库迁移脚本已落地；目标 `db-me-primary` 已恢复 49 张 public 表及现有数据并建立 6 个历史业务身份引用，Railway 生产与 `mysticeast.uk` 尚未切换或释放。GitOps 迁移临时 ingress 修复 `6ed9e7e` 已部署；Cloudapi `f43d932`/`91a88b6` 与 CloudMCP `6b0a4d5` 已补齐并上线受治理 Supabase 迁移凭证。当前阻塞：首轮 deployment `279` 的旧源码构建使 tc-gz1 Agent 自 07:49 停止心跳，后续 `280/281` 在 `webhook_dispatch` 返回 502；新构建已排除 `.solopreneur/.git`、改用节点镜像源并修正与 AIF 冲突的 3010 为 3030，但必须先恢复 GitOps Agent 再部署、探测、切域名、备份并删除 Railway。物理备份任务仍为 running，逻辑备份因 524 failed；不得在目标部署与备份成功前释放 Railway。
+
+- 2026-07-17 GitHub 仓库监控自动部署的模式分流已完整统一：整项目路径原本已按 source/release 分流，本轮修复了 watch_paths 命中单服务时固定走 Actions 的缺口。GitOps `20615ef` 已部署；source Webhook 请求级测试确认保留分支、环境、服务范围与 deployment id 并调用 Agent `deploy_source`，release 保持 Actions。定向 17 tests、完整 280 tests、bundle dry-run、Control Plane CI/Deploy 均通过。
+
+- 2026-07-17 GitOps 部署历史重试链路已补齐并上线：提交 `867b916` 让无产物失败记录按项目当前 `deploy_mode` 分流；source 模式保留原项目/服务范围并通过新 deployment id 重新走 Agent `deploy_source`，release 模式继续走 Actions。定向 23 tests、完整 279 tests、Worker bundle dry-run、Control Plane CI/Deploy 均通过；未额外触发 SIM 生产重建。
+
+- 2026-07-17 GitOps 本地构建失败阶段链路已上线并完成生产验收：GitOps `2836a0f`、Agent `1.0.68` 将失败拆为稳定 `error_stage` 与精简 `error_message`，控制面在部署、项目和日志中统一持久化并显示中文阶段。SIM 验收 deployment `277` 精确返回 `source_download / 404 Not Found`，随后恢复 `source + master` 的 deployment `278` 成功，api/web running，公网健康 200。CloudMCP `b6fa4c3` 同步补齐 `set_business_project_build_mode` 的 bridge 白名单、超时和能力可见性，生产 bridge healthy、toolCount 40；两仓库 CI/部署全绿。
+
+- 2026-07-17 SIM 已使用 GitOps 最新本地构建模式重新部署：正式 CloudMCP 契约补齐 `create_business_project.deploy_mode`，源码代理补齐 runner 机器域名边界；GitOps 提交 `e88b4f8`、`5d28219` 已部署。SIM 保持单项目、tc-sh1、master、soiching.com 与原服务/网络配置，仅将 deploy mode 切为 source；deployment `276` 成功，API/Web 新容器运行 `compose.gitops-source.yaml`，公网健康 200，启动日志正常。
+
+- 2026-07-16 GITOPS 本地构建链路已完成：提交 `1340b1e` 已推送；默认 release/GitHub Actions 路径不变，source 模式覆盖手动、Webhook、单服务和 Business Lifecycle 入口。Agent tests、控制面 275 tests、Wrangler bundle dry-run、远端 CI、Control Plane CI/Deploy、Agent release 与依赖审计通过；本轮未切换生产项目或触发业务构建。
+
+- 2026-07-16 SZLKlaws 公司原件维护闭环已上线：治理面和 CloudMCP `update_company_record_original` 共用同一写入服务，新原件、当前档案、版本历史和审计一次完成，旧原件可追溯；失败时只回收本次新建证据。SZLKlaws `d89ade2`、CloudMCP `765f8fe` 已推送部署，migration 0005、33 tests/check/真实 UI 上传与清理、CloudMCP 179 tests、线上 MCP 公司档案读取通过。当前 Codex 会话工具目录尚未重新发现新写工具，且 connector profile sync 返回 Unauthorized；不得为刷新目录轮换 provider contract。
+
+- 2026-07-16 SZLKlaws 档案纠偏：公司档案已从“只上传原件”升级为公司信息页的可维护事实与 8 类持续文件组件，支持持久化、版本递增和审计；完整 UTR/Gateway 不再默认回显。33 tests、Worker dry-run、桌面/390px 真机渲染和交互通过，生产 D1 migration 0004、commit e5a48e1 部署成功。Security dependency-audit 因 npm 旧 audit endpoint 返回 410 失败，非依赖漏洞结论；CodeQL job 当时仍在运行。
+
+- 2026-07-16 SZLKlaws 公司档案整理已闭环：18 个 input 来源文件完成核对，16 个唯一原件进入生产 D1/R2 并逐个读回通过 SHA-256 校验，2 个完全重复 PDF 登记为别名；正式脱敏索引位于 `docs/company-records/company-record-register.md`，本地来源均已归档到 `INPUT/归档/2026-07-16/`，INPUT 顶层为空。
+
+- 2026-07-15 SZLKlaws UK operating-compliance expansion: official Companies House, HMRC, GOV.UK and ICO guidance was reconciled into the workbench. The first-year action list now includes director/PSC identity verification before the 2026 confirmation statement, and compliance monitoring now gives actionable triggers and evidence for eight recurring areas. Local 31-test suite, Worker dry-run, final script syntax, and real Chromium desktop/mobile flow with QA artifact cleanup passed.
+
+- 2026-07-15 CloudWiki 刷新丢登录已根治并生产验证：真实 Passport session 行存在但普通 D1 读取跨副本漂移；认证存储现统一使用 `first-primary`，Cookie 补齐持久属性并容忍旧 Cookie 并存。提交 `69ec20c`、`7dc5abd`，最终 CI `29402890542`、Deploy `29402926164` 成功；同一 Cookie 连续 5 次 session API 和 5 次 `/dashboard` 刷新均稳定 authenticated/ChatUI，探针会话已注销、临时文件已清理。
+
+- 2026-07-15 CloudWiki 登录后主界面 ChatUI 已上线：提交 `a606106`，CI `29402490962`、Deploy `29402525484` 成功。登录态 `/dashboard` 使用桌面侧栏/移动端抽屉、连续问答和固定输入区；引用证据改为答案内可定位编号 + 答案下方原文证据组件，展开按需读取完整 chunk 原文。35 tests、Worker dry-run、1440px/390px Chromium、动态展开及生产登录态/未登录分流均验证通过。
+
+- 2026-07-15 CloudWiki SZLKPassport headless 接入已上线：提交 `fdd9fd2` 补齐产品内登录、注册、邮箱验证、重发验证、忘记/重置密码，D1 会话绑定 Passport user identity，并隔离普通 Passport 会话与管理员 API。Passport `cloudwiki` 产品登记为 headless/ready，GitHub Secret 已配置；CI `29397951688` 与 Deploy `29397978429` 成功，生产登录/验证/重置/订阅回退探针通过。付费计划仍未创建，因为仓库与产品文档没有确认金额或周期；后续只有在定价明确后才能完成 billing catalog/access simulation 验收。
+
+- 2026-07-14 ME SZLKPassport 登录接入闭环：统一 OIDC PKCE 成为登录页首要入口；同邮箱复用原 Supabase 用户 ID 和业务数据，OIDC 登录建立兼容的 Supabase cookie 会话；旧账号首次用原密码登录会自动同步到 Passport，无需再次注册。Passport `me`/`me-web` 验收 ready，Railway 生产变量已补齐，deployment `89f99082-5b6f-4897-834b-6ef6f51a6d1a` 成功；提交 `ddccf74`、GitHub Quality Gate/Security 与生产 307 探针均通过。
+
+- 2026-07-14 SIM Passport 登录接入闭环：提交 `51cc94b`、`d0d7bc7`、`108717c` 已推送 `master`；Passport `sim` headless 产品及 GitOps secret 已配置；旧账号首次登录自动同步并保留本地业务身份，成功接管后关闭旧密码旁路。生产 API 精准部署 `239` 成功，真实无账号登录探针返回标准 401，GitHub CI `29373795310` 成功。根因修复包括 Python urllib 显式 User-Agent，避免 Cloudflare 1010 纯文本 403。
+
+- 2026-07-14 ST SZLKPassport 登录接入已闭环：Passport OIDC 成为登录页首要入口，旧账号首次用原密码登录会自动同步并绑定 Passport，同时保留 ST 本地用户 ID 和业务数据。Passport `st-web`、GitOps 运行时变量、提交 `2897f85`、CI `29353568373`、部署 `238` 和生产探针均已验证。
+
+- 2026-07-14 YL SZLKPassport 登录接入闭环：主登录切为 OIDC PKCE，旧 YL 用户首次用原密码登录会自动同步并认领 Passport，保持本地 user id/数据；同步失败不再假成功。Passport 已登记 `yl-web` 和 seevoid.com 回调；提交 `1699d3f`、GitOps deployment `233`、生产健康/登录页/OIDC 托管登录跳转均验证通过。
+
+- 2026-07-14 AIF SZLKPassport 登录主路径接入已完成：登录页首要动作切为 Passport OIDC；已验证邮箱按同邮箱链接现有 AIF User，保留原用户 UUID 与全部业务数据；旧账号仍可用原密码首次登录并自动 `sync-legacy-user`。提交 `df06249` 已推送；`ci:local`（36 files / 109 tests / build / audit high gate）通过。GitOps 自动发布 deployment `237` / version `aif-web-237` 成功，公网 `/api/health/ready` 返回 200 且 database=ok；生产客户端 chunk 已确认包含新的 Passport 主入口，Passport 生产 redirect URI 返回 302 进入统一登录页。
+
+- 2026-07-14 BC SZLKPassport 主登录接入已上线：BC 已注册为 `headless_auth` 产品，GitOps secret/URL/product 环境配置齐全，API deployment `231` 成功。现有登录先走 Passport，旧 BC 用户在首次用原密码登录时自动 legacy sync 并绑定原本地 UID，无需另行注册；生产 ready 200，本地 server build + 6 tests、client type-check + H5 build 通过。
+
+- 2026-07-14 太微 Lab 计划清理闭环：当前代码、生产配置、Passport 和 Cloudapi 均只剩 3 条实际一次性计划；5 条旧计划已在 Stripe/Cloudapi/Passport 全链路归档清理。Passport 工具 schema 和运行时已禁止模板推导计划，并要求额外计划显式理由；旧式缺字段 MCP 调用在写入前被生产拒绝。`pnpm check`、技能校验、CI/Security、生产健康均通过；提交 `750a890`，版本 `60b63d81-b292-45e0-baee-1a602c0d144a`。
+
+- 2026-07-14 SZLKPassport 用户与计划治理面纠偏已完整上线：用户删除改为页面内精确邮箱+原因确认并修复最终内联脚本失效；产品计划改为单栏列表，支持编辑、启停、删除。计划删除现在先经 Cloudapi 停用 Stripe Price、按剩余启用价格决定是否归档 Product，再删除 Passport 本地映射；失败保留本地计划，既有订阅不取消。Cloudapi `3c8e388`/`17041201-fdc5-47d1-a01b-8c987c54fbe4`，Passport `88d3161`/`be1d428a-41ea-4af0-884e-042034fe7702`；Cloudapi 475 tests、Passport `pnpm check`、生产健康与 CI/Security 均通过。
+
+- 2026-07-14 tc-gz1 pre-ME migration storage maintenance is complete through the governed `reclaim_gitops_node_ephemeral_storage` tool. Root usage fell from 83% (47G used, 9.9G available) to 55% (31G used, 26G available), reclaiming about 16G by pruning only Docker builder cache older than 24h and unused Docker images older than 168h; containerd images, volumes, running containers, and database storage were excluded. The mutating MCP call timed out at 120s but a subsequent governed dry-run reconciled the completed state. Kubernetes reports Ready with no DiskPressure, CNPG and existing AIF/JW/YL database pods remain Ready. GitOps node summary still reports inconsistent `kubernetes_ready=0` and `scheduling_enabled=0`; ME provisioning should recheck live node state and create/select a dedicated active `prod` pool rather than relying on that summary alone.
+
+## ST Dependabot Remediation 2026-07-13
+- Confirmed all 57 reported alerts were live against `package.json` / `pnpm-lock.yaml`; the vulnerable direct packages were Next.js, Drizzle ORM, NextAuth, and next-intl, while fast-xml-parser, flatted, picomatch, PostCSS, brace-expansion, js-yaml, and Babel were transitive through AWS/ESLint/Next tooling.
+- Commit `0fa6567` upgraded compatible direct dependencies and added range-scoped pnpm overrides for vulnerable transitive versions. Local audit reports zero vulnerabilities; 62 tests, ESLint, production build, pre-push checks, and GitHub CI `29229085272` passed.
+- GitHub now reports all 57 requested alerts as `fixed` and zero open Dependabot alerts; none were dismissed. The local build still logs an existing stale Neon credential failure while generating sitemap data, but the build succeeds via its existing fallback and this is unrelated to the dependency remediation.
+
+## YL Dependabot High-Risk Remediation 2026-07-10
+- The five current alerts were verified against GitHub's Dependabot API: root and nested web lockfiles resolved vulnerable `form-data` and `hono`, while the archived FastAPI service pinned vulnerable `starlette`.
+- Root `pnpm.overrides` and both lockfiles now resolve `form-data@4.0.6` and `hono@4.12.28`; `archive/v1/api/requirements.txt` uses `fastapi@0.139.0` with `starlette@1.3.1`.
+- The archived API no longer combines wildcard CORS with credentials: `CORS_ALLOWED_ORIGINS` is an explicit comma-separated allowlist with local development origins as the default. Isolated dependency installation, CORS allowed/blocked-origin assertions, and `corepack pnpm --filter web check` passed.
+
+## Cloudapi Security Dependency Fix 2026-07-10
+- Verified the repository-root vulnerability chain as `wrangler@4.78.0 -> miniflare@4.20260317.3 -> undici@7.24.4 / ws@8.18.0`; it triggered the five Dependabot alerts for Undici and ws. Application code has no direct `undici` or `ws` import.
+- Kept the Node 20-compatible `wrangler@4.78.0` / `miniflare@4.20260317.3` toolchain and used root `pnpm.overrides` to resolve its two vulnerable transitive dependencies to `undici@7.28.0` and `ws@8.21.0`. `pnpm audit --json` now reports zero vulnerabilities.
+- Verified `pnpm test` (471/471), `pnpm run check` (Wrangler dry-run), and GitHub Actions CI `29077040324` / `29077096816` (Node 20 install, test, bundle, security audit); production Deploy `29077133003` also succeeded. The build retains one unrelated existing warning about a duplicate `usesChannelPrioritySelection` object key in `src/admin-capability-governance.js`.
+
+## SoloMap Security Dependency Fix 2026-07-09
+- Dependabot alerts for `undici` and `ws` were verified against the current repo. Root package audit is clean; the live vulnerable dependency chain was in `website/package-lock.json`: `wrangler@4.97.0 -> miniflare@4.20260601.0 -> undici@7.24.8 / ws@8.20.1`.
+- Minimal fix updated the website lockfile through `npm --prefix website update wrangler`, resolving to `wrangler@4.107.1`, `miniflare@4.20260702.0`, `undici@7.28.0`, `ws@8.21.0`, and `esbuild@0.28.1`.
+- Verified: `npm audit --json`, `npm --prefix website audit --json`, `npm --prefix website ls wrangler miniflare undici ws esbuild --all`, `npm test`, and `npm --prefix website run check` all passed after the update.
+
+## SZLKlaws Legal Governance 2026-07-08
+- ME/JW/YL/AIF main-path products have all been connected to SZLKlaws legal document APIs in this Solo sequence. SZLKlaws now owns the common seven legal files and standalone product supplements as the legal truth layer; products keep their own user-facing legal UI/routes.
+- SZLKlaws commit `a41ceee` adds the authenticated “法律文件 / Legal Files” governance page plus D1-backed version/audit storage in `src/legal-governance.js`. Admins can select product/document/locale, preview source or managed content, save a new draft, and approve a selected version.
+- Public headless APIs now prefer the latest approved managed version and fall back to code baseline when no approved version exists or governance storage fails, so drafts do not automatically affect product frontends.
+- Verified locally: `node --check`, `corepack pnpm test`, `corepack pnpm run check`, `CLEANUP_QA=1 corepack pnpm run verify:ui`, and a Playwright probe for the legal governance page. GitHub Cloudflare deploy run `28933287526` succeeded; production `/health` and public `/api/legal/document` checks passed. Production admin endpoint was not reverified because the local `.dev.vars` admin password did not authenticate against production.
+
+## ME SEO Follow-up 2026-07-07
+- Verified via CloudMCP Google Search Console for `sc-domain:mysticeast.uk`: last ME horoscope SEO optimization was 2026-07-01; as of 2026-07-07 GSC only returned complete data through 2026-07-05, so the available post-change comparison window is 2026-07-01..2026-07-05 versus 2026-06-26..2026-06-30.
+- Comparable 5-day site totals changed from 46 clicks / 3,665 impressions before to 52 clicks / 3,281 impressions after; `/en/horoscope` changed from 45 clicks / 2,276 impressions / CTR 1.98% / avg position 8.84 to 50 clicks / 2,687 impressions / CTR 1.86% / avg position 8.59.
+- Keyword-level signal: rankings/impressions improved for `chinese horoscope today` and `daily chinese horoscope`, but CTR weakened on some head terms; new/strong click signals appeared for animal-specific terms such as `dragon love horoscope today`, `horse horoscope today`, `dragon horoscope today`, `rat/snake/tiger horoscope today`.
+- Current recommendation direction: do not add generic explanatory SEO blocks; if expanding “today horoscope”, add user-facing analysis modules that directly answer search intent, especially love/career/wealth/health/timing/lucky action modules and stronger per-zodiac long-tail landing support.
+
+## Current SoloMap Session Handoff
+
+- 2026-07-14 GitOps R2 database backup is now production-verified. `backup-db-jw-primary-1784023492684` succeeded only after two Cloudapi HTTP 201 uploads and per-object R2 head verification; it stores 1,475,001 bytes in two private parts, has 30-day expiry `2026-08-13T10:05:58.906Z`, and reports `cloudapi_read_verified=true`. The real caller is the HOMEHUB Cloudapi project key, now scoped for private R2 assets; the temporary mistaken JW permission change was fully reverted. Agent `1.0.65` fixes successful commands being mislabeled failed when only descendant log pipes exceed `WaitDelay`. Earlier failed verification runs cleaned all partial assets through Cloudapi.
+- 2026-07-07 correction: TW 洞察模块“小屏幕”原需求被错误理解成移动端，实际应覆盖低高度桌面/笔记本窗口。已在本地未推送补丁中给 `src/app/globals.css` 增加 `@media (min-width: 681px) and (max-height: 820px)` 桌面小高度规则：洞察网格改为可裁切/滚动，卡片高度和文字缩放，订阅区保留在底部。已验证 `pnpm run lint`、`pnpm run build`，本地 Chromium 1366x768、1366x640、1280x600、1024x600 均 `anyCardOverlapsSubscribe=false` 且订阅区可见；截图 `/tmp/tw-fixed-laptop-1366x768.png` 视觉确认。当前补丁只在工作区，未提交、未推送、未部署；此前误发的 deployment `185` 后来已成功切到 `tw-185.tar.gz`，但那是移动端误解版，不是本条桌面小屏修复。
+- 2026-07-07 TW SEO/GEO 优化已完成：新增共享 SEO 数据源、robots/sitemap、public `llms.txt`、全局 Organization/WebSite/Product JSON-LD、洞察页 Article/FAQ JSON-LD、洞察/法律页 canonical 与 OG/Twitter metadata，并给 6 篇洞察文章补可读的“关键结论/FAQ”模块；文章面板改为内部滚动避免固定视口裁切。已验证 `pnpm run lint`、`pnpm run build`、本地 HTTP `/robots.txt` `/sitemap.xml` `/llms.txt` 与文章 metadata/JSON-LD，Chromium 桌面/移动截图确认 `/insights/screen-anchoring` 可读且无裁切。提交 `a2ac5a1` 已推送 `origin/main`；GitOps deployment `182` 后生产 `https://taiweilab.com/health` 200/db ok，线上 `/robots.txt`、`/sitemap.xml`、`/llms.txt`、`/insights/screen-anchoring` 已返回新 SEO/GEO 信号；GitOps 记录状态最终仍显示 `building/deploying` 滞后，但线上内容已更新。
+- 2026-07-04 TW 优化关于模块（洞察）并新增三篇世界观研究报告：新增《天市金曜：赛博符电路与财富流转的心理学译码》（`tianshi-wealth-circuit`）、《紫微独步：硬核液态金属与自我主权的视觉铸造》（`ziwei-sovereignty-metal`）、《星野矩阵：三垣四象在压力干预中的能量译码》（`stellar-calibration-matrix`）三篇中英双语深度洞察报告，扩展了 SEO 搞钱、防小人、工位结界、注意力防护等长尾词和 GEO 信息架构。在 `src/app/content.ts` 注入文章体并优化 `src/app/layout.tsx` 首刷 titles 映射；本地 `pnpm run lint` 与 `pnpm run build` 全量通过，生成了 6 条 SSG 路由。
+- 2026-07-03 TW 星野校准局“选 A 瑞兽付费后不能收到 B 瑞兽”审计发现并修复一处本地状态推进风险：原 `/api/purchase-intents/confirm` 与 `/api/account/summary` 只按 Passport 套餐级 access-check 把本地 intent 标记为 `paid`，已买同套餐 A 的用户可能让后续 B 的未支付 intent 被账户摘要自动回填为 paid。当前工作区补丁已将确认接口收紧为必须带回并匹配本地 checkout session，并通过 Cloudapi 只读读取 Stripe checkout.session，强校验 `payment_status`、product、Passport plan、Taiwei plan、beast、purchase intent、email 后才推进本地状态；账户摘要只自动补齐已有同一 checkout session 且 confirmed paid 状态 of intent；下载接口继续按 `userId + plan + beast + paid` 查本地 intent，并通过 Passport access 与 Cloudapi 私有 asset 签名交付。已验证 `pnpm run lint`、`pnpm run build` 通过。注意：截至本记录该补丁尚未提交、推送或部署；工作区还有既有无关 `.solopreneur/documentation.json` 修改未处理。
+- 2026-07-03 TW/SZLKPassport/CloudMCP 支付与安全交付闭环已落地：TW 提交并推送 `e8e76fb Complete Passport billing delivery flow`，改为通过 SZLKPassport checkout-link 下单，账号回跳后调用 Passport access-check 确认权益，再开放 `/api/downloads/[assetKey]` 登录、paid intent、Passport feature 三重校验下载；本地验证 `pnpm run build`、`pnpm run lint` 通过，GitOps deployment `167` 成功，`tw-web-1` 已切到 `tw-167.tar.gz`，`https://taiweilab.com/health` 返回 200/db ok。SZLKPassport 提交并推送 `571709b Add Passport gated asset delivery links`，新增 `/api/v1/delivery/asset-link` 与 provider bridge tool `create_szlkpassport_delivery_asset_link`，验证 `pnpm run typecheck`、`pnpm run check` 通过。CloudMCP 提交并推送 `28018d7 Expose Passport delivery link operation`，把该 Passport delivery tool 暴露到 `szlkpassport_operations` 和 capability profile，验证 provider bridge registry test、GitHub guardrails run `28655142606`、deploy run `28655170538` 成功。剩余风险：真实 Stripe 支付 -> Passport entitlement -> TW 下载仍需用真实或 test-mode 付款做端到端交易验收；正式付费资源必须放非 public 资产或 Cloudapi private assets。
+- 2026-07-03 follow-up: TW 付费资源交付已移除本地文件兜底并改为 Cloudapi 私有资产。六个瑞兽 PNG 已作为 SZLKPassport Cloudapi project 下的 `project_private` assets 上传；临时 assets-only 导入 key 已撤销；Passport 现有 Cloudapi key 已加 `assets` 权限，Passport 项目路由已加 `storage/object/private@cloudflare-r2`。TW env 已通过 GitOps 写入 `TAIWEI_CLOUDAPI_ASSET_MANIFEST`，提交 `48784b8 Use Cloudapi assets for paid downloads` 已推送并部署为 GitOps deployment `168`，`tw-web-1` 已切到 `tw-168.tar.gz`，health 200/db ok。本地验证 `pnpm run build`、`pnpm run lint` 通过；匿名访问 Cloudapi 私有 asset content 返回 401；当前 Codex MCP 工具面尚未刷新出 `create_szlkpassport_delivery_asset_link` 可调用工具，所以未做有权益用户的真实签发下载交易。
+- 2026-07-03 purchase-intents 503 follow-up: TW 星野校准局“收录此系列”失败根因为 SZLKPassport 项目的 Cloudapi payments 治理缺少 Taiwei 三个 priceKey 与 webhook target，导致 Passport checkout-link 无法完成 Stripe Checkout 创建并被 TW 映射为 503。已在 `proj-szlkpassport-c42b86` 补齐 `taiwei_single_monthly`、`taiwei_full_suite_monthly`、`taiwei_five_beasts_scroll` priceCatalog/webhook，并验证三项 Stripe price 可解析；同时修复 Cloudapi 多套餐导入同一 productKey 时 Stripe Product idempotency 碰撞问题，提交 `0394187` 已通过 CI `28658348311` 与 Deploy `28658385272`。剩余风险：仍需真实或 test-mode Stripe 交易验收 checkout -> webhook -> Passport entitlement -> TW download。
+- 2026-07-03 pricing correction follow-up: 用户确认星野校准局数字资产价格为 `$2.99 / $5.99 / $19.99` 且一次性买断。TW 提交并推送 `54b23e2 Set Taiwei asset packs to one-time prices`；Passport 已新增 one-time plans `taiwei_single_device_299`、`taiwei_full_suite_599`、`taiwei_five_beasts_scroll_1999`，Cloudapi project `proj-szlkpassport-c42b86` 已将三者设为 active payment priceCatalog/webhook priceKeys，并保留旧 key 为历史兼容/inactive。生产 GitOps env 已切到新 key；whole-project deploy `170/171` 在 build_callback 失败后，已补 `web` service release mapping 并通过 service deployment `172` 上线。验证：`pnpm run build`、`pnpm run lint`、Passport catalog 回读、Cloudapi project 回读、TW env 回读、production health 200/db ok、线上 JS chunk 只含 `$2.99/$5.99/$19.99` 且无 `/mo` 或旧价。
+- 2026-07-03 account/download closure follow-up: 回答“是否可发布 MVP”前审计发现两处尾项：用户中心只显示 `paid` intent，若 Passport webhook 晚到而首次 confirm 写成 `pending_entitlement`，普通刷新不会自动补齐；六瑞兽完整套装原先只会按购买时选择的瑞兽展示一个下载项。已提交并推送 `588a3c3 Complete account download entitlement handling`：账户摘要会用 Passport access 自动把已到账权益回填为 `paid`；完整套装下载列表会展开六只瑞兽；下载接口允许完整套装访问任意六瑞兽 asset；全端文案收口为所选瑞兽全端资产。验证 `pnpm run build`、`pnpm run lint` 通过。部署 `174/175` 均失败在 GitOps `build_callback`，所以截至本记录该补丁尚未上线，生产仍是价格修正版而不是下载闭环修正版。
+- 2026-07-03 correction: deployment `175` later completed successfully and supersedes the previous deployment-risk note. Production `web` was recreated from `tw-web-175.tar.gz`, health returned 200/db ok, unauthenticated `/api/account/summary`、`/api/downloads/scroll:qilin`、`/api/purchase-intents` all returned 401, frontend chunks contained latest `$2.99/$5.99/$19.99` pricing plus corrected full-suite copy, and Passport access checks for a no-feature test user returned `feature_not_granted`. Remaining MVP release caveat is one real Stripe test/live transaction to verify checkout -> webhook -> Passport feature grant -> account download -> Cloudapi signed URL.
+- 2026-07-03 infrastructure simulation closure: SZLKPassport added design/help docs and implemented `verify_szlkpassport_billing_delivery_simulation`; CloudMCP registered the tool in `szlkpassport_operations`; cross-project memory pattern and Passport Product Subscription skill were updated. Verified SZLKPassport `pnpm run check` and CloudMCP `node --test tests/provider-bridge-registry-szlkpassport.test.js`. Remaining release caveat for TW/business projects remains a real Stripe test/live transaction; the new simulation lane is pre-live infrastructure validation, not revenue evidence.
+- 2026-07-01 TW production MVP pass: commit `79b9659 Build production MVP auth billing and homepage` pushed to `origin/main`; GitOps deployment `135` succeeded on `tc-gz1` for `taiweilab.com` and health probe returned 200. Local validation: `pnpm prisma generate`, `pnpm build`, `pnpm lint`, Chromium desktop/mobile homepage screenshots, and DOM check for `LIVE DEVICE SIMULATOR` / `CALIBRATE & SECURE`. Production verification: homepage contains Taiwei hero/simulator text, `/api/auth/session` returns `{"user":null}` anonymously, and unauthenticated `/api/purchase-intents` returns 401. Remaining blockers: TW managed DB could not be provisioned because CloudMCP `provision_database_cluster` and `ensure_database_container` returned HTTP 500; `DATABASE_URL`, `SZLK_PASSPORT_SECRET`, and `CLOUDAPI_PROJECT_KEY` are not injected yet, so registration/login DB writes and real Cloudapi/Passport checkout entitlement closure are not production-ready.
+- 2026-07-01 ME 人格页面 UI 纠偏已闭环：提交并推送 `1d29fa5 Align persona UI language and CTA structure`，移除 `/zh/personas` 与 `/zh/personas/[type]` CTA 周边的“查看全部人格匹配关系”矩阵文本入口，删除 `Personas.detailPage.compatibilityMatrix` 双语消息键；`/zh/persona` 说明组件标题从“中国生肖人格测试入口”改为“中国生肖人格测试”，可见正文改用“每日运势 / 易经占卜 / 四柱八字”等真实用户语言，不再出现 `ME/Horoscope/Oracle/BaZi`。本地验证：`pnpm run check:i18n`、`pnpm run typecheck`、`pnpm run lint`（仅既有 2 个 `<img>` warning）、`pnpm run build` 通过；agent-browser 验证本地 `/zh/persona`、`/zh/personas/water-dragon`、`/zh/personas`；GitHub `quality-gate` run `28518279734` 成功。线上 curl 确认详情页不再输出“查看全部人格匹配关系”，`/zh/persona` 目标正文已更新；全站内嵌翻译 JSON 中仍可能出现 Horoscope/Oracle/BaZi 键名或英文站文案，不代表目标中文组件可见文案。
+- 2026-07-01 ME SEO/GEO 与 CloudMCP Supabase 写库工具闭环：GSC 分析确认 `mysticeast.uk` 高价值机会集中在 `/en/horoscope` 与 `chinese horoscope today/chinese daily horoscope/daily chinese horoscope/dragon horoscope today`；ME 已提交并推送 `3303695 Optimize horoscope GEO keyword pages`，GitHub `quality-gate` run `28513692348` 全部通过。Cloudapi 已提交并推送 `3f73ee2 Add Supabase table write bridge tool`，CloudMCP 已提交并推送 `5106247 Expose Supabase table write bridge tool`，两仓库自动部署成功。2026-07-01 复核更正：当前 Codex 会话已通过正式 MCP 工具发现暴露 `mcp__cloudmcp.write_supabase_table_rows`，`mcp__cloudmcp.list_provider_bridge_contracts` 显示 `cloudapi_management.allowedTools/toolTimeouts` 包含该工具且 runtime backend healthy/toolCount=70，`mcp__cloudmcp.list_supabase_projects` 已经通过 CloudMCP -> Cloudapi -> Supabase 返回项目列表；但 `mcp__cloudmcp.write_supabase_table_rows` 对 `ai_blog_posts` 的真实 update 与零匹配 update 均返回 `HTTP 400 Bad Request`，说明默认 Supabase PostgREST 写凭据/写入配置仍未闭合。秦始皇 7x7x9 英文博客已用 ME 项目 Supabase service role 纠正线上 `description/content`，并提交推送 `f81bf18 Fix Qin blog seed summary` 保持发布种子不回退。CloudMCP 本地 Codex 工具治理技能已沉淀：`/home/ubuntu/.codex/skills/cloudmcp-tool-governance/SKILL.md`。
+- 2026-07-01 Homelab 节点既有容器访问统计已补齐：`/services` 的访问分析现在先解析 GitOps project 公网入口，若当前容器不是项目公网入口，则继续查 `public_homelab_services` 是否在同一 gateway agent 下通过 metadata `target_service_id/target_container_id` 或 `target_host` 绑定该容器；匹配后按 Homelab 绑定域名读取 Cloudflare 访问分析。生产 D1 复核到 `coder.szlk.ai` 绑定 `oc-singapore:c232dca8169a` / `code-server` / `172.17.0.3`，新逻辑可覆盖这类节点既有容器。提交并推送 `836a926 fix: include homelab services in traffic analysis`；本地 `node --test test/traffic-analysis.test.js`、`node --check index.js services/traffic-analysis.js`、`corepack pnpm run ci:check` 通过，GitHub `Control Plane CI` run `28505801950` 与 `Control Plane Deploy` run `28505827754` 成功。
+- 2026-07-01 GitOps BC 访问统计归属纠偏已闭环：生产 D1 与 Cloudflare Tunnel 均确认 `bc-web-1` 是公网入口服务，项目 `bc` 域名 `beiching.com` / `bc.szlk.ai` 的 tunnel ingress 指向 `http://localhost:18080`，`bc-web-1` 端口映射为 `18080->8080/tcp`；`bc-api-1` 仅上报 `3000/tcp`，不是外部直连入口。新增流量分析原先按项目域名读取 Cloudflare 流量并挂到任意同项目容器，导致后端行误显示域名访问量；已修复为仅直接承接项目公网端口的服务可读取访问统计。提交并推送 `8319c5d fix: scope traffic analysis to public service`；本地 `node --test test/traffic-analysis.test.js`、`node --check index.js services/traffic-analysis.js`、`corepack pnpm run ci:check` 通过，GitHub `Control Plane CI` run `28500378872` 与 `Control Plane Deploy` run `28500405554` 成功。
+- 2026-06-30 CloudMCP 已完成 Cloudapi Supabase ops 北向暴露：提交并推送 `c04514f feat: expose supabase ops through cloudapi bridge`，`cloudapi_management` 允许并治理 8 个 Supabase 只读工具；GitHub guardrails `28439880745` 成功，mainline deploy `28439908826` 成功。由于 CloudMCP KV 里 `backend:cloudapi_management.tools` 是缓存列表，本轮已用 Wrangler 从 Cloudapi help 刷新远端 KV，读回确认 `toolCount=69` 且 Supabase 8 个工具齐全。本地 `.env` 的 CloudMCP API key 对 `/mcp/tools` 返回 401，因此未完成有效 runtime key 下的 `tools/list/tools/call` 北向实链验收。
+- 2026-06-30 Cloudapi 已为后续 Supabase -> GitOps 托管数据库迁移准备 Supabase ops 基线：`supabase` 渠道现在默认建议 `database + ops`，新增 `src/providers/supabase.js`、`src/capabilities/supabase.js`，并把 organizations/projects/branches/database context/database config/backups/migrations/health 八个只读动作接入 `/v1/ops/supabase/*` 与 `cloudapi_management` provider bridge。正式标准文档为 `docs/CLOUDAPI_SUPABASE_OPS_CAPABILITY_STANDARD_2026-06-30.md`；已验证 `node --check ...`、`node --test test/supabase-capability.test.js`、相关模型/后台/语义测试、`npm test` 470/470。
+- 2026-06-30 Supabase 渠道连通性纠偏：普通 channel connectivity 不再沿用旧 Data API 探测和强制 Base URL，而是走 Supabase Management API `GET /projects`；新增运维渠道只需 PAT。已验证 `node --check src/admin-channel-connectivity.js`、`node --test test/channel-connectivity.test.js`、`npm test` 470/470。
+- 2026-06-30 GitOps 项目管理页 `/projects` 已从卡片阵列改为列表行展示：每行保留项目名、状态、发布模式、节点、端口、路径、最近部署、域名/失败提示和原有操作入口。提交 `1406b63 Render projects as a list` 已推送到 `main`；本地 `corepack pnpm run ci:check`、pre-push CI gate、GitHub `Control Plane CI` run `28437830850`、`Control Plane Deploy` run `28437851524` 均成功。临时 agent-browser 渲染截图验证了桌面与移动端列表布局。
+- 2026-06-30 AIF Railway -> GitOps 迁移已闭环：GitOps project `aif` 在 `tc-gz1` 运行，domain `possibility.work` 已绑定到 GitOps tunnel，web deployment `121` 成功并检测发布端口 `3010`。公网验证：`https://possibility.work/api/health` 返回 `service: aif`，`/api/health/ready` 返回 `database: ok`。
+- AIF GitOps DB `db-aif-primary` 已 ready，迁移后核心表计数与源库审计一致：`users=2`、`projects=2`、`generations=40`、`storage_asset_ledgers=36`。业务容器环境键、Next Ready 日志、web -> DB TCP 访问与公网 ready 均已验证。
+- AIF 旧 Railway project `adc0184b-73c0-4975-977b-04c5960fcd17` / `AIF` 已通过正式 CloudMCP Railway 工具删除；活跃 Railway 项目列表复查已不含 AIF。
+- AIF 本轮提交并推送：`60ee41a`、`304eed9`、`a56fc54`、`1739354`、`7db2e2b`，用于 GitOps Dockerfile、health endpoints、runtime dependency、Compose 端口治理。GitOps 平台提交并推送/部署：`17f4a7f`（延长 DB 迁移 pod 等待）、`8df6ff7`（修复服务云构建镜像识别）。
+- 2026-06-30 YL Railway -> GitOps 迁移主链路已完成：GitOps project `yl` 在 `tc-gz1` 运行，domain `seevoid.com` 已绑定 GitOps tunnel，deployment `110` 成功，`/api/health` 与 `/api/health/ready` 均 200。GitOps DB `db-yl-primary` ready，核心表计数与 Railway 源库审计一致。Railway 旧项目 `102d691c-33f7-4eb2-8f7e-26135a2cac54` / `YL` 已通过正式 CloudMCP Railway 工具删除，活跃 Railway 项目列表复查为空，include_deleted 复查显示 `deleted_at=2026-06-30T07:41:57.861Z`。
+- YL 本轮代码提交并推送：`08ed651 Include Prisma client in GitOps runtime`（此前还有 `dcd08ce`、`230a2fa`、`b15dae0`、`349ac9b`、`97c9b8b` 用于 Docker/health/runtime）。GitOps 控制面提交并部署：`871e649 Add database migration pod cleanup tool`，用于清理超时迁移 pod；本轮 `pg-migrate-1782789041-1343380` 已清理且服务清单复查为空。
+- YL MCP 配置层已验证：`/home/ubuntu/.codex/config.toml` 指向本机 device 真实绑定的 runtime key，key metadata、device record、tenant workspace grant 对齐 `client_profile.agent.codex-local.fcecb33c / workspace.project / connector.codex.project`。2026-06-30 本轮通过本地 CloudMCP proxy 的 MCP `tools/list` 返回 185 个工具，其中 Railway 13 个工具全量可见：`list_railway_projects`、`inspect_railway_project_inventory`、`list_railway_domains`、`detach_railway_custom_domain`、`delete_railway_project` 等。Codex 内置 MCP 客户端首次 `tools/list` 仍可能因 proxy 初始化超过 30 秒超时；本轮用临时 `/tmp/yl-mcp-client-*` MCP 客户端关闭自动 profile/probe 后完成正式 CloudMCP 调用。
+- 2026-06-30 已按 SoloMap 全局 MCP 安装机制登记 CloudMCP：`.solomap-global/mcp/servers/cloudmcp/solomap.mcp.json`、`source.lock.json`、`profiles/codex.json`、`package/README.md` 与 `.solomap-global/mcp/registry.json` 已创建，不保存明文 API key，只记录凭证引用和 profile 建议。
+- 2026-06-30 SoloMap 当前项目已完成自动化任务多组定时功能：番茄钟面板新增多组定时任务管理，每组支持名称、每天时间、启用状态和 prompt；正式数据源为 `automationTasks.scheduledTasks[]`，旧 `triggers.scheduled_time` 自动迁移/映射到第一条。
+- 定时触发到点后在当前选中项目复用现有 Solo 新任务对话链路，不新增独立任务系统；防重以当天日期、任务 id、时间和项目路径为 key，并记录 `.solopreneur/automation-tasks.jsonl`。
+- 已验证：`npm run compile`、`node --test --test-force-exit test/webview-regression.test.js` 86/86、`npm test` 117/117；已提交并推送 `fe884aa feat: support multiple scheduled automation tasks`，GitHub Actions `Publish VS Code Extension` run `28424844446` 成功，自动发布版本 `0.0.288`，本地已快进到 `268ca62 chore(release): bump version to 0.0.288 [skip ci]`。
+- 2026-06-30 定时任务 UI 心智纠偏：设置页不再暴露旧单组 `scheduled_time` 编辑选项，只保留紧凑单行入口显示定时任务组数并跳转番茄钟面板；番茄钟面板显示当前选中项目归属，作为多组定时的唯一编辑入口。已验证 `npm run compile`、`node --test --test-force-exit test/webview-regression.test.js` 86/86、`npm test` 117/117；已提交并推送 `5976ffa fix: unify scheduled automation settings entry`，GitHub Actions `Publish VS Code Extension` run `28425627234` 成功，自动发布版本 `0.0.289`，本地已快进到 `4fba0d5 chore(release): bump version to 0.0.289 [skip ci]`。
+- 2026-06-30 定时任务绑定项目 bug 已修复：`scheduledTasks[]` 新增保存 `projectPath/projectName`，番茄钟列表显示每条任务目标项目；执行时 `runScheduledAutomationTask` 优先使用 task 自身 `projectPath` 调用 `ensureActionProject`，只有旧任务缺少绑定路径时才回退执行时当前项目。已验证 `npm run compile`、相关窄测、`node --test --test-force-exit test/webview-regression.test.js` 86/86、`npm test` 117/117；已提交并推送 `39502bb fix: run scheduled tasks in bound project`，GitHub Actions `Publish VS Code Extension` run `28440887393` 成功，自动发布版本 `0.0.290`，本地已快进到 `7dd33da chore(release): bump version to 0.0.290 [skip ci]`。
+- 后续若维护 `src/sidebarWebview.ts` 内联脚本，注意模板字符串里的正则反斜杠必须按最终 Webview 脚本语义双重转义；定时器需 `unref()`，否则测试或宿主进程可能被 timer handle 拖住。
+
+## 2026-07-10 CloudMCP dependency security remediation
+
+- `package.json`/`pnpm-lock.yaml` now pin transitive `ws@8.21.0`, `undici@7.28.0`, and `basic-ftp@5.3.1` through pnpm overrides.
+- `hono` and `fast-uri` were reachable through the separately managed `local-proxy` package, not the root package. `local-proxy` now uses `@modelcontextprotocol/sdk@1.29.0`, resolving `hono@4.12.28`; it pins `fast-uri@3.1.2` and `path-to-regexp@8.4.0`.
+- Verified: clean pnpm installs; root and local-proxy production audits both have 0 high/critical vulnerabilities; root `pnpm test` has 178 passing tests; local-proxy syntax and SDK import checks pass.
+
+## Current Goal
+- 2026-07-14 SZLKPassport 治理面二次纠偏已闭环：完整用户目录与封禁/解封/删除已上线；产品接入和产品计划拆为独立工作区；提交 `2e6ff26` 已推送，CI/Security 成功，生产版本 `1214b5a5-cab4-4df9-9201-018a1053154c` 健康。上轮“合并产品入口”结论已废止。
+- 2026-07-14 SZLKPassport 管理员治理面重构已闭环：后台统一为总览、产品、用户、审计四个动作入口，产品接入与密钥/登录/计划管理复用现有正式 API，桌面与 390px Chromium 渲染检查通过；提交 `4d2d551`、清理提交 `09b4dac` 已推送，CI/Security 成功，生产版本 `c70a9210-321f-4ff0-9bc8-9e96da640669` 健康。
+- 2026-07-14 JW login regression corrected after user browser evidence: production logs showed PostgreSQL `42883 function auth.jwt() does not exist`, not missing lateral registration. `auth.jwt()` is live, existing-user projection passes inside a rollback transaction with zero residue, legacy first-login Passport sync is restored, commit `e800a24d` is pushed, deployment `229` succeeded, and public database readiness is 200. User should retry both an existing Passport account and an old JW-only account.
+- 2026-07-14 JW PostgreSQL/Passport cutover is live: JW commits `580f60a3` and `96368f0a` are pushed, deployment `228` succeeded, app/PostgREST/CNPG are running, public ready and parity checks pass, OIDC redirect uses `https://cyannav.com/api/auth/callback`, and anonymous private-table reads return no rows. Old Supabase remains unchanged for rollback. Remaining governed cleanup: migration pods await refreshed `cleanup_database_migration_pod`; backup request exists but cluster backup profile is not yet backed by an object store.
+- 2026-07-14 migration UI correction is deployed in `ecbd613`: `/projects` now has a visible “迁移节点” action and target-node modal backed by the same formal migration path. Local/pre-push `ci:check` passes 260 tests plus Wrangler dry-run; GitHub Control Plane CI `29300919090` and Deploy `29300935906` succeeded. Production Chromium reaches the Cloudflare Access login boundary; authenticated UI rendering could not be inspected without a staff session.
+- 2026-07-14 GitOps 业务项目 A→B 一键迁移链路已实现并上线（`c816154`）：目标节点先重放最近成功 release，成功回报后自动同步 egress/Tunnel、切 DNS/active node、执行公网健康探针，失败则回绑源节点；源工作负载保留为回滚容量。`control-plane ci:check` 通过 259 tests + Wrangler dry-run，GitHub Control Plane CI `29298574939` 与 Deploy `29298595930` 成功。runner 域名 help 直连仍命中既有超时问题，未用旁路冒充 MCP 线上调用验证。
+- 2026-07-14 JW Railway 迁移后登录导航阻塞已修复并上线：GitOps deployment `225` 成功，远端提交 `8827027b`；登录成功使用整页跳转，中间件 Supabase 会话刷新不再无限占用页面请求。生产健康、并发 dashboard、RSC/chunks 和浏览器水合验证均通过；没有修改 Supabase 用户数据或 schema。
+- 2026-07-13 JW Railway -> GitOps 迁移已闭环：GitOps deployment `224` 在 `tc-gz1` 成功，`cyannav.com` 首页、登录页、服务健康和 Supabase 数据库就绪均为 200；原 Supabase JIANWU 项目继续使用且 DB/Auth/REST 健康；Railway JW 项目已删除并从活跃项目列表消失。无迁移尾项。
+- 2026-07-13 BC dependency risk task closed: commit `6542999` pushed; all 100 requested Dependabot alerts are `fixed`; local client/server verification and GitHub Beiching CI `29228977737` passed. Only separate low alert #167 remains because the patched esbuild version breaks the current UniApp build.
+- 2026-07-13 SZLK 官网 Dependabot 46 项依赖告警已闭环：提交 `80b555b` 与 Node 22 CI 修正 `9da2955` 已推送；GitHub 开放 Dependabot 告警为 0，Homepage CI `29228904283` 与 Deploy `29228904294` 均成功。
+- GitOps Homelab 发布节点本地既有容器（如 `coder.szlk.ai -> 172.17.0.3`）时，保持 Homelab 单一治理入口和现有 public / Access / private 三种发布选择，同时在实现层自动补齐目标容器横向出口隔离。
+
+## SoloMap Project Growth Follow-up 2026-07-10
+- 已完成项目生长图模块命名纠偏：`src/projectGrowth.ts` 去掉 `moduleForPath()` 路径硬编码命名，模块先由 `dependency-cruiser` 真实依赖聚类，再优先采用 Run Index 命中的路线图标题；无路线图归属时回退为扫描得到的真实目录/词元名。
+- 依赖扫描现在按 `src` 文件路径/bytes/loc 签名做进程内缓存，避免重复刷新或后续 run 触发项目生长图时每次都重新跑整轮依赖分析。
+- 已验证：`npm run compile`、`node --test test/project-growth.test.js`、`node --test --test-force-exit test/webview-regression.test.js`。
+- 继续完成用户可见去黑箱：模块卡片与重点区域改为展示“命名依据”而不是内部职责标签；系统协同 graph 改为按真实 `implements` / `tested_by` / `depends_on` 关系分组，不再按 `db/run/test` 关键词猜泳道。
+
+## Confirmed Facts
+- 2026-07-15 Cloudapi Google Search Console production migration is complete. Commits `750706e` and `2147324` are deployed; CI and deploy passed. The existing scoped connection was transparently rebound by the production resolver and still returns 14 sites; Search Analytics and URL Inspection also succeeded through CloudMCP. ChatPMP remains running/ready and its existing server-side Cloudapi sites/analytics path is compatible. No authorization URL or consent flow was triggered in production.
+- 2026-07-14 GITOPS database ingress isolation and credential rotation are production-verified. All eight active database pools have explicit source-service bindings with enforced business egress and database ingress. ST rotation `7b5eff96-1823-46bb-ad8e-e4e6ea5abdb3` recreated its governed `web` consumer, proved the old credential was rejected, left the cluster ready, and preserved HTTP 200 on `seenoting.com`. Database role splitting remains intentionally out of scope; no direct node/Kubernetes bypass was used.
+- 2026-07-12 ChatPMP 其余 16 条 high Dependabot 告警已闭环：将 xlsx 从停止维护的 npm 0.18.5 切换到 SheetJS 官方 0.20.3 tarball，并通过 `pnpm.overrides` 固定 @xmldom/xmldom 0.8.13、defu 6.1.5、effect 3.20.0、fast-xml-builder 1.1.7、fast-xml-parser 5.5.6、flatted 3.4.2、lodash 4.18.0、picomatch 4.0.4。pnpm audit high/critical 均为 0，133 tests、生产 build、本地/远端 Zero-Tolerance CI 均通过；远端提交 `55e5027`，GitHub 所有 16 条目标告警为 fixed，当前开放 high/critical 为 0。
+- 2026-07-12 ChatPMP 5 项高危 Dependabot 修复已在本地验证：`ws` 解析为 8.21.0、`hono` 4.12.25、`vite` 8.0.16、`next` 15.5.20；原顶层 `overrides` 对 pnpm 无效，已迁移到 `pnpm.overrides`。目标 GHSA 审计残留为 0，type-check、133 tests 和生产 build 均通过；提交推送是最终交接动作。
+- 2026-07-12 SZLKlaws dependency security fix is verified: Dependabot's `undici`/`ws` findings came only through `wrangler -> miniflare`; upgrading Wrangler to `4.110.0` resolves patched `undici 7.28.0` and `ws 8.21.0`. Frozen install, zero-vulnerability pnpm audit, 24/24 tests, syntax checks, and Wrangler dry-run all passed; repository commit/push remains the final handoff action.
+- 2026-06-29 Homelab 纠偏已落地：Homelab 不再因为目标匹配 `global_services` 容器而拒绝发布；发布链路会在 DNS / tunnel ingress 前同步两层策略：homelab tunnel 容器 egress allowlist，以及未被 GitOps project egress 覆盖的节点本地 Docker 目标容器 egress isolation。目标容器默认拒绝 RFC1918 / CGNAT / link-local 横向出口，只保留 ESTABLISHED/RELATED 响应和显式注册的 private-network forward gateway 端口。
+- 验证已通过：`cd control-plane && node --test test/homelab-routes.test.js`，以及 `cd control-plane && corepack pnpm run ci:check`（221 tests + Wrangler dry-run）。
+- 2026-06-29 ChatPMP 迁移已闭环：生产域名 `planovai.work` 访问 GitOps business project `chatpmp`，节点 `tc-sh1`，业务服务 `web`，容器 `69403d2f9874`。
+- GitOps 数据库 `db-chatpmp-primary` 已 Ready：service `10.43.138.12:5432`，当前 endpoint `10.42.0.119:5432`，cross-node endpoint `172.16.0.2:31601`。
+- 业务到数据库的正式路径是 GitOps `attach_database_to_business_project` + source-service-scoped egress。当前仅保留 `web -> 10.43.138.12:5432`、`web -> 10.42.0.119:5432`、`web -> 172.16.0.2:31601` 三条正式数据库规则。
+- P00 纠偏已完成：`172.23.0.1:15432` local proxy 是错误旁路，已从 egress 移除，最终业务容器 TCP 探针为 `ECONNREFUSED`，不得再作为 ChatPMP 正式路径使用。
+- 迁移数据已验证：public schema 22 张表，`BrainMemory` 122 条；`https://planovai.work/api/health` 返回 `ok`，`/api/health/ready` 返回数据库 `ok`，GitOps parity 返回 `ready=true` 且 `blockers=[]`。
+- 旧资源已释放：Vercel project `chatpmp` / `prj_UgPgNipg58sm2PVQi0WbYVfRTJy` 已解绑 `planovai.work`、`www.planovai.work` 后删除；Neon project `CHATPMP` / `soft-cell-09310663` 已删除；后续搜索均为空。
+- 本轮已把 P00 教训写入 `/home/ubuntu/project/agent.md` 与 `.solomap-global/memory/operating-rules.md`：记忆只能当检索线索，当前实现必须查线上真实状态；不得在未核验正式设计/成熟实现前自造旁路；线上变更和记忆错误必须同轮写回。
+- GitOps 平台修复已闭环：`41f66a5` 修复 Agent 心跳被同步 release 查询阻塞的问题，并把业务资源占用列补到 `/services` 业务管理列表；GitHub Control Plane CI、Control Plane Deploy、Build GitOps Agent 均成功。
+- 线上 `tc-gz1` 与 `tc-sh1` 已通过常规自动升级链路升到 Agent `1.0.53`，心跳恢复；`chatpmp-web-1` 已回传非空资源占用，最近观测为内存 `274.9MiB`、硬盘 `18.9MB`。
+
+## Open Risks
+- ST GitOps login fix已落地：`src/auth.ts` 增加 Auth.js `trustHost: true`，提交 `21263a4` 已推送，GitOps whole-project deploy `96` 成功；线上 `https://seenoting.com/api/auth/session` 返回 `200 null`，`/api/health/ready` 返回 `database: ok`。
+- ST 二次登录串号修复已落地：提交 `553429c` 修复 `/api/auth/login` 的 proxied cookie base URL、旧 session/callback cookie 清理和登录成功整页跳转；GitOps deploy `98` 成功。随后补齐生产 `AUTH_URL`/`NEXTAUTH_URL=https://seenoting.com`，GitOps deploy `99` 成功，线上 `/api/auth/session` 已写 `__Secure-authjs.callback-url=https%3A%2F%2Fseenoting.com`。
+- ST 三次登录态分裂修复已落地：提交 `5a8e190` 修复 middleware `getToken()` cookie name/salt 与生产 `__Secure-authjs.session-token` 不一致的问题；GitOps deploy `100` 成功。匿名 `/dashboard` 与 `/profile` 仍 307 到 `/sign-in`，说明未放开保护；真实登录态需用户侧复测。
+- CloudMCP key已重签，GitOps business provider bridge secret已两端轮换且直连 provider bridge 验证成功；但 CloudMCP `/mcp` 生产路由仍对有效请求超时，需要后续单独修 CloudMCP runtime/aggregation。
+- GitOps ST service-only deploy `95` 暴露容器名冲突问题，whole-project deploy `96` 已绕过并成功；后续若修平台，应优先复核 service-only deploy 的 compose/container cleanup 路径。
+- ST 旧资源清理纠偏：Vercel project `seenoting` / `prj_8U9TKPFZmW9Sp0KFtfwvomYiHeQN` 已解绑项目域名后删除；Cloudapi/CLOUDMCP 已补齐 Vercel account-domain 工具，线上 MCP 复查 `seenoting` 项目数为 0、账号域名数为 0，`seenoting.com` / `www.seenoting.com` 不存在。
+- ST Neon 旧项目用户确认为 `SEENOTING`；Cloudapi/CLOUDMCP 已补齐 Neon organization discovery 工具，但当前 enabled Neon credential `jobs-neon` 是 organization API key，线上 MCP 返回 `not allowed for organization API keys`，默认全量仅见 `CHATPMP / soft-cell-09310663`，与 ST 源库 host `ep-long-unit-aiv2bac9-pooler.c-4.us-east-1.aws.neon.tech` 不匹配，不能误删。需要能看到 `SEENOTING` 的 Neon personal API key credential 或精确 project id 才能释放。
+- GitOps 运行时未从本地 `.env.local` 写入 Stripe secrets，因为本地文件当前没有 `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` 非空值；这会影响支付相关生产流程。
+- `tc-sh1` 本轮曾因镜像/构建缓存触发 DiskPressure；已通过受控缓存回收恢复到健康状态，并已新增受控清理机制与业务资源占用展示，但后续仍应监控节点磁盘增长。
+- CloudMCP connector contract 的 `POST /connectors/status-reports` 在 device-bound key 下仍返回 `connector_unauthorized`；从代码看该 handler 先读取 body 再进入 device auth，而 device auth 需要 clone body 参与签名校验，可能导致 POST 状态回报在 device-bound 模式下不可用。本轮未扩大修 CloudMCP 服务端代码，MCP `/mcp tools/list` 已独立验证通过。
+## YL axios Dependabot closure 2026-07-12
+
+- Verified alerts 233, 234, 235, 240, and 241 were open because `pnpm-lock.yaml` and `apps/web/pnpm-lock.yaml` resolved axios 1.13.x; GitHub advisories required at least 1.15.2 or 1.16.0.
+- Raised the web direct dependency and root pnpm override floor to 1.16.0; both lockfiles now resolve all axios paths to 1.18.1.
+- `corepack pnpm --filter web check` passed type checking, lint, and production build. Commit `0d7bc78` was pushed to `origin/main`; GitHub subsequently marked all five alerts `fixed` without dismissal.
+## YL remaining high-risk dependency remediation 2026-07-13
+
+- Audited all open Dependabot critical/high alerts: 1 critical and 65 high at start, spanning Next.js, archived urllib3, and npm transitive dependencies in both pnpm lockfiles.
+- Commit `ea0c2ce` upgraded Next.js/eslint-config-next to 16.2.10, urllib3 to 2.7.0, and pinned all vulnerable npm transitive ranges to patched releases in both lockfile contexts. Local production audit reports 0 critical and 0 high; Python dry-run resolution and the full web type/lint/production-build check passed.
+- Pushed `ea0c2ce` and dependency-graph refresh commit `584ad00`. GitHub's dynamic Dependency Graph run `29214203800` remains queued, so remote alerts still show stale pre-fix versions (1 critical / 62 high) with May timestamps. Two obsolete queued axios Dependabot update runs were cancelled; do not dismiss alerts. Next verification is to wait for run `29214203800`, then require remote open critical/high count 0.
+
+## CONTENT_FACTORY Agent production Program closure 2026-07-13
+
+- Existing Program `2d42cabe-ec22-4f7e-bd00-ade8c85e6e14` was continued in place; no new Program or execution job was created and no successful asset was re-dispatched.
+- A content-specific cover was generated and attached through the governed cover tool. Public asset URI: `https://cloudapi.szlk.ai/v1/assets/asset_74fdf92e0ee74db5a6b4a425e11cbc0c/content`; the cover evidence gate now passes.
+- Canonical YouTube assets are complete: zh Shorts `Efqvycd6cLc`, en Shorts `swE_YPluPis`, zh long-form `Hz2pQa04wWY`, en long-form `uNmaBYpAhqo`. Blog zh/en and WeChat zh remain succeeded. LinkedIn zh/en remain intentionally excluded after expired-token failures.
+- Final diagnosis still fails because the pre-existing `longform_video:en` lane contains four execution jobs: two succeeded (`279842ba-d369-46a1-a62c-dada0e434950`, `240042ba-d369-46a1-a62c-dada0e434950`) and two were still running (`4be8e56f-eba2-42fc-bdd5-b81245a3f985`, `f7a28af8-2988-4676-a4ac-4521180ba264`) at the last check. This is a realized duplicate-publication incident/risk; do not delete existing production assets without explicit user authorization.
+## GITOPS R2 database backup rollout (2026-07-14)
+
+- Implemented and deployed the governed `CloudMCP -> GitOps -> Cloudapi assets -> R2` logical-backup path, 30-day retention cleanup, checksum manifest, distinct-target restore contract, and Cloudapi asset deletion; no direct R2/S3 credentials or endpoint were added.
+- Production acceptance on `db-jw-primary` proved synchronous requests hit Cloudflare 524, so backup execution was converted to managed asynchronous Agent jobs with polling, lost-job reconciliation, 20-minute process-group termination, and 1 MiB Cloudapi chunks.
+- Superseded by production acceptance: `backup-db-jw-primary-1784025760330` reached `status=success` with SHA, size, two parts, expiry, and `cloudapi_read_verified=true`. Backup governance is now deployed with pool defaults, cluster inherit/override, manual backup, asynchronous restore, status/error evidence, and retryable 30-day cleanup.
+- GitOps `0d9d47f` and CloudMCP `5ad275f` are deployed and their test/deploy gates passed. Production browser automation reached the expected Cloudflare Access login boundary; authenticated visual inspection was not possible without a user session, while final HTML/script behavior remains covered by the UI regression suite.
+- 2026-07-14 load-governance follow-up is complete: GitOps `9de3072` adds deterministic four-hour staggering, D1 atomic global 2 / per-Agent 1 leases, queued admission for manual and scheduled requests, stale-start recovery, and five-attempt Cloudapi upload backoff. Cloudapi `f35a78e` adds project-scoped idempotent private asset creation; `96eb49e` leaves CodeQL analysis enabled while disabling unsupported SARIF upload. Four simultaneous production acceptance backups proved 2/1 limits, queue handoff, final success, and R2 read verification. All relevant GitHub workflows are green.
+# 2026-07-14 SZLKPassport 产品治理面纠偏
+
+- 已将接入闭环健康矩阵从生态产品页迁至控制台总览。
+- 生态产品页已改为单栏，并以完整管理表格替代产品卡片；逐行支持编辑配置、OIDC、计划、轮换密钥和打开产品。
+- OIDC Clients 也已从卡片改为完整管理表格，逐行支持编辑与真实启停，并显示回调、认证和安全状态。
+- 审计中心已使用服务端筛选和分页的完整表格，展示 session、User-Agent、metadata 等完整证据，不再截断。
+- 管理后台共享容器已改为全宽响应式：桌面使用侧栏后的全部宽度，超宽屏保留 48px 安全边距，移动端保持原边距。
+- `pnpm check`、最终脚本语法、真实 Chromium 390px 交互/溢出验证、GitHub CI/Security 均通过；生产版本为 `46d21f1c-58e0-4b54-952e-d60466ffb637`。
+
+# 2026-07-14 SZLKanalytics UI、数据与告警闭环
+
+- 提交 `6c46861` 已推送，生产 Worker 版本为 `3c075189-4e49-403d-8bca-6b87de3c23a3`；健康与状态端点均为 200。
+- 后台已对齐治理面侧栏/顶部范围选择/全宽画布心智，1920px 与 390px Chromium 渲染通过，最终内联脚本语法有效。
+- 告警误报根因是无有效注册分母仍生成 0% 激活率；代码已阻止无分母比率、按原始事件评估全局比率并保留 resolved 历史。生产四条误报已恢复，开放告警为 0。
+- 外部 Telegram / 邮件通知发送器仍未实现；项目文档已纠正旧有过度声明，当前正式能力是后台告警列表。
+
+# 2026-07-15 ChatPMP SZLKPassport 登录接入闭环
+
+- ChatPMP commits `563b31d`, `8bf536e`, `ed50135` 已推送；Zero-Tolerance CI 成功，GitOps deployment `251` 运行中且版本正确。
+- 生产数据库已新增 `User.passportUserId` 唯一可空列；受治理 `prisma db push` 二次确认 schema in sync。有效数据库入口为 `10.0.4.16:31601`。
+- `https://planovai.work/api/health/ready` 返回 database ok；Passport start 返回 307 到 `passport.szlk.ai`，client、callback、PKCE 均正确；登录页显示 Passport 主按钮和旧账号首次登录入口。
+
+# 2026-07-15 ME 登录路径纠偏
+
+- 用户确认 ME 应恢复 Cloudapi Google 登录入口，并让 SZLKPassport 使用产品内原生 headless 邮箱/密码表单，不使用 OIDC 按钮跳转。
+- 代码与治理已按该边界收口：Google 登录/注册统一由 Cloudapi delegated OAuth 承接；Passport 注册为 `headless_auth`，旧 OIDC client 已停用；旧 Supabase 密码账号仍能验证后自动同步 Passport并保留原 user id。
+- 本地 typecheck、i18n、lint、21 suites / 464 tests、production build 已通过；主提交 `b60195e` 和公开域名重定向修复 `bde9f0e` 已推送。Railway deployment `a073204f-342b-4a87-8882-bf3ffd2aa4f0` 成功；生产 Google start 已验证 307 到 Cloudapi 管理的 Google authorize，含 state HttpOnly cookie；旧 `/api/auth/passport` 已验证 307 回 `https://mysticeast.uk/login`。GitHub Security 的依赖审计因 npm 官方 audit endpoint 返回 410 失败，非本次认证代码失败。
+
+# 2026-07-15 Cloudapi Google OAuth 模型拆分
+
+- Cloudapi `fa09091` 与 CloudMCP `7684fa2` 已部署：普通 Google 登录只申请 `openid/email/profile`，Search Console 使用独立 `/v1/google/search-console/oauth/start` 和新 MCP 工具 `start_google_search_console_oauth`。
+- ME 生产授权 URL 已验证不再包含 `webmasters.readonly`；原 CloudMCP Search Console 连接继续正常列出 14 个站点。
+- 新工具已进入生产 bridge contract 且 backend healthy。后续生产闭环不得在 Agent 对话中生成授权链接或要求账号持有人二次登录；原 Search Console 连接已具备 `webmasters.readonly` 且仍能列出 14 个站点，应审计并通过正式治理链把该既有连接迁移/绑定到 `google/search_console` 授权模型，再验证 ChatPMP 与 CloudMCP 透明续用。只有代码与线上证据证明既有授权无法迁移时，才可把重新 consent 作为明确风险上报，不能先假定需要人工授权。
+
+# 2026-07-15 CloudWiki 首页登录态闭环
+
+- CloudWiki 首页静态固定显示登录按钮的问题已修复：`/` 与 ChatUI 共用 D1 主副本一致的会话读取入口，登录后显示当前账户、进入智库和退出操作。
+- 提交 `957e3a7` 已推送；CI `29403627650`、Deploy `29403665628` 成功。生产已验证匿名、连续三次登录态刷新和退出后三种状态均正确。
+
+# 2026-07-16 SoloMap 侧边栏项目切换
+
+- 已将项目切换时两套重叠对话加载合并为一次本地快照，并按项目隔离 Solo 最近对话缓存；乱序回包不再污染当前项目或造成 30 秒 TTL 等待。
+- 编译与 108 项 Webview/插件回归通过；提交 `220c96a` 已推送到 `origin/main`。
+
+# 2026-07-16 SIM 事件推演故障修复
+
+- 根因是生产后台推演任务首次数据库写入发生瞬时 PostgreSQL 连接超时，旧实现无重试且继续复用已失效 SQLAlchemy session，导致推演记录可能长期停留 pending。
+- 修复提交 `4c78bd4` 已推送到 `origin/master`：数据库状态写入改为新 session + 指数退避重试；读取超过 5 分钟的 pending 推演时自动原地恢复，不重复扣积分；前端识别 running 状态。
+- 后端 24 项测试、Python compileall、前端 4 项 Vitest、lint、Next.js 生产构建及 GitHub CI `29503507391` 均通过；GitOps 精准发布 API `264`、Web `265` 成功，生产新容器启动并通过公开健康探针。
+- 全项目发布 `266` 是精准发布等待期间发起的同提交发布，已成功进入终态；API/Web 均运行 `sim-266.tar.gz`，公开健康探针恢复 200。不需要修改路线图。
+
+# 2026-07-16 SIM 推演详情与历史展示纠偏
+
+- 详情页曾把 `context_question`、`is_calibrated`、`reality_match`、`correction_payload` 当动态维度卡片展示，现已将其归入标准内部字段，不再向用户暴露字段名与 null/false/pending 值。
+- 生产数据库核验确认历史重复不是双击根因：ID 11/12 是相同输入的一次 failed 执行和随后 completed 重试，旧数据 9/10、5/6 同型。历史 API 已改为排除 failed 技术执行记录。
+- 曾提交的前端双击保护属于误判方向，已在后续纠正提交中回退；后端 24 项测试、前端 5 项测试、lint 与生产构建通过。
+- 纠正提交 `b2f3141` 与清理提交 `33fdf58` 已推送；精准发布 269/270 因节点并发下载在 15 分钟后超时失败，随后使用单一整项目发布 `271` 成功，API/Web 均运行 `sim-271.tar.gz` 且健康探针 200。生产 SQL 按新列表条件核验 persona 3 只返回 completed 的 12、10，不再返回 failed 的 11、9。
+- 后续按用户历史识别需求补齐：最近动态卡片以原始“当前导火索”为标题、“你想观察什么”为第二行；推演详情在结果前新增固定双栏“本次推演”组件。中英文共用 `simulationContext` 文案，前端 6 项测试、lint 与生产构建通过。
+- 该 UI 提交 `70bef5c` 已推送。Web 自动发布 272 与正式重试 273 均在 Cloud Build callback 阶段失败；同一时段 GitHub Actions API 持续返回 HTTP 503（非限流、非鉴权），现网 `sim-271` 健康 200。发布任务均已终态，无悬挂对象；待 Actions 恢复后需重发 Web 服务并验证线上双语渲染。
+
+URL RELATED FILES
+src/i18n.ts:20:    sharePreview: 'Share preview', chooseFile: 'Choose a file', linkCopied: 'Link copied', open: 'Open', copyAgain: 'Copy again', keepPreview: 'Keep this preview', recent: 'Recent', refresh: 'Refresh', emptyHistory: 'Shared previews will appear here.', active: 'Active', expired: 'Expired', shareAgain: 'Share again', chooseToShareAgain: 'Choose the original file to share again',
+src/i18n.ts:21:    buildingChecking: 'Building and checking your public preview…', dropOneFile: 'Drop one file from Explorer or your computer.', droppedFileLimit: 'Files dragged from your computer are limited to 5 MB. Use Choose a file for larger artifacts.',
+src/i18n.ts:22:    temporary: 'Temporary', persistent: 'Persistent', justNow: 'just now', minutesAgo: '{count}m ago', hoursAgo: '{count}h ago', daysAgo: '{count}d ago', temporaryMeta: 'Temporary preview · claim within 60 minutes', persistentMeta: 'Persistent Cloudflare preview',
+src/i18n.ts:23:    buildingPreview: 'Building preview…', publishing: 'Publishing to Cloudflare…', checkingLink: 'Checking the public link…', shareTitle: 'Sharing {name}', publicConfirm: 'Share {name} ({size}) on a public preview URL?', shareAction: 'Share preview',
+src/i18n.ts:24:    sensitiveTitle: 'SoloDrop found possible sensitive content ({findings}) in {name}.', sensitiveDetail: 'Review the file before publishing it to a public URL.', shareAnyway: 'Share anyway', readyMessage: '{name} is ready. The preview link is on your clipboard.', openPreview: 'Open preview', showOutput: 'Show output', failurePrefix: 'SoloDrop could not share this file: {message}', actionFailure: 'SoloDrop could not continue: {message}', localOnly: 'SoloDrop can only share local files.', temporaryLimit: 'Temporary Cloudflare previews accept files up to 5 MB. Sign in to Wrangler or choose a smaller file.', notConnected: 'Cloudflare is not connected. Run Wrangler Login or switch SoloDrop deployment mode to Auto.', switchLanguage: '切换到简体中文'
+test/preview.test.js:4:const { previewInternals } = require('../out/preview.js');
+test/preview.test.js:7:  assert.equal(previewInternals.escapeHtml('<script>"x"</script>'), '&lt;script&gt;&quot;x&quot;&lt;/script&gt;');
+test/preview.test.js:11:  assert.deepEqual(previewInternals.parseCsv('name,note\nSoloDrop,"share, safely"'), [
+test/preview.test.js:17:  const html = previewInternals.renderMarkdown('# Result\n\n<script>alert(1)</script>');
+src/sidebarProvider.ts:7:import { buildPreview } from './preview';
+src/sidebarProvider.ts:105:    const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'solodrop-preview-'));
+src/sidebarProvider.ts:112:        this.output.appendLine(deployed.output.replace(/https:\/\/dash\.cloudflare\.com\/claim-preview\?claimToken=[^\s]+/g, '[claim URL hidden]'));
+src/sidebarProvider.ts:114:        await verifyPreview(deployed.previewUrl);
+src/sidebarProvider.ts:119:          previewUrl: deployed.previewUrl,
+src/sidebarProvider.ts:120:          claimUrl: deployed.claimUrl,
+src/sidebarProvider.ts:126:        await vscode.env.clipboard.writeText(next.previewUrl);
+src/sidebarProvider.ts:132:        if (choice === text.openPreview) vscode.env.openExternal(vscode.Uri.parse(record.previewUrl));
+src/sidebarProvider.ts:166:  private async handleMessage(message: { command?: string; id?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer }): Promise<void> {
+src/sidebarProvider.ts:220:      case 'open': if (message.url) await vscode.env.openExternal(vscode.Uri.parse(message.url)); break;
+src/sidebarProvider.ts:221:      case 'copy': if (message.url) await vscode.env.clipboard.writeText(message.url); break;
+test/deployment.test.js:7:test('separates public and claim URLs', () => {
+test/deployment.test.js:8:  const result = parseDeploymentOutput(`Deployed\nhttps://artifact.example.workers.dev\nClaim URL: https://dash.cloudflare.com/claim-preview?claimToken=secret`, true);
+test/deployment.test.js:9:  assert.equal(result.previewUrl, 'https://artifact.example.workers.dev');
+test/deployment.test.js:10:  assert.equal(result.claimUrl, 'https://dash.cloudflare.com/claim-preview?claimToken=secret');
+test/deployment.test.js:23:  await verifyPreview('https://example.workers.dev', async () => new Response('', { status: statuses.shift() }), async () => { pauses += 1; }, 3);
+test/deployment.test.js:36:  const result = await deployPreview('/tmp/preview', 'solodrop-test', 'auto', async (_command, args) => {
+test/deployment.test.js:39:    return { stdout: 'https://solodrop-test.example.workers.dev\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };
+test/deployment.test.js:47:  const result = await deployPreview('/tmp/preview', 'solodrop-test', 'auto', async (_command, args) => {
+test/deployment.test.js:55:    return { stdout: 'https://solodrop-test.example.workers.dev\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };
+src/preview.ts:89:export const previewInternals = { escapeHtml, parseCsv, renderMarkdown };
+src/sidebarWebview.ts:44:      <button id="claim-link" class="claim hidden" type="button">${escapeHtml(text.keepPreview)}</button>
+src/deployment.ts:15:  const urls = output.match(/https:\/\/[^\s\])]+/g) || [];
+src/deployment.ts:16:  const claimUrl = urls.find((url) => url.includes('dash.cloudflare.com/claim-preview'));
+src/deployment.ts:17:  const previewUrl = urls.find((url) => url.includes('.workers.dev') && !url.includes('dash.cloudflare.com'));
+src/deployment.ts:18:  if (!previewUrl) {
+src/deployment.ts:19:    throw new Error('Cloudflare finished without returning a public preview URL. Open the SoloDrop output and retry.');
+src/deployment.ts:21:  return { previewUrl, claimUrl, temporary, output };
+src/deployment.ts:75:  url: string,
+src/deployment.ts:83:      const response = await fetcher(url, { signal: AbortSignal.timeout(20_000) });
+src/deployment.ts:92:  throw new Error(lastStatus ? `The published preview returned HTTP ${lastStatus}.` : 'The published preview could not be reached.');
+src/types.ts:14:  previewUrl: string;
+src/types.ts:15:  claimUrl?: string;
+src/types.ts:22:  previewUrl: string;
+src/types.ts:23:  claimUrl?: string;
+resources/sidebar.css:47:.primary, .secondary, .result-actions button, .claim {
+resources/sidebar.css:71:.claim { margin-top: 6px; background: transparent; color: var(--brand); border-color: color-mix(in srgb, var(--brand) 55%, var(--border)); }
+resources/logo.svg:1:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="SoloDrop">
+resources/activitybar.svg:1:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+resources/sidebar.js:14:    claim: document.getElementById('claim-link'),
+resources/sidebar.js:60:      const open = document.createElement('button'); open.type = 'button'; open.className = 'history-action'; open.textContent = text.open; open.addEventListener('click', () => post('open', { url: record.previewUrl })); actions.append(open);
+resources/sidebar.js:72:  elements.open.addEventListener('click', () => latestRecord && post('open', { url: latestRecord.previewUrl }));
+resources/sidebar.js:73:  elements.copy.addEventListener('click', () => latestRecord && post('copy', { url: latestRecord.previewUrl }));
+resources/sidebar.js:74:  elements.claim.addEventListener('click', () => latestRecord?.claimUrl && post('open', { url: latestRecord.claimUrl }));
+resources/sidebar.js:102:      elements.claim.classList.toggle('hidden', !message.record.claimUrl);
+docs/research/cloudflare-drop-vscode-plugin.md:7:这个方向值得做，但产品定义需要准确：**Cloudflare Drop 不是“任意文件上传后自动预览”的网盘，而是“无需账号，上传一个静态网站目录或 ZIP，立即获得 `workers.dev` 预览地址”的静态站点发布器。**
+docs/research/cloudflare-drop-vscode-plugin.md:19:Cloudflare 官方页面给出的流程非常明确：用户拖入一个包含 HTML、CSS、JavaScript 的静态站点文件夹或 `.zip`，Cloudflare 将其部署到全球网络并返回一个公开的 `workers.dev` URL；用户需要在 60 分钟内认领部署，否则临时账户和资源会被删除。[Cloudflare Drop 官方页](https://www.cloudflare.com/drop/)
+docs/research/cloudflare-drop-vscode-plugin.md:25:  --name artifact-preview \
+docs/research/cloudflare-drop-vscode-plugin.md:35:Cloudflare 官方文档要求本地 CLI 工作流优先使用 Wrangler，只有具备浏览器自动化且已有完整静态站点目录/ZIP 时才使用 Drop 网页。[Claim deployments 文档](https://developers.cloudflare.com/workers/platform/claim-deployments/) [Temporary Accounts 发布说明](https://blog.cloudflare.com/temporary-accounts/)
+docs/research/cloudflare-drop-vscode-plugin.md:50:需要特别区分临时账户与普通 Workers：普通 Workers Static Assets 当前单文件上限为 25 MiB，免费/付费计划每个版本分别最多 20,000/100,000 个静态文件；临时账户的限制更紧，为 1,000 个、每个 5 MiB。[Workers Limits](https://developers.cloudflare.com/workers/platform/limits/) 静态资源请求本身免费且不限量，但动态 Worker 调用按 Workers 计划计费。[Workers Pricing](https://developers.cloudflare.com/workers/platform/pricing/)
+docs/research/cloudflare-drop-vscode-plugin.md:167:- 首版不要声称支持私密分享。`workers.dev` 预览链接应按“知道链接即可公开访问”理解。
+docs/research/cloudflare-drop-vscode-plugin.md:225:- [Cloudflare Drop](https://www.cloudflare.com/drop/)
+docs/research/cloudflare-drop-vscode-plugin.md:226:- [Temporary Cloudflare Accounts for AI agents](https://blog.cloudflare.com/temporary-accounts/)
+docs/research/cloudflare-drop-vscode-plugin.md:227:- [Claim deployments (temporary accounts)](https://developers.cloudflare.com/workers/platform/claim-deployments/)
+docs/research/cloudflare-drop-vscode-plugin.md:228:- [Workers platform limits](https://developers.cloudflare.com/workers/platform/limits/)
+docs/research/cloudflare-drop-vscode-plugin.md:229:- [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/)
+docs/research/cloudflare-drop-vscode-plugin.md:230:- [Workers Static Assets headers](https://developers.cloudflare.com/workers/static-assets/headers/)
+docs/product/product-direction.md:5:SoloDrop closes the gap between an agent creating a file and another person being able to understand it. The product turns a local artifact into a clean browser preview, checks that it is safe to share, publishes it, verifies the public result and returns one link.
+docs/product/product-direction.md:9:> Drop or select an artifact, then share its verified preview.
+docs/product/product-direction.md:17:- Delivery: authenticated Cloudflare deployment when available; otherwise a temporary deployment that must be claimed within 60 minutes.
+docs/product/product-direction.md:18:- Safety: explicit public-upload confirmation, common credential detection, isolated preview generation and separation of public and claim URLs.
+docs/product/product-direction.md:30:- A supported artifact can go from VS Code to a verified public preview without leaving the editor.
+docs/product/product-direction.md:32:- Failure messages state whether selection, safety checking, preview generation, deployment or verification failed.
+package.json:11:    "url": "https://github.com/jobssteve164dev/solodrop.git"
+package.json:24:    "preview",
+docs/ui/sidebar.md:11:3. One primary **Share preview** action and one secondary **Choose a file** action.
+docs/ui/sidebar.md:13:5. Recent previews for reopening delivered results. Share metadata follows the user's VS Code Settings Sync account across devices without syncing local file paths; temporary previews show whether their 60-minute claim window is still active, and expired entries can be shared again.
+docs/ui/sidebar.md:29:- Re-sharing an expired temporary preview reuses the original local file when available. On another device, or when the original was an operating-system drop, the user chooses the source file again and continues through the same safety and confirmation flow.
+
+[35m[3mexec[0m[0m
+[1m/bin/bash -lc "sed -n '1,180p' src/deployment.ts; sed -n '80,150p' src/sidebarProvider.ts; sed -n '1,140p' src/types.ts; git status --short"[0m in /home/ubuntu/project/solodrop
+[32m succeeded in 0ms:[0m
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { DeploymentMode, DeploymentResult } from './types';
+
+const execFileAsync = promisify(execFile);
+
+interface RunnerResult { stdout: string; stderr: string; }
+type Runner = (command: string, args: string[], options: { env: NodeJS.ProcessEnv; timeout: number; maxBuffer: number }) => Promise<RunnerResult>;
+
+async function defaultRunner(command: string, args: string[], options: { env: NodeJS.ProcessEnv; timeout: number; maxBuffer: number }): Promise<RunnerResult> {
+  return execFileAsync(command, args, options);
+}
+
+export function parseDeploymentOutput(output: string, temporary: boolean): DeploymentResult {
+  const urls = output.match(/https:\/\/[^\s\])]+/g) || [];
+  const claimUrl = urls.find((url) => url.includes('dash.cloudflare.com/claim-preview'));
+  const previewUrl = urls.find((url) => url.includes('.workers.dev') && !url.includes('dash.cloudflare.com'));
+  if (!previewUrl) {
+    throw new Error('Cloudflare finished without returning a public preview URL. Open the SoloDrop output and retry.');
+  }
+  return { previewUrl, claimUrl, temporary, output };
+}
+
+export async function isWranglerAuthenticated(runner: Runner = defaultRunner): Promise<boolean> {
+  try {
+    const result = await runner('npx', ['--yes', 'wrangler@latest', 'whoami'], {
+      env: process.env, timeout: 30_000, maxBuffer: 1024 * 1024
+    });
+    const output = `${result.stdout}\n${result.stderr}`.replace(/\u001b\[[0-9;]*m/g, '');
+    if (/not authenticated|please run [`“]?wrangler login/i.test(output)) return false;
+    return /logged in|api token|account id/i.test(output);
+  } catch {
+    return false;
+  }
+}
+
+function deploymentArgs(directory: string, name: string, temporary: boolean): string[] {
+  const args = ['--yes', 'wrangler@latest', 'deploy', directory, '--name', name, '--compatibility-date', new Date().toISOString().slice(0, 10)];
+  if (temporary) args.push('--temporary');
+  return args;
+}
+
+function commandErrorOutput(error: unknown): string {
+  if (!error || typeof error !== 'object') return String(error);
+  const candidate = error as { message?: string; stdout?: string; stderr?: string };
+  return `${candidate.message || ''}\n${candidate.stdout || ''}\n${candidate.stderr || ''}`;
+}
+
+function requiresTemporaryFallback(error: unknown): boolean {
+  const output = commandErrorOutput(error);
+  return /non-interactive environment[\s\S]*CLOUDFLARE_API_TOKEN/i.test(output)
+    || /rerun this command with [`“]?--temporary/i.test(output);
+}
+
+export async function deployPreview(directory: string, name: string, mode: DeploymentMode, runner: Runner = defaultRunner): Promise<DeploymentResult> {
+  const authenticated = mode !== 'temporary' && await isWranglerAuthenticated(runner);
+  if (mode === 'authenticated' && !authenticated) {
+    throw new Error('Cloudflare is not connected. Run “Wrangler: Login” or switch SoloDrop deployment mode to Auto.');
+  }
+  const temporary = mode === 'temporary' || !authenticated;
+  const options = { env: process.env, timeout: 180_000, maxBuffer: 8 * 1024 * 1024 };
+  try {
+    const result = await runner('npx', deploymentArgs(directory, name, temporary), options);
+    return parseDeploymentOutput(`${result.stdout}\n${result.stderr}`, temporary);
+  } catch (error) {
+    if (mode === 'auto' && !temporary && requiresTemporaryFallback(error)) {
+      const result = await runner('npx', deploymentArgs(directory, name, true), options);
+      return parseDeploymentOutput(`${result.stdout}\n${result.stderr}`, true);
+    }
+    throw error;
+  }
+}
+
+export async function verifyPreview(
+  url: string,
+  fetcher: typeof fetch = fetch,
+  pause: (milliseconds: number) => Promise<void> = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+  attempts = 6
+): Promise<void> {
+  let lastStatus = 0;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetcher(url, { signal: AbortSignal.timeout(20_000) });
+      lastStatus = response.status;
+      if (response.ok) return;
+      if (response.status !== 404 && response.status < 500) break;
+    } catch {
+      lastStatus = 0;
+    }
+    if (attempt < attempts) await pause(2_000);
+  }
+  throw new Error(lastStatus ? `The published preview returned HTTP ${lastStatus}.` : 'The published preview could not be reached.');
+}
+
+export const deploymentInternals = { commandErrorOutput, deploymentArgs, requiresTemporaryFallback };
+    const text = strings();
+    const settings = vscode.workspace.getConfiguration('solodrop');
+    const mode = settings.get<DeploymentMode>('deploymentMode', 'auto');
+    const findings = await scanArtifact(artifact.path);
+    if (findings.length > 0) {
+      const action = await vscode.window.showWarningMessage(
+        format(text.sensitiveTitle, { findings: findings.join(', '), name: artifact.name }),
+        { modal: true, detail: text.sensitiveDetail },
+        text.shareAnyway
+      );
+      if (action !== text.shareAnyway) return;
+    }
+    if (artifact.size > 5 * 1024 * 1024 && (mode === 'temporary' || (mode === 'auto' && !await isWranglerAuthenticated()))) {
+      throw new Error(text.temporaryLimit);
+    }
+    if (settings.get<boolean>('confirmBeforeUpload', true)) {
+      const confirmation = await vscode.window.showInformationMessage(
+        format(text.publicConfirm, { name: artifact.name, size: formatBytes(artifact.size) }),
+        { modal: true },
+        text.shareAction
+      );
+      if (confirmation !== text.shareAction) return;
+    }
+
+    this.post({ command: 'shareStarted' });
+    const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'solodrop-preview-'));
+    try {
+      const record = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: format(text.shareTitle, { name: artifact.name }), cancellable: false }, async (progress) => {
+        progress.report({ message: text.buildingPreview });
+        await buildPreview(artifact, directory);
+        progress.report({ message: text.publishing });
+        const deployed = await deployPreview(directory, createDeploymentName(artifact.name), mode);
+        this.output.appendLine(deployed.output.replace(/https:\/\/dash\.cloudflare\.com\/claim-preview\?claimToken=[^\s]+/g, '[claim URL hidden]'));
+        progress.report({ message: text.checkingLink });
+        await verifyPreview(deployed.previewUrl);
+        const next: ShareRecord = {
+          id: `${Date.now()}`,
+          name: artifact.name,
+          sourcePath: artifact.path,
+          previewUrl: deployed.previewUrl,
+          claimUrl: deployed.claimUrl,
+          temporary: deployed.temporary,
+          createdAt: new Date().toISOString(),
+          expiresAt: deployed.temporary ? new Date(Date.now() + TEMPORARY_LIFETIME_MS).toISOString() : undefined
+        };
+        await this.saveRecord(next);
+        await vscode.env.clipboard.writeText(next.previewUrl);
+        const { sourcePath: _sourcePath, ...publicRecord } = next;
+        return publicRecord;
+      });
+      this.post({ command: 'shareCompleted', record, records: this.history() });
+      vscode.window.showInformationMessage(format(text.readyMessage, { name: artifact.name }), text.openPreview).then((choice) => {
+        if (choice === text.openPreview) vscode.env.openExternal(vscode.Uri.parse(record.previewUrl));
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.output.appendLine(`Share failed: ${message}`);
+      this.post({ command: 'shareFailed', message });
+      vscode.window.showErrorMessage(format(text.failurePrefix, { message }), text.showOutput).then((choice) => {
+        if (choice === text.showOutput) this.output.show();
+      });
+    } finally {
+      await cleanupGeneratedDirectory(directory);
+    }
+  }
+
+  refresh(): void {
+    this.postSelection();
+    this.post({ command: 'historyLoaded', records: this.history() });
+  }
+
+export type DeploymentMode = 'auto' | 'temporary' | 'authenticated';
+
+export interface ArtifactSelection {
+  path: string;
+  name: string;
+  size: number;
+  kind: string;
+}
+
+export interface ShareRecord {
+  id: string;
+  name: string;
+  sourcePath?: string;
+  previewUrl: string;
+  claimUrl?: string;
+  temporary: boolean;
+  createdAt: string;
+  expiresAt?: string;
+}
+
+export interface DeploymentResult {
+  previewUrl: string;
+  claimUrl?: string;
+  temporary: boolean;
+  output: string;
+}
+ M .solopreneur/documentation.json
+ M .solopreneur/project_journal.db
+?? .solopreneur/agent-runs/__solo__/6/
+?? .solopreneur/agent-status/6.json
+
+[35m[3mcodex[0m[0m
+代码事实已经明确：SoloDrop 当前直接复制 Wrangler 返回的 `*.workers.dev` 地址，短链层尚不存在；而且临时预览与已登录后的持久预览共用这一返回路径。接下来我只核对官方能力和免费额度，避免用已经变化的套餐信息做建议。
+[1mweb search:[0m 
+[1mweb search:[0m site:developers.cloudflare.com Workers custom domains routes custom domain official docs ...
+[1mweb search:[0m 
+[1mweb search:[0m site:developers.cloudflare.com rules url forwarding bulk redirects free plan limits official ...
+[35m[3mcodex[0m[0m
+可以生成短链。结合 SoloDrop 当前实现，我建议：不要接第三方免费短链，直接在 Cloudflare 上做一层 SoloDrop 自有短链服务。
+
+当前插件复制的是 Wrangler 返回的完整 `*.workers.dev` 地址，代码位置在 [deployment.ts](/home/ubuntu/project/solodrop/src/deployment.ts:15)。建议发布成功后转换成：
+
+```text
+https://drop.szlk.ai/a8K3mP
+```
+
+访问短链时，由一个固定 Cloudflare Worker 查询 D1，再用 `302` 跳转到原始预览地址。
+
+为什么这是最合适的：
+
+- Cloudflare 没有一个名为“短链服务”的独立成品，但 Workers + D1/KV 就能可靠实现。
+- D1 免费额度是每天 500 万行读取、10 万行写入、总计 5GB，对 SoloDrop 初期完全够用。[Cloudflare D1 定价](https://developers.cloudflare.com/d1/platform/pricing/)
+- Worker 可以直接绑定 `drop.szlk.ai` 这样的自定义域名，证书和 DNS 由 Cloudflare处理。[Custom Domains 文档](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)
+- Cloudflare 也有 Bulk Redirects，免费计划最多 10,000 条，但它更适合人工维护的固定跳转，不适合插件持续自动创建、过期和管理短链。[Cloudflare Redirects](https://developers.cloudflare.com/rules/url-forwarding/)
+- 全程仍在 Cloudflare 内，不增加第三方故障、隐私和套餐变更风险。
+
+实现时应保持现有产品心智：
+
+1. Wrangler 发布并返回原始预览地址。
+2. SoloDrop 验证原始地址可访问。
+3. 调用 SoloDrop 短链服务创建随机 6–8 位 slug。
+4. 再验证短链确实能跳转。
+5. 剪贴板、最近分享列表统一保存短链；原始地址作为内部回退信息。
+6. 临时预览的短链同步设置 60 分钟有效期；持久预览不自动过期。
+7. 认领链接继续单独保存，绝不能进入短链。
+
+安全上，创建接口不能把 Cloudflare API Token 写进插件。应该由固定 Worker 接收创建请求，并至少限制目标为经过验证的 Cloudflare 预览地址、做速率限制和滥用控制，否则会变成公共钓鱼跳板。
+
+第三方里，Dub 是相对靠谱、API 完整且支持自定义域名的选择，但免费版目前只有每月 25 条新链接、1,000 次跟踪点击，不适合作为 SoloDrop 的长期默认能力。[Dub 定价](https://dub.co/pricing/) 其他免费短链通常也存在广告、额度、域名信誉和随时改套餐的问题。
+
+结论：**首选 Cloudflare Worker + D1 + 自有短域名；Dub 只适合作为开发验证或备用适配器。** 如果进入实现，我会把它做成发布流程的内部一步，不增加用户配置项或第二套分享入口。
+
+本次对话更适合：**仅保留在 Solo**；等决定正式实现短链后，再关联相应的产品功能环节。
+[2mtokens used[0m
+64,258
+可以生成短链。结合 SoloDrop 当前实现，我建议：不要接第三方免费短链，直接在 Cloudflare 上做一层 SoloDrop 自有短链服务。
+
+当前插件复制的是 Wrangler 返回的完整 `*.workers.dev` 地址，代码位置在 [deployment.ts](/home/ubuntu/project/solodrop/src/deployment.ts:15)。建议发布成功后转换成：
+
+```text
+https://drop.szlk.ai/a8K3mP
+```
+
+访问短链时，由一个固定 Cloudflare Worker 查询 D1，再用 `302` 跳转到原始预览地址。
+
+为什么这是最合适的：
+
+- Cloudflare 没有一个名为“短链服务”的独立成品，但 Workers + D1/KV 就能可靠实现。
+- D1 免费额度是每天 500 万行读取、10 万行写入、总计 5GB，对 SoloDrop 初期完全够用。[Cloudflare D1 定价](https://developers.cloudflare.com/d1/platform/pricing/)
+- Worker 可以直接绑定 `drop.szlk.ai` 这样的自定义域名，证书和 DNS 由 Cloudflare处理。[Custom Domains 文档](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)
+- Cloudflare 也有 Bulk Redirects，免费计划最多 10,000 条，但它更适合人工维护的固定跳转，不适合插件持续自动创建、过期和管理短链。[Cloudflare Redirects](https://developers.cloudflare.com/rules/url-forwarding/)
+- 全程仍在 Cloudflare 内，不增加第三方故障、隐私和套餐变更风险。
+
+实现时应保持现有产品心智：
+
+1. Wrangler 发布并返回原始预览地址。
+2. SoloDrop 验证原始地址可访问。
+3. 调用 SoloDrop 短链服务创建随机 6–8 位 slug。
+4. 再验证短链确实能跳转。
+5. 剪贴板、最近分享列表统一保存短链；原始地址作为内部回退信息。
+6. 临时预览的短链同步设置 60 分钟有效期；持久预览不自动过期。
+7. 认领链接继续单独保存，绝不能进入短链。
+
+安全上，创建接口不能把 Cloudflare API Token 写进插件。应该由固定 Worker 接收创建请求，并至少限制目标为经过验证的 Cloudflare 预览地址、做速率限制和滥用控制，否则会变成公共钓鱼跳板。
+
+第三方里，Dub 是相对靠谱、API 完整且支持自定义域名的选择，但免费版目前只有每月 25 条新链接、1,000 次跟踪点击，不适合作为 SoloDrop 的长期默认能力。[Dub 定价](https://dub.co/pricing/) 其他免费短链通常也存在广告、额度、域名信誉和随时改套餐的问题。
+
+结论：**首选 Cloudflare Worker + D1 + 自有短域名；Dub 只适合作为开发验证或备用适配器。** 如果进入实现，我会把它做成发布流程的内部一步，不增加用户配置项或第二套分享入口。
+
+本次对话更适合：**仅保留在 Solo**；等决定正式实现短链后，再关联相应的产品功能环节。
