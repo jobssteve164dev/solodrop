@@ -3995,3 +3995,5 @@ index e25763121e673d968196fa2c6b1e4cb0dd3456c9..2ac6c3afda4795bf582da2b29a440ebe
    "command.chooseAndShare": "SoloDrop：选择文件并分享",
    "command.openSidebar": "SoloDrop：打开侧边栏",
 
+[35m[3mexec[0m[0m
+[1m/bin/bash -lc 'git add -A && git commit --amend --no-edit && git pull --rebase --autostash origin main && git push origin main'[0m in /home/ubuntu/project/solodrop

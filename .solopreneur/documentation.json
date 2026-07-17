@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-16T11:30:01.589Z",
+  "updatedAt": "2026-07-17T13:18:17.364Z",
   "documents": [
     {
       "path": "README.md",
@@ -8,7 +8,7 @@
       "status": "active",
       "solves": "说明项目是什么、服务谁、成功标准和对外表达。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-16T08:15:26.567Z"
+      "lastTouchedAt": "2026-07-16T11:33:51.624Z"
     },
     {
       "path": ".solopreneur/README.md",
@@ -50,17 +50,24 @@
       "severity": "info",
       "detectedAt": "2026-07-16T11:17:22.883Z",
       "source": "documentation_audit"
+    },
+    {
+      "path": "README.md",
+      "reason": "文档内容疑似包含 prompt、终端输出或执行流水，不适合进入长期项目解释性文档。",
+      "severity": "warning",
+      "detectedAt": "2026-07-16T11:34:17.032Z",
+      "source": "documentation_audit"
     }
   ],
   "lastAudit": {
-    "auditedAt": "2026-07-16T11:17:22.883Z",
+    "auditedAt": "2026-07-16T11:34:17.032Z",
     "runKind": "solo",
     "nodeId": "__solo__",
     "status": "Completed",
     "action": "needs_review",
     "touchedDocuments": [
-      "docs/ui/sidebar.md"
+      "README.md"
     ],
-    "pendingReviewCount": 1
+    "pendingReviewCount": 2
   }
 }

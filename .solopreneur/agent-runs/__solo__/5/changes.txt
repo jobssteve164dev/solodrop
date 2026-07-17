@@ -1,0 +1,3 @@
+ M .solopreneur/agent-runs/__solo__/5/output.log
+?? .solopreneur/agent-runs/__solo__/5/changes.txt
+?? .solopreneur/agent-runs/__solo__/5/session.json
