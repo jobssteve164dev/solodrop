@@ -1,5 +1,7 @@
 node_modules/
 out/
+.wrangler/
+worker/.wrangler/
 *.vsix
 .DS_Store
 .env
