@@ -65,6 +65,18 @@ A successful deployment is not enough. SoloDrop opens the published URL over HTT
 
 部署成功不等于交付成功。SoloDrop 会先通过 HTTP 确认预览地址可访问，再复制公开链接。
 
+### 🔗 Send a clean short link / 分享更简洁的短链接
+
+SoloDrop creates and verifies a compact `drop.szlk.ai` link after the preview is online. If the short-link service is temporarily unavailable, sharing still completes with the verified original preview URL.
+
+预览上线后，SoloDrop 会生成并验证简洁的 `drop.szlk.ai` 短链接。即使短链服务暂时不可用，仍会返回已经验证过的原始预览地址，不阻断交付。
+
+### ↗️ Give readers one clear next step / 给接收者一个明确的下一步
+
+Optionally add one action to the share page, such as viewing a project, contacting you or booking a demo. The artifact always remains the page's main content, and recent shares show basic visit counts.
+
+你可以选择为分享页增加一个行动按钮，例如查看项目、联系你或预约演示。产物始终是页面主体，最近分享中还会显示基础访问次数。
+
 ### 🌍 Start now, sign in when you need more / 无需登录也能开始
 
 If Wrangler is signed in, SoloDrop uses your authenticated Cloudflare account for a persistent preview. Otherwise, it creates a temporary preview that you can claim within 60 minutes.

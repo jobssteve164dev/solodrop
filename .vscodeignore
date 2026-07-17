@@ -6,6 +6,7 @@ docs/**
 src/**
 test/**
 scripts/**
+worker/**
 .env*
 tsconfig.json
 *.vsix

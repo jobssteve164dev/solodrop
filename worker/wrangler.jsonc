@@ -1,0 +1,31 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "solodrop-links",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-07-17",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "drop.szlk.ai",
+      "custom_domain": true
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "LINKS",
+        "class_name": "LinkRegistry"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["LinkRegistry"]
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

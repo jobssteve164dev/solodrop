@@ -14,7 +14,9 @@
     claim: document.getElementById('claim-link'),
     refresh: document.getElementById('refresh'),
     language: document.getElementById('language'),
-    history: document.getElementById('history')
+    history: document.getElementById('history'),
+    ctaLabel: document.getElementById('cta-label'),
+    ctaUrl: document.getElementById('cta-url')
   };
   elements.dropZone = document.getElementById('drop-zone');
   let latestRecord = null;
@@ -55,7 +57,8 @@
       if (record.temporary) {
         const tag = document.createElement('span'); tag.className = `expiry-tag ${expired ? 'expired' : 'active'}`; tag.textContent = expired ? text.expired : text.active; heading.append(tag);
       }
-      const meta = document.createElement('small'); meta.textContent = `${record.temporary ? text.temporary : text.persistent} · ${relativeTime(record.createdAt)}`;
+      const viewText = record.managed && Number.isInteger(record.clicks) ? ` · ${format(text.views, { count: record.clicks })}` : '';
+      const meta = document.createElement('small'); meta.textContent = `${record.temporary ? text.temporary : text.persistent} · ${relativeTime(record.createdAt)}${viewText}`;
       const actions = document.createElement('span'); actions.className = 'history-actions';
       const open = document.createElement('button'); open.type = 'button'; open.className = 'history-action'; open.textContent = text.open; open.addEventListener('click', () => post('open', { url: record.previewUrl })); actions.append(open);
       if (expired) {
@@ -66,12 +69,16 @@
     });
   }
   elements.choose.addEventListener('click', () => post('choose'));
-  elements.share.addEventListener('click', () => post('share'));
+  function ctaValue() { return { label: elements.ctaLabel.value.trim(), url: elements.ctaUrl.value.trim() }; }
+  function saveCta() { post('setCta', { cta: ctaValue() }); }
+  elements.share.addEventListener('click', () => post('share', { cta: ctaValue() }));
   elements.refresh.addEventListener('click', () => post('refresh'));
   elements.language.addEventListener('click', () => post('setLanguage'));
   elements.open.addEventListener('click', () => latestRecord && post('open', { url: latestRecord.previewUrl }));
   elements.copy.addEventListener('click', () => latestRecord && post('copy', { url: latestRecord.previewUrl }));
   elements.claim.addEventListener('click', () => latestRecord?.claimUrl && post('open', { url: latestRecord.claimUrl }));
+  elements.ctaLabel.addEventListener('change', saveCta);
+  elements.ctaUrl.addEventListener('change', saveCta);
   let dragDepth = 0;
   elements.dropZone.addEventListener('dragenter', (event) => { event.preventDefault(); dragDepth += 1; elements.dropZone.classList.add('dragging'); });
   elements.dropZone.addEventListener('dragover', (event) => { event.preventDefault(); if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy'; });
@@ -94,11 +101,12 @@
     const message = event.data;
     if (message.command === 'selectionChanged') renderSelection(message.selection);
     if (message.command === 'historyLoaded') renderHistory(message.records);
+    if (message.command === 'ctaLoaded') { elements.ctaLabel.value = message.cta?.label || ''; elements.ctaUrl.value = message.cta?.url || ''; }
     if (message.command === 'shareStarted') setLoading(true);
     if (message.command === 'shareFailed') { setLoading(false); elements.status.textContent = message.message; }
     if (message.command === 'shareCompleted') {
       setLoading(false); latestRecord = message.record; elements.result.classList.remove('hidden');
-      elements.resultMeta.textContent = message.record.temporary ? text.temporaryMeta : text.persistentMeta;
+      elements.resultMeta.textContent = message.record.managed ? (message.record.temporary ? text.managedTemporaryMeta : text.managedPersistentMeta) : text.shortLinkFallback;
       elements.claim.classList.toggle('hidden', !message.record.claimUrl);
       renderHistory(message.records || [message.record]);
     }

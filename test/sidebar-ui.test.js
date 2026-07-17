@@ -28,10 +28,10 @@ test('syncs share history and exposes temporary expiry recovery', () => {
   const script = fs.readFileSync(path.join(root, 'resources', 'sidebar.js'), 'utf8');
 
   assert.match(extension, /prepareShareHistorySync\(context\)/);
-  assert.match(provider, /setKeysForSync\(\[HISTORY_KEY\]\)/);
+  assert.match(provider, /setKeysForSync\(\[HISTORY_KEY, CTA_KEY\]\)/);
   assert.match(provider, /sourcePath: _sourcePath/);
   assert.match(provider, /case 'reshare'/);
-  assert.match(provider, /expiresAt:/);
+  assert.match(provider, /const expiresAt = deployed\.temporary/);
   assert.match(script, /text\.expired/);
   assert.match(script, /post\('reshare', \{ id: record\.id \}\)/);
 });
