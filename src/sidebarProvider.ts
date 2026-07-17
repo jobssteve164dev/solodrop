@@ -8,10 +8,12 @@ import { buildPreview } from './preview';
 import { getSidebarHtml } from './sidebarWebview';
 import { createDeploymentName } from './naming';
 import { format, resolveLocale, strings } from './i18n';
-import { ArtifactSelection, DeploymentMode, ShareRecord } from './types';
+import { createManagedLink, getManagedLinkStats, normalizeShareCta, verifyManagedLink } from './linkService';
+import { ArtifactSelection, DeploymentMode, ShareCta, ShareRecord } from './types';
 
 const HISTORY_KEY = 'solodrop.shareHistory';
 const HISTORY_SOURCES_KEY = 'solodrop.shareHistorySources';
+const CTA_KEY = 'solodrop.shareCta';
 const TEMPORARY_LIFETIME_MS = 60 * 60 * 1000;
 
 export async function prepareShareHistorySync(context: vscode.ExtensionContext): Promise<void> {
@@ -23,7 +25,7 @@ export async function prepareShareHistorySync(context: vscode.ExtensionContext):
   });
   await context.globalState.update(HISTORY_SOURCES_KEY, sources);
   await context.globalState.update(HISTORY_KEY, sanitized);
-  context.globalState.setKeysForSync([HISTORY_KEY]);
+  context.globalState.setKeysForSync([HISTORY_KEY, CTA_KEY]);
 }
 
 async function cleanupGeneratedDirectory(directory: string): Promise<void> {
@@ -71,7 +73,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     if (selected?.[0]) await this.select(selected[0].fsPath);
   }
 
-  async shareSelection(): Promise<void> {
+  async shareSelection(ctaInput?: Partial<ShareCta> | null): Promise<void> {
     if (!this.selection) {
       await this.refreshFromActiveEditor();
       if (!this.selection) return;
@@ -80,6 +82,8 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     const text = strings();
     const settings = vscode.workspace.getConfiguration('solodrop');
     const mode = settings.get<DeploymentMode>('deploymentMode', 'auto');
+    const cta = normalizeShareCta(ctaInput === undefined ? this.context.globalState.get<ShareCta>(CTA_KEY) : ctaInput);
+    await this.context.globalState.update(CTA_KEY, cta);
     const findings = await scanArtifact(artifact.path);
     if (findings.length > 0) {
       const action = await vscode.window.showWarningMessage(
@@ -112,22 +116,41 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         this.output.appendLine(deployed.output.replace(/https:\/\/dash\.cloudflare\.com\/claim-preview\?claimToken=[^\s]+/g, '[claim URL hidden]'));
         progress.report({ message: text.checkingLink });
         await verifyPreview(deployed.previewUrl);
+        const expiresAt = deployed.temporary ? new Date(Date.now() + TEMPORARY_LIFETIME_MS).toISOString() : undefined;
+        let publicUrl = deployed.previewUrl;
+        let managed = false;
+        let managementToken: string | undefined;
+        try {
+          progress.report({ message: text.creatingShortLink });
+          const linked = await createManagedLink({ url: deployed.previewUrl, title: artifact.name, temporary: deployed.temporary, expiresAt, cta });
+          await verifyManagedLink(linked.shortUrl, deployed.previewUrl);
+          publicUrl = linked.shortUrl;
+          managementToken = linked.managementToken;
+          managed = true;
+        } catch (error) {
+          const detail = error instanceof Error ? error.message : String(error);
+          this.output.appendLine(`Short link unavailable; using verified original URL: ${detail}`);
+        }
         const next: ShareRecord = {
           id: `${Date.now()}`,
           name: artifact.name,
           sourcePath: artifact.path,
-          previewUrl: deployed.previewUrl,
+          previewUrl: publicUrl,
+          originUrl: deployed.previewUrl,
           claimUrl: deployed.claimUrl,
+          managed,
+          managementToken,
+          clicks: managed ? 0 : undefined,
           temporary: deployed.temporary,
           createdAt: new Date().toISOString(),
-          expiresAt: deployed.temporary ? new Date(Date.now() + TEMPORARY_LIFETIME_MS).toISOString() : undefined
+          expiresAt
         };
         await this.saveRecord(next);
         await vscode.env.clipboard.writeText(next.previewUrl);
-        const { sourcePath: _sourcePath, ...publicRecord } = next;
+        const { sourcePath: _sourcePath, managementToken: _managementToken, originUrl: _originUrl, ...publicRecord } = next;
         return publicRecord;
       });
-      this.post({ command: 'shareCompleted', record, records: this.history() });
+      this.post({ command: 'shareCompleted', record, records: this.clientHistory() });
       vscode.window.showInformationMessage(format(text.readyMessage, { name: artifact.name }), text.openPreview).then((choice) => {
         if (choice === text.openPreview) vscode.env.openExternal(vscode.Uri.parse(record.previewUrl));
       });
@@ -145,7 +168,8 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
 
   refresh(): void {
     this.postSelection();
-    this.post({ command: 'historyLoaded', records: this.history() });
+    this.post({ command: 'historyLoaded', records: this.clientHistory() });
+    void this.refreshManagedStats();
   }
 
   rerender(): void {
@@ -163,11 +187,16 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     else this.refresh();
   }
 
-  private async handleMessage(message: { command?: string; id?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer }): Promise<void> {
+  private async handleMessage(message: { command?: string; id?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer; cta?: Partial<ShareCta> }): Promise<void> {
     switch (message.command) {
       case 'ready': this.refresh(); break;
       case 'choose': await this.chooseFile(); break;
-      case 'share': await this.shareSelection(); break;
+      case 'share': await this.shareSelection(message.cta); break;
+      case 'setCta': {
+        const cta = normalizeShareCta(message.cta);
+        await this.context.globalState.update(CTA_KEY, cta);
+        break;
+      }
       case 'dropUri': {
         if (!message.uri) break;
         const uri = vscode.Uri.parse(message.uri);
@@ -226,6 +255,27 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     return this.context.globalState.get<ShareRecord[]>(HISTORY_KEY, []);
   }
 
+  private clientHistory(): Omit<ShareRecord, 'managementToken' | 'originUrl'>[] {
+    return this.history().map(({ managementToken: _managementToken, originUrl: _originUrl, ...record }) => record);
+  }
+
+  private async refreshManagedStats(): Promise<void> {
+    const records = this.history();
+    let changed = false;
+    const refreshed = await Promise.all(records.map(async (record) => {
+      if (!record.managed || !record.managementToken || (record.expiresAt && Date.now() >= Date.parse(record.expiresAt))) return record;
+      try {
+        const clicks = await getManagedLinkStats(record.previewUrl, record.managementToken);
+        if (clicks !== record.clicks) changed = true;
+        return { ...record, clicks };
+      } catch { return record; }
+    }));
+    if (changed) {
+      await this.context.globalState.update(HISTORY_KEY, refreshed);
+      this.post({ command: 'historyLoaded', records: this.clientHistory() });
+    }
+  }
+
   private async saveRecord(record: ShareRecord): Promise<void> {
     if (record.sourcePath) {
       const sources = this.context.globalState.get<Record<string, string>>(HISTORY_SOURCES_KEY, {});
@@ -237,7 +287,8 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
 
   private postSelection(): void {
     this.post({ command: 'selectionChanged', selection: this.selection ? { ...this.selection, displaySize: formatBytes(this.selection.size) } : null });
-    this.post({ command: 'historyLoaded', records: this.history() });
+    this.post({ command: 'historyLoaded', records: this.clientHistory() });
+    this.post({ command: 'ctaLoaded', cta: this.context.globalState.get<ShareCta>(CTA_KEY) });
   }
 
   private post(message: unknown): void {

@@ -130,13 +130,15 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "test": "node --test test/*.test.js",
-    "check": "npm run compile && npm test",
+    "worker:check": "wrangler deploy --dry-run --config worker/wrangler.jsonc",
+    "check": "npm run compile && npm test && npm run worker:check",
     "package": "npx @vscode/vsce package"
   },
   "devDependencies": {
     "@types/node": "^20.17.0",
     "@types/vscode": "^1.85.0",
     "@vscode/vsce": "^3.6.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "wrangler": "^4.112.0"
   }
 }

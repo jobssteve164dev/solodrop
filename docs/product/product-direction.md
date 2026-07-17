@@ -14,7 +14,7 @@ The user should not need to understand Workers, static assets, temporary account
 
 - Entry points: sidebar drag-and-drop, file picker, active editor and Explorer context menu.
 - Preview types: Markdown, text, code, JSON, images, PDF, CSV and HTML.
-- Delivery: authenticated Cloudflare deployment when available; otherwise a temporary deployment that must be claimed within 60 minutes.
+- Delivery: authenticated Cloudflare deployment when available; otherwise a temporary deployment that must be claimed within 60 minutes. A verified SoloDrop short link is returned when the managed link service is available, with the original verified preview URL as a delivery fallback.
 - Safety: explicit public-upload confirmation, common credential detection, isolated preview generation and separation of public and claim URLs.
 - Verification: every successful share is opened over HTTP before the public link is copied.
 
@@ -23,7 +23,8 @@ The user should not need to understand Workers, static assets, temporary account
 - SoloDrop does not describe a public link as private.
 - SoloDrop does not promise a custom expiry for Cloudflare Drop deployments.
 - SoloDrop does not expose Cloudflare credentials in the webview, logs or share history.
-- High-fidelity Office conversion, access control, large-file delivery and custom expiry require a later managed Worker/R2 service and are not represented as current capabilities.
+- The managed link service controls short links, synchronized temporary expiry, optional CTA configuration and basic click counts. It does not proxy or store artifact contents.
+- High-fidelity Office conversion, access control, large-file delivery and custom expiry still require a later managed Worker/R2 service and are not represented as current capabilities.
 
 ## Success criteria
 

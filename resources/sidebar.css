@@ -54,6 +54,16 @@ h1, h2, p { margin: 0; }
 .secondary { margin-top: 7px; background: transparent; color: var(--vscode-foreground); border-color: var(--border); }
 .secondary:hover, .result-actions button:hover { background: var(--vscode-toolbar-hoverBackground); }
 button:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-offset: 2px; }
+.cta-settings { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 7px; }
+.cta-settings summary { min-height: 32px; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--vscode-foreground); cursor: pointer; font-size: 11px; font-weight: 650; list-style: none; }
+.cta-settings summary::-webkit-details-marker { display: none; }
+.cta-settings summary::after { content: '+'; margin-left: auto; color: var(--muted); font-size: 15px; }
+.cta-settings[open] summary::after { content: '−'; }
+.cta-settings summary small { color: var(--muted); font-size: 9px; font-weight: 400; }
+.cta-settings > p { margin: 2px 0 9px; color: var(--muted); font-size: 9px; line-height: 1.4; }
+.cta-settings label { display: block; margin: 7px 0 4px; color: var(--muted); font-size: 9px; }
+.cta-settings input { width: 100%; min-height: 34px; border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 6px; padding: 6px 8px; background: var(--vscode-input-background); color: var(--vscode-input-foreground); font: inherit; font-size: 11px; }
+.cta-settings input:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-offset: 1px; }
 .spinner { display: none; position: absolute; left: calc(50% - 7px); top: calc(50% - 7px); width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
 .loading .button-label { opacity: 0; }
 .loading .spinner { display: block; }
@@ -65,7 +75,7 @@ button:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-off
 .result { margin-top: 8px; padding: 10px; border: 1px solid color-mix(in srgb, #35a66f 55%, var(--border)); border-radius: 10px; background: color-mix(in srgb, #35a66f 9%, var(--vscode-sideBar-background)); }
 .result-mark { float: left; width: 24px; height: 24px; margin-right: 9px; display: grid; place-items: center; border-radius: 50%; background: #258b5b; color: white; font-weight: 800; }
 .result h2 { font-size: 12px; }
-.result p { margin-top: 2px; color: var(--muted); font-size: 10px; }
+.result p { margin-top: 2px; color: var(--muted); font-size: 10px; line-height: 1.4; }
 .result-actions { clear: both; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding-top: 8px; }
 .result-actions button { background: transparent; color: var(--vscode-foreground); border-color: var(--border); }
 .claim { margin-top: 6px; background: transparent; color: var(--brand); border-color: color-mix(in srgb, var(--brand) 55%, var(--border)); }

@@ -34,6 +34,14 @@ export function getSidebarHtml(webview: vscode.Webview, extensionUri: vscode.Uri
         <span class="button-label">${escapeHtml(text.sharePreview)}</span><span class="spinner" aria-hidden="true"></span>
       </button>
       <button id="choose" class="secondary" type="button">${escapeHtml(text.chooseFile)}</button>
+      <details class="cta-settings">
+        <summary><span>${escapeHtml(text.sharePageAction)}</span><small>${escapeHtml(text.optional)}</small></summary>
+        <p>${escapeHtml(text.sharePageActionHint)}</p>
+        <label for="cta-label">${escapeHtml(text.ctaLabel)}</label>
+        <input id="cta-label" type="text" maxlength="48" autocomplete="off">
+        <label for="cta-url">${escapeHtml(text.ctaUrl)}</label>
+        <input id="cta-url" type="url" inputmode="url" autocomplete="url" placeholder="https://">
+      </details>
       <p id="status" class="status" role="status" aria-live="polite"></p>
     </section>
 
