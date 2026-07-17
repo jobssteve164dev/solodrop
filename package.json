@@ -131,7 +131,8 @@
     "watch": "tsc -watch -p ./",
     "test": "node --test test/*.test.js",
     "worker:check": "wrangler deploy --dry-run --config worker/wrangler.jsonc",
-    "check": "npm run compile && npm test && npm run worker:check",
+    "check": "npm run compile && npm test",
+    "check:all": "npm run check && npm run worker:check",
     "package": "npx @vscode/vsce package"
   },
   "devDependencies": {
