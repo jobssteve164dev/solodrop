@@ -4,6 +4,9 @@
   "main": "src/index.mjs",
   "compatibility_date": "2026-07-17",
   "workers_dev": true,
+  "vars": {
+    "SZLK_PASSPORT_URL": "https://passport.szlk.ai"
+  },
   "routes": [
     {
       "pattern": "drop.szlk.ai",
