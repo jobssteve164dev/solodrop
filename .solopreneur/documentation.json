@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-18T11:20:28.638Z",
+  "updatedAt": "2026-07-18T13:46:35.181Z",
   "documents": [
     {
       "path": "README.md",
@@ -8,7 +8,7 @@
       "status": "active",
       "solves": "说明项目是什么、服务谁、成功标准和对外表达。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-18T01:43:51.471Z"
+      "lastTouchedAt": "2026-07-18T13:25:43.697Z"
     },
     {
       "path": ".solopreneur/README.md",
@@ -24,7 +24,7 @@
       "status": "active",
       "solves": "保存项目长期解释性背景。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-18T03:15:44.978Z"
+      "lastTouchedAt": "2026-07-18T13:25:43.697Z"
     },
     {
       "path": "docs/product/share-page-commercialization.md",
