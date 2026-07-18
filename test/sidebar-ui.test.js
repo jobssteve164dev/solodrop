@@ -33,12 +33,12 @@ test('follows active files, accepts Explorer drops and exposes temporary expiry 
   assert.match(provider, /setKeysForSync\(\[HISTORY_KEY\]\)/);
   assert.match(provider, /sourcePath: _sourcePath/);
   assert.match(provider, /case 'reshare'/);
-  assert.match(provider, /const expiresAt = deployed\.temporary/);
+  assert.match(provider, /expiresAt: shared\.expiresAt/);
   assert.match(script, /text\.expired/);
-  assert.match(script, /post\('reshare', \{ id: record\.id \}\)/);
+  assert.match(script, /post\('reshare', \{ id: record\.id, options: shareOptions\(\) \}\)/);
   assert.match(script, /application\/vnd\.code\.resource/);
   assert.match(script, /text\/plain/);
-  assert.match(script, /post\('dropUri', \{ uri \}\)/);
+  assert.match(script, /post\('dropUri', \{ uri, options: shareOptions\(\) \}\)/);
 });
 
 test('does not expose platform-owned share-page actions to plugin users', () => {
@@ -49,4 +49,22 @@ test('does not expose platform-owned share-page actions to plugin users', () => 
   assert.doesNotMatch(webview, /cta-settings|cta-label|cta-url/);
   assert.doesNotMatch(provider, /CTA_KEY|setCta|message\.cta/);
   assert.doesNotMatch(script, /ctaLabel|ctaUrl|setCta|ctaLoaded/);
+});
+
+test('exposes the website share controls and sends them through every share entry', () => {
+  const webview = fs.readFileSync(path.join(root, 'src', 'sidebarWebview.ts'), 'utf8');
+  const provider = fs.readFileSync(path.join(root, 'src', 'sidebarProvider.ts'), 'utf8');
+  const script = fs.readFileSync(path.join(root, 'resources', 'sidebar.js'), 'utf8');
+
+  assert.match(webview, /id="allow-download"/);
+  assert.match(webview, /id="watermark"/);
+  assert.match(webview, /id="expiry"/);
+  assert.match(webview, /value="day"/);
+  assert.match(webview, /value="week"/);
+  assert.match(webview, /value="month"/);
+  assert.match(script, /function shareOptions\(\)/);
+  assert.match(script, /post\('share', \{ options: shareOptions\(\) \}\)/);
+  assert.match(script, /post\('dropUri', \{ uri, options: shareOptions\(\) \}\)/);
+  assert.match(script, /command: 'dropFile',[^\n]+options: shareOptions\(\)/);
+  assert.match(provider, /createWebShare\(artifact, options\)/);
 });

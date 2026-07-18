@@ -87,21 +87,6 @@
     "configuration": {
       "title": "%configuration.title%",
       "properties": {
-        "solodrop.deploymentMode": {
-          "type": "string",
-          "default": "auto",
-          "enum": [
-            "auto",
-            "temporary",
-            "authenticated"
-          ],
-          "enumDescriptions": [
-            "%configuration.deploymentMode.auto%",
-            "%configuration.deploymentMode.temporary%",
-            "%configuration.deploymentMode.authenticated%"
-          ],
-          "description": "%configuration.deploymentMode.description%"
-        },
         "solodrop.language": {
           "type": "string",
           "default": "auto",

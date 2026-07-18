@@ -3,17 +3,14 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { describeArtifact, formatBytes, scanArtifact } from './artifact';
-import { deployPreview, isWranglerAuthenticated, TemporaryProvisioningUnavailableError, verifyPreview } from './deployment';
-import { buildPreview } from './preview';
 import { getSidebarHtml } from './sidebarWebview';
-import { createDeploymentName } from './naming';
 import { format, resolveLocale, strings } from './i18n';
-import { createManagedLink, getManagedLinkStats, verifyManagedLink } from './linkService';
-import { ArtifactSelection, DeploymentMode, ShareRecord } from './types';
+import { getManagedLinkStats } from './linkService';
+import { ArtifactSelection, ShareOptions, ShareRecord } from './types';
+import { createWebShare } from './webShareService';
 
 const HISTORY_KEY = 'solodrop.shareHistory';
 const HISTORY_SOURCES_KEY = 'solodrop.shareHistorySources';
-const TEMPORARY_LIFETIME_MS = 60 * 60 * 1000;
 
 export async function prepareShareHistorySync(context: vscode.ExtensionContext): Promise<void> {
   const records = context.globalState.get<ShareRecord[]>(HISTORY_KEY, []);
@@ -26,16 +23,6 @@ export async function prepareShareHistorySync(context: vscode.ExtensionContext):
   await context.globalState.update(HISTORY_KEY, sanitized);
   await context.globalState.update('solodrop.shareCta', undefined);
   context.globalState.setKeysForSync([HISTORY_KEY]);
-}
-
-async function cleanupGeneratedDirectory(directory: string): Promise<void> {
-  const entries = await fs.readdir(directory).catch(() => []);
-  for (const entry of entries) {
-    const target = path.join(directory, entry);
-    const stat = await fs.lstat(target);
-    if (stat.isFile()) await fs.unlink(target);
-  }
-  await fs.rmdir(directory).catch(() => undefined);
 }
 
 export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
@@ -78,7 +65,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     if (selected?.[0]) await this.select(selected[0].fsPath);
   }
 
-  async shareSelection(): Promise<void> {
+  async shareSelection(options: ShareOptions = { allowDownload: true, watermark: '', expiry: 'week' }): Promise<void> {
     if (!this.selection) {
       await this.refreshFromActiveEditor();
       if (!this.selection) return;
@@ -86,7 +73,6 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     const artifact = this.selection;
     const text = strings();
     const settings = vscode.workspace.getConfiguration('solodrop');
-    const mode = settings.get<DeploymentMode>('deploymentMode', 'auto');
     const findings = await scanArtifact(artifact.path);
     if (findings.length > 0) {
       const action = await vscode.window.showWarningMessage(
@@ -95,9 +81,6 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         text.shareAnyway
       );
       if (action !== text.shareAnyway) return;
-    }
-    if (artifact.size > 5 * 1024 * 1024 && (mode === 'temporary' || (mode === 'auto' && !await isWranglerAuthenticated()))) {
-      throw new Error(text.temporaryLimit);
     }
     if (settings.get<boolean>('confirmBeforeUpload', true)) {
       const confirmation = await vscode.window.showInformationMessage(
@@ -109,44 +92,22 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     }
 
     this.post({ command: 'shareStarted' });
-    const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'solodrop-preview-'));
     try {
       const record = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: format(text.shareTitle, { name: artifact.name }), cancellable: false }, async (progress) => {
-        progress.report({ message: text.buildingPreview });
-        await buildPreview(artifact, directory);
         progress.report({ message: text.publishing });
-        const deployed = await deployPreview(directory, createDeploymentName(artifact.name), mode);
-        this.output.appendLine(deployed.output.replace(/https:\/\/dash\.cloudflare\.com\/claim-preview\?claimToken=[^\s]+/g, '[claim URL hidden]'));
-        progress.report({ message: text.checkingLink });
-        await verifyPreview(deployed.previewUrl);
-        const expiresAt = deployed.temporary ? new Date(Date.now() + TEMPORARY_LIFETIME_MS).toISOString() : undefined;
-        let publicUrl = deployed.previewUrl;
-        let managed = false;
-        let managementToken: string | undefined;
-        try {
-          progress.report({ message: text.creatingShortLink });
-          const linked = await createManagedLink({ url: deployed.previewUrl, title: artifact.name, temporary: deployed.temporary, expiresAt });
-          await verifyManagedLink(linked.shortUrl, deployed.previewUrl);
-          publicUrl = linked.shortUrl;
-          managementToken = linked.managementToken;
-          managed = true;
-        } catch (error) {
-          const detail = error instanceof Error ? error.message : String(error);
-          this.output.appendLine(`Short link unavailable; using verified original URL: ${detail}`);
-        }
+        const shared = await createWebShare(artifact, options);
         const next: ShareRecord = {
           id: `${Date.now()}`,
           name: artifact.name,
           sourcePath: artifact.path,
-          previewUrl: publicUrl,
-          originUrl: deployed.previewUrl,
-          claimUrl: deployed.claimUrl,
-          managed,
-          managementToken,
-          clicks: managed ? 0 : undefined,
-          temporary: deployed.temporary,
+          previewUrl: shared.shortUrl,
+          originUrl: shared.previewUrl,
+          managed: true,
+          websiteShare: true,
+          managementToken: shared.managementToken,
+          temporary: true,
           createdAt: new Date().toISOString(),
-          expiresAt
+          expiresAt: shared.expiresAt
         };
         await this.saveRecord(next);
         await vscode.env.clipboard.writeText(next.previewUrl);
@@ -158,16 +119,12 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         if (choice === text.openPreview) vscode.env.openExternal(vscode.Uri.parse(record.previewUrl));
       });
     } catch (error) {
-      const message = error instanceof TemporaryProvisioningUnavailableError
-        ? text.temporaryProvisioningUnavailable
-        : error instanceof Error ? error.message : String(error);
+      const message = error instanceof Error ? error.message : String(error);
       this.output.appendLine(`Share failed: ${message}`);
       this.post({ command: 'shareFailed', message });
       vscode.window.showErrorMessage(format(text.failurePrefix, { message }), text.showOutput).then((choice) => {
         if (choice === text.showOutput) this.output.show();
       });
-    } finally {
-      await cleanupGeneratedDirectory(directory);
     }
   }
 
@@ -192,17 +149,17 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     else this.refresh();
   }
 
-  private async handleMessage(message: { command?: string; id?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer }): Promise<void> {
+  private async handleMessage(message: { command?: string; id?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer; options?: ShareOptions }): Promise<void> {
     switch (message.command) {
       case 'ready': this.refresh(); break;
       case 'choose': await this.chooseFile(); break;
-      case 'share': await this.shareSelection(); break;
+      case 'share': await this.shareSelection(message.options); break;
       case 'dropUri': {
         if (!message.uri) break;
         const uri = vscode.Uri.parse(message.uri);
         if (uri.scheme !== 'file') throw new Error(strings().localOnly);
         await this.select(uri.fsPath);
-        await this.shareSelection();
+        await this.shareSelection(message.options);
         break;
       }
       case 'dropFile': {
@@ -213,7 +170,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         try {
           await fs.writeFile(droppedPath, new Uint8Array(message.bytes));
           await this.select(droppedPath);
-          await this.shareSelection();
+          await this.shareSelection(message.options);
         } finally {
           await fs.unlink(droppedPath).catch(() => undefined);
           await fs.rmdir(droppedDirectory).catch(() => undefined);
@@ -238,7 +195,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
           if (!selected?.[0]) break;
           await this.select(selected[0].fsPath);
         }
-        await this.shareSelection();
+        await this.shareSelection(message.options);
         break;
       }
       case 'setLanguage': {
@@ -263,7 +220,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     const records = this.history();
     let changed = false;
     const refreshed = await Promise.all(records.map(async (record) => {
-      if (!record.managed || !record.managementToken || (record.expiresAt && Date.now() >= Date.parse(record.expiresAt))) return record;
+      if (!record.managed || record.websiteShare || !record.managementToken || (record.expiresAt && Date.now() >= Date.parse(record.expiresAt))) return record;
       try {
         const clicks = await getManagedLinkStats(record.previewUrl, record.managementToken);
         if (clicks !== record.clicks) changed = true;

@@ -30,6 +30,12 @@ export function getSidebarHtml(webview: vscode.Webview, extensionUri: vscode.Uri
         <div class="file-icon" aria-hidden="true"><span></span></div>
         <div class="file-copy"><strong>${escapeHtml(text.noFile)}</strong><small>${escapeHtml(text.dragOrChoose)}</small></div>
       </div>
+      <fieldset class="share-options">
+        <legend>${escapeHtml(text.shareOptions)}</legend>
+        <label class="toggle"><input id="allow-download" type="checkbox" checked><span>${escapeHtml(text.allowDownload)}</span></label>
+        <label class="option-field"><span>${escapeHtml(text.watermark)}</span><input id="watermark" type="text" maxlength="60" placeholder="${escapeHtml(text.watermarkPlaceholder)}"></label>
+        <label class="option-field"><span>${escapeHtml(text.linkLifetime)}</span><select id="expiry"><option value="day">${escapeHtml(text.oneDay)}</option><option value="week" selected>${escapeHtml(text.sevenDays)}</option><option value="month">${escapeHtml(text.thirtyDays)}</option></select></label>
+      </fieldset>
       <button id="share" class="primary" type="button" disabled>
         <span class="button-label">${escapeHtml(text.sharePreview)}</span><span class="spinner" aria-hidden="true"></span>
       </button>

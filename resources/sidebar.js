@@ -14,10 +14,17 @@
     claim: document.getElementById('claim-link'),
     refresh: document.getElementById('refresh'),
     language: document.getElementById('language'),
+    allowDownload: document.getElementById('allow-download'),
+    watermark: document.getElementById('watermark'),
+    expiry: document.getElementById('expiry'),
     history: document.getElementById('history')
   };
   elements.dropZone = document.getElementById('drop-zone');
   let latestRecord = null;
+
+  function shareOptions() {
+    return { allowDownload: elements.allowDownload.checked, watermark: elements.watermark.value, expiry: elements.expiry.value };
+  }
 
   function post(command, extras) { vscode.postMessage(Object.assign({ command }, extras || {})); }
   function setLoading(loading) {
@@ -60,14 +67,14 @@
       const actions = document.createElement('span'); actions.className = 'history-actions';
       const open = document.createElement('button'); open.type = 'button'; open.className = 'history-action'; open.textContent = text.open; open.addEventListener('click', () => post('open', { url: record.previewUrl })); actions.append(open);
       if (expired) {
-        const reshare = document.createElement('button'); reshare.type = 'button'; reshare.className = 'history-action reshare'; reshare.textContent = text.shareAgain; reshare.addEventListener('click', () => post('reshare', { id: record.id })); actions.append(reshare);
+        const reshare = document.createElement('button'); reshare.type = 'button'; reshare.className = 'history-action reshare'; reshare.textContent = text.shareAgain; reshare.addEventListener('click', () => post('reshare', { id: record.id, options: shareOptions() })); actions.append(reshare);
       }
       copy.append(heading, meta); item.append(copy, actions);
       elements.history.append(item);
     });
   }
   elements.choose.addEventListener('click', () => post('choose'));
-  elements.share.addEventListener('click', () => post('share'));
+  elements.share.addEventListener('click', () => post('share', { options: shareOptions() }));
   elements.refresh.addEventListener('click', () => post('refresh'));
   elements.language.addEventListener('click', () => post('setLanguage'));
   elements.open.addEventListener('click', () => latestRecord && post('open', { url: latestRecord.previewUrl }));
@@ -88,14 +95,14 @@
       const value = uriList.split(/\r?\n/).map((line) => line.trim()).find((line) => line && !line.startsWith('#'));
       if (value) {
         const uri = value.startsWith('file:') ? value : `file://${value}`;
-        post('dropUri', { uri }); return;
+        post('dropUri', { uri, options: shareOptions() }); return;
       }
     }
     const file = transfer?.files?.[0];
     if (!file) { elements.status.textContent = text.dropOneFile; return; }
-    if (file.size > 5 * 1024 * 1024) { elements.status.textContent = text.droppedFileLimit; return; }
+    if (file.size > 10 * 1024 * 1024) { elements.status.textContent = text.droppedFileLimit; return; }
     const bytes = await file.arrayBuffer();
-    vscode.postMessage({ command: 'dropFile', name: file.name, bytes });
+    vscode.postMessage({ command: 'dropFile', name: file.name, bytes, options: shareOptions() });
   });
   window.addEventListener('message', (event) => {
     const message = event.data;

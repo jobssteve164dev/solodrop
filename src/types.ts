@@ -1,4 +1,11 @@
 export type DeploymentMode = 'auto' | 'temporary' | 'authenticated';
+export type ShareExpiry = 'day' | 'week' | 'month';
+
+export interface ShareOptions {
+  allowDownload: boolean;
+  watermark: string;
+  expiry: ShareExpiry;
+}
 
 export interface ArtifactSelection {
   path: string;
@@ -15,6 +22,7 @@ export interface ShareRecord {
   originUrl?: string;
   claimUrl?: string;
   managed?: boolean;
+  websiteShare?: boolean;
   managementToken?: string;
   clicks?: number;
   temporary: boolean;
