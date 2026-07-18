@@ -2,7 +2,7 @@
   "name": "solodrop",
   "displayName": "%extension.displayName%",
   "description": "%extension.description%",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "publisher": "SZLK",
   "license": "MIT",
   "icon": "resources/logo.png",
