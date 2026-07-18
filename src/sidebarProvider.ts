@@ -8,12 +8,11 @@ import { buildPreview } from './preview';
 import { getSidebarHtml } from './sidebarWebview';
 import { createDeploymentName } from './naming';
 import { format, resolveLocale, strings } from './i18n';
-import { createManagedLink, getManagedLinkStats, normalizeShareCta, verifyManagedLink } from './linkService';
-import { ArtifactSelection, DeploymentMode, ShareCta, ShareRecord } from './types';
+import { createManagedLink, getManagedLinkStats, verifyManagedLink } from './linkService';
+import { ArtifactSelection, DeploymentMode, ShareRecord } from './types';
 
 const HISTORY_KEY = 'solodrop.shareHistory';
 const HISTORY_SOURCES_KEY = 'solodrop.shareHistorySources';
-const CTA_KEY = 'solodrop.shareCta';
 const TEMPORARY_LIFETIME_MS = 60 * 60 * 1000;
 
 export async function prepareShareHistorySync(context: vscode.ExtensionContext): Promise<void> {
@@ -25,7 +24,8 @@ export async function prepareShareHistorySync(context: vscode.ExtensionContext):
   });
   await context.globalState.update(HISTORY_SOURCES_KEY, sources);
   await context.globalState.update(HISTORY_KEY, sanitized);
-  context.globalState.setKeysForSync([HISTORY_KEY, CTA_KEY]);
+  await context.globalState.update('solodrop.shareCta', undefined);
+  context.globalState.setKeysForSync([HISTORY_KEY]);
 }
 
 async function cleanupGeneratedDirectory(directory: string): Promise<void> {
@@ -68,12 +68,17 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     this.postSelection();
   }
 
+  async followActiveEditor(editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor): Promise<void> {
+    const uri = editor?.document.uri;
+    if (uri?.scheme === 'file') await this.select(uri.fsPath);
+  }
+
   async chooseFile(): Promise<void> {
     const selected = await vscode.window.showOpenDialog({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false, openLabel: strings().sharePreview });
     if (selected?.[0]) await this.select(selected[0].fsPath);
   }
 
-  async shareSelection(ctaInput?: Partial<ShareCta> | null): Promise<void> {
+  async shareSelection(): Promise<void> {
     if (!this.selection) {
       await this.refreshFromActiveEditor();
       if (!this.selection) return;
@@ -82,8 +87,6 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     const text = strings();
     const settings = vscode.workspace.getConfiguration('solodrop');
     const mode = settings.get<DeploymentMode>('deploymentMode', 'auto');
-    const cta = normalizeShareCta(ctaInput === undefined ? this.context.globalState.get<ShareCta>(CTA_KEY) : ctaInput);
-    await this.context.globalState.update(CTA_KEY, cta);
     const findings = await scanArtifact(artifact.path);
     if (findings.length > 0) {
       const action = await vscode.window.showWarningMessage(
@@ -122,7 +125,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         let managementToken: string | undefined;
         try {
           progress.report({ message: text.creatingShortLink });
-          const linked = await createManagedLink({ url: deployed.previewUrl, title: artifact.name, temporary: deployed.temporary, expiresAt, cta });
+          const linked = await createManagedLink({ url: deployed.previewUrl, title: artifact.name, temporary: deployed.temporary, expiresAt });
           await verifyManagedLink(linked.shortUrl, deployed.previewUrl);
           publicUrl = linked.shortUrl;
           managementToken = linked.managementToken;
@@ -183,20 +186,15 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
 
   private async refreshFromActiveEditor(): Promise<void> {
     const uri = vscode.window.activeTextEditor?.document.uri;
-    if (uri?.scheme === 'file') await this.select(uri.fsPath);
+    if (uri?.scheme === 'file') await this.followActiveEditor();
     else this.refresh();
   }
 
-  private async handleMessage(message: { command?: string; id?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer; cta?: Partial<ShareCta> }): Promise<void> {
+  private async handleMessage(message: { command?: string; id?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer }): Promise<void> {
     switch (message.command) {
       case 'ready': this.refresh(); break;
       case 'choose': await this.chooseFile(); break;
-      case 'share': await this.shareSelection(message.cta); break;
-      case 'setCta': {
-        const cta = normalizeShareCta(message.cta);
-        await this.context.globalState.update(CTA_KEY, cta);
-        break;
-      }
+      case 'share': await this.shareSelection(); break;
       case 'dropUri': {
         if (!message.uri) break;
         const uri = vscode.Uri.parse(message.uri);
@@ -288,7 +286,6 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
   private postSelection(): void {
     this.post({ command: 'selectionChanged', selection: this.selection ? { ...this.selection, displaySize: formatBytes(this.selection.size) } : null });
     this.post({ command: 'historyLoaded', records: this.clientHistory() });
-    this.post({ command: 'ctaLoaded', cta: this.context.globalState.get<ShareCta>(CTA_KEY) });
   }
 
   private post(message: unknown): void {

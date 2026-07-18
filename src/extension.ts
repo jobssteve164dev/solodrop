@@ -8,6 +8,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(
     output,
     vscode.window.registerWebviewViewProvider(SoloDropSidebarProvider.viewType, provider),
+    vscode.window.onDidChangeActiveTextEditor((editor) => {
+      void provider.followActiveEditor(editor);
+    }),
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (event.affectsConfiguration('solodrop.language')) provider.rerender();
     }),

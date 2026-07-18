@@ -54,16 +54,6 @@ h1, h2, p { margin: 0; }
 .secondary { margin-top: 7px; background: transparent; color: var(--vscode-foreground); border-color: var(--border); }
 .secondary:hover, .result-actions button:hover { background: var(--vscode-toolbar-hoverBackground); }
 button:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-offset: 2px; }
-.cta-settings { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 7px; }
-.cta-settings summary { min-height: 32px; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--vscode-foreground); cursor: pointer; font-size: 11px; font-weight: 650; list-style: none; }
-.cta-settings summary::-webkit-details-marker { display: none; }
-.cta-settings summary::after { content: '+'; margin-left: auto; color: var(--muted); font-size: 15px; }
-.cta-settings[open] summary::after { content: '−'; }
-.cta-settings summary small { color: var(--muted); font-size: 9px; font-weight: 400; }
-.cta-settings > p { margin: 2px 0 9px; color: var(--muted); font-size: 9px; line-height: 1.4; }
-.cta-settings label { display: block; margin: 7px 0 4px; color: var(--muted); font-size: 9px; }
-.cta-settings input { width: 100%; min-height: 34px; border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 6px; padding: 6px 8px; background: var(--vscode-input-background); color: var(--vscode-input-foreground); font: inherit; font-size: 11px; }
-.cta-settings input:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-offset: 1px; }
 .spinner { display: none; position: absolute; left: calc(50% - 7px); top: calc(50% - 7px); width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
 .loading .button-label { opacity: 0; }
 .loading .spinner { display: block; }

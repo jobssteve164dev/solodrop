@@ -12,12 +12,14 @@ test('shortener only accepts HTTPS workers.dev previews', async () => {
   assert.throws(() => normalizeTarget('http://artifact.example.workers.dev/'), /must use HTTPS/);
 });
 
-test('CTA requires a safe complete HTTPS action', async () => {
-  const { normalizeCta } = await internals();
-  assert.deepEqual(normalizeCta({ label: 'View project', url: 'https://example.com/demo' }), { label: 'View project', url: 'https://example.com/demo' });
-  assert.equal(normalizeCta(null), null);
-  assert.throws(() => normalizeCta({ label: 'View', url: 'javascript:alert(1)' }), /must use HTTPS/);
-  assert.throws(() => normalizeCta({ label: 'View' }), /provided together/);
+test('share-page action is owned by SoloDrop', async () => {
+  const { PLATFORM_ACTION, renderEmbedScript } = await internals();
+  assert.deepEqual(PLATFORM_ACTION, {
+    label: 'Share your own preview',
+    url: 'https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop'
+  });
+  assert.match(renderEmbedScript(), /d\.action/);
+  assert.doesNotMatch(renderEmbedScript(), /d\.cta/);
 });
 
 test('redirect preserves target query and adds an opaque link marker', async () => {

@@ -23,7 +23,7 @@ The user should not need to understand Workers, static assets, temporary account
 - SoloDrop does not describe a public link as private.
 - SoloDrop does not promise a custom expiry for Cloudflare Drop deployments.
 - SoloDrop does not expose Cloudflare credentials in the webview, logs or share history.
-- The managed link service controls short links, synchronized temporary expiry, optional CTA configuration and basic click counts. It does not proxy or store artifact contents.
+- The managed link service controls short links, synchronized temporary expiry, the platform-owned share-page action and basic click counts. Sharing users do not configure that action. The service does not proxy or store artifact contents.
 - High-fidelity Office conversion, access control, large-file delivery and custom expiry still require a later managed Worker/R2 service and are not represented as current capabilities.
 
 ## Success criteria
