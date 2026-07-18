@@ -2,6 +2,7 @@ node_modules/
 out/
 .wrangler/
 worker/.wrangler/
+.playwright-cli/
 *.vsix
 .DS_Store
 .env

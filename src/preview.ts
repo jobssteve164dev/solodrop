@@ -86,7 +86,7 @@ export async function buildPreview(artifact: ArtifactSelection, outputDirectory:
   }
 
   await fs.writeFile(path.join(outputDirectory, 'index.html'), page(artifact.name, body, targetName), 'utf8');
-  await fs.writeFile(path.join(outputDirectory, '_headers'), '/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Content-Security-Policy: default-src \'self\'; script-src \'self\' \'unsafe-inline\' https://drop.szlk.ai; connect-src https://drop.szlk.ai; style-src \'unsafe-inline\'; img-src \'self\' data:; object-src \'self\'; frame-src \'self\'; base-uri \'none\'; form-action \'none\'\n', 'utf8');
+  await fs.writeFile(path.join(outputDirectory, '_headers'), '/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Content-Security-Policy: default-src \'self\'; script-src \'self\' \'unsafe-inline\' https://drop.szlk.ai; connect-src https://drop.szlk.ai; style-src \'unsafe-inline\'; img-src \'self\' data: blob:; font-src \'self\' data: blob:; object-src \'self\'; frame-src \'self\'; base-uri \'none\'; form-action \'none\'\n', 'utf8');
 }
 
 export const previewInternals = { escapeHtml, parseCsv, renderMarkdown };
