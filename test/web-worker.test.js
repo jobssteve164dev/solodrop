@@ -60,6 +60,20 @@ test('temporary Office previews load the shared browser renderer', () => {
   assert.match(pptx,/office-viewer\.js/);
 });
 
+test('Office viewer asset is loadable as a cross-origin module', async () => {
+  const env={
+    LINKS:{idFromName:()=>({}),get:()=>({})},
+    ASSETS:{fetch:async ()=>new Response('export default true',{headers:{'content-type':'text/javascript'}})}
+  };
+  const response=await worker.fetch(new Request('https://drop.szlk.ai/office-viewer.js'),env);
+  assert.equal(response.status,200);
+  assert.equal(response.headers.get('access-control-allow-origin'),'*');
+  assert.equal(await response.text(),'export default true');
+  const head=await worker.fetch(new Request('https://drop.szlk.ai/office-viewer.js',{method:'HEAD'}),env);
+  assert.equal(head.status,200);
+  assert.equal(await head.text(),'');
+});
+
 test('website waits through slow temporary Worker route propagation without reusing cached 404s', async () => {
   const requested=[];
   const pauses=[];

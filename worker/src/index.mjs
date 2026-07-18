@@ -84,7 +84,7 @@ async function verifyPreview(target, fetcher = fetch) {
 }
 
 function renderEmbedScript() {
-  return `(function(){try{var lang=(navigator.languages&&navigator.languages[0])||navigator.language||'',zh=/^zh(?:-|$)/i.test(lang),copy=zh?{action:'分享你自己的文件',powered:'由 SoloDrop 分享',download:'下载'}:{action:${JSON.stringify(PLATFORM_ACTION.label)},powered:'Shared with SoloDrop',download:'Download'};document.documentElement.lang=zh?'zh-CN':'en';var download=document.querySelector('.download');if(download)download.textContent=copy.download;var slot=document.querySelector('[data-solodrop-actions]');if(!slot)return;function render(d){var f=document.createDocumentFragment();if(d.action){var a=document.createElement('a');a.className='solodrop-cta';a.href=d.action.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=copy.action;f.appendChild(a)}var b=document.createElement('a');b.className='solodrop-powered';b.href='https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop';b.target='_blank';b.rel='noopener noreferrer';b.textContent=copy.powered;f.appendChild(b);slot.replaceChildren(f);slot.hidden=false}render({action:{label:copy.action,url:${JSON.stringify(PLATFORM_ACTION.url)}}});var s=new URL(location.href).searchParams.get('sd');if(!s)return;fetch('https://drop.szlk.ai/api/links/'+encodeURIComponent(s)+'/config',{mode:'cors'}).then(function(r){if(!r.ok)throw new Error();return r.json()}).then(render).catch(function(){})}catch(e){}})();`;
+  return `(function(){try{var lang=(navigator.languages&&navigator.languages[0])||navigator.language||'',zh=/^zh(?:-|$)/i.test(lang),copy=zh?{action:'分享你自己的文件',powered:'由 SoloDrop 分享',download:'下载'}:{action:${JSON.stringify(PLATFORM_ACTION.label)},powered:'Shared with SoloDrop',download:'Download'};document.documentElement.lang=zh?'zh-CN':'en';var download=document.querySelector('.download');if(!download&&document.querySelector('meta[name="solodrop-preview"][content="web-v1"]')){download=document.createElement('a');download.className='download';download.href='/file';download.download='';var header=document.querySelector('header');if(header)header.appendChild(download)}if(download)download.textContent=copy.download;var slot=document.querySelector('[data-solodrop-actions]');if(!slot)return;function render(d){var f=document.createDocumentFragment();if(d.action){var a=document.createElement('a');a.className='solodrop-cta';a.href=d.action.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=copy.action;f.appendChild(a)}var b=document.createElement('a');b.className='solodrop-powered';b.href='https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop';b.target='_blank';b.rel='noopener noreferrer';b.textContent=copy.powered;f.appendChild(b);slot.replaceChildren(f);slot.hidden=false}render({action:{label:copy.action,url:${JSON.stringify(PLATFORM_ACTION.url)}}});var s=new URL(location.href).searchParams.get('sd');if(!s)return;fetch('https://drop.szlk.ai/api/links/'+encodeURIComponent(s)+'/config',{mode:'cors'}).then(function(r){if(!r.ok)throw new Error();return r.json()}).then(render).catch(function(){})}catch(e){}})();`;
 }
 
 export class LinkRegistry {
@@ -300,7 +300,13 @@ export default {
     if (request.method === 'GET' && url.pathname === '/embed.js') {
       return new Response(renderEmbedScript(), { headers: { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'public, max-age=300', 'x-content-type-options': 'nosniff' } });
     }
-    if (request.method === 'GET' && url.pathname === '/office-viewer.js') return env.ASSETS.fetch(request);
+    if ((request.method === 'GET' || request.method === 'HEAD') && url.pathname === '/office-viewer.js') {
+      const asset = await env.ASSETS.fetch(request);
+      const headers = new Headers(asset.headers);
+      headers.set('access-control-allow-origin', '*');
+      headers.set('cache-control', 'public,max-age=86400');
+      return new Response(request.method === 'HEAD' ? null : asset.body, { status: asset.status, headers });
+    }
     const create = request.method === 'POST' && url.pathname === '/api/links';
     const match = url.pathname.match(/^\/api\/links\/([A-Za-z0-9]+)(?:\/(config|stats))?$/) || url.pathname.match(/^\/([A-Za-z0-9]+)$/);
     if (!create && !match) return json({ error: 'Not found.' }, 404);
