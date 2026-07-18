@@ -3,7 +3,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { describeArtifact, formatBytes, scanArtifact } from './artifact';
-import { deployPreview, isWranglerAuthenticated, verifyPreview } from './deployment';
+import { deployPreview, isWranglerAuthenticated, TemporaryProvisioningUnavailableError, verifyPreview } from './deployment';
 import { buildPreview } from './preview';
 import { getSidebarHtml } from './sidebarWebview';
 import { createDeploymentName } from './naming';
@@ -158,7 +158,9 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         if (choice === text.openPreview) vscode.env.openExternal(vscode.Uri.parse(record.previewUrl));
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
+      const message = error instanceof TemporaryProvisioningUnavailableError
+        ? text.temporaryProvisioningUnavailable
+        : error instanceof Error ? error.message : String(error);
       this.output.appendLine(`Share failed: ${message}`);
       this.post({ command: 'shareFailed', message });
       vscode.window.showErrorMessage(format(text.failurePrefix, { message }), text.showOutput).then((choice) => {

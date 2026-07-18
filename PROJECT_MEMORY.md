@@ -24,6 +24,7 @@ This file stores stable project facts future agents should reuse. Do not paste r
 - `worker/src/index.mjs` owns short-link validation, lifecycle, the platform action, visit counts, rate limits and management-token deletion. It does not proxy or store artifact contents.
 - The web upload request forwards file bytes directly into a temporary Cloudflare Worker deployment and discards its temporary API token after the request. The claim URL is returned only in that share request's browser response and is never written to general activity records or logs.
 - Public and claim URLs remain separate; link-management tokens stay in extension state and are not sent to the sidebar Webview.
+- Plugin-side temporary deployment retries only Cloudflare temporary-account provisioning failures with explicit 429/502/503/504 evidence. Worker upload and other ambiguous deployment failures are not blindly retried; this avoids turning resilience into duplicate publishing.
 
 ## Verification
 
