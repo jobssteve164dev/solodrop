@@ -3,6 +3,16 @@ import { promisify } from 'node:util';
 import { DeploymentMode, DeploymentResult } from './types';
 
 const execFileAsync = promisify(execFile);
+const WRANGLER_VERSION = '4.112.0';
+const TEMPORARY_PROVISIONING_ATTEMPTS = 3;
+const TEMPORARY_RETRY_DELAYS_MS = [2_000, 5_000];
+
+export class TemporaryProvisioningUnavailableError extends Error {
+  constructor() {
+    super('Cloudflare temporary preview provisioning is temporarily unavailable.');
+    this.name = 'TemporaryProvisioningUnavailableError';
+  }
+}
 
 interface RunnerResult { stdout: string; stderr: string; }
 type Runner = (command: string, args: string[], options: { env: NodeJS.ProcessEnv; timeout: number; maxBuffer: number }) => Promise<RunnerResult>;
@@ -35,7 +45,7 @@ export async function isWranglerAuthenticated(runner: Runner = defaultRunner): P
 }
 
 function deploymentArgs(directory: string, name: string, temporary: boolean): string[] {
-  const args = ['--yes', 'wrangler@latest', 'deploy', directory, '--name', name, '--compatibility-date', new Date().toISOString().slice(0, 10)];
+  const args = ['--yes', `wrangler@${WRANGLER_VERSION}`, 'deploy', directory, '--name', name, '--compatibility-date', new Date().toISOString().slice(0, 10)];
   if (temporary) args.push('--temporary');
   return args;
 }
@@ -52,7 +62,44 @@ function requiresTemporaryFallback(error: unknown): boolean {
     || /rerun this command with [`“]?--temporary/i.test(output);
 }
 
-export async function deployPreview(directory: string, name: string, mode: DeploymentMode, runner: Runner = defaultRunner): Promise<DeploymentResult> {
+function isRetryableTemporaryProvisioningError(error: unknown): boolean {
+  const output = commandErrorOutput(error).replace(/\u001b\[[0-9;]*m/g, '');
+  return /Failed to create a temporary preview account \((?:429|502|503|504)(?:\s|[^)]*)\)/i.test(output);
+}
+
+async function runDeployment(
+  directory: string,
+  name: string,
+  temporary: boolean,
+  runner: Runner,
+  options: { env: NodeJS.ProcessEnv; timeout: number; maxBuffer: number },
+  pause: (milliseconds: number) => Promise<void>
+): Promise<DeploymentResult> {
+  const attempts = temporary ? TEMPORARY_PROVISIONING_ATTEMPTS : 1;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const result = await runner('npx', deploymentArgs(directory, name, temporary), options);
+      return parseDeploymentOutput(`${result.stdout}\n${result.stderr}`, temporary);
+    } catch (error) {
+      if (!temporary || !isRetryableTemporaryProvisioningError(error) || attempt === attempts) {
+        if (temporary && isRetryableTemporaryProvisioningError(error)) {
+          throw new TemporaryProvisioningUnavailableError();
+        }
+        throw error;
+      }
+      await pause(TEMPORARY_RETRY_DELAYS_MS[attempt - 1]);
+    }
+  }
+  throw new Error('Cloudflare temporary preview creation did not complete.');
+}
+
+export async function deployPreview(
+  directory: string,
+  name: string,
+  mode: DeploymentMode,
+  runner: Runner = defaultRunner,
+  pause: (milliseconds: number) => Promise<void> = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))
+): Promise<DeploymentResult> {
   const authenticated = mode !== 'temporary' && await isWranglerAuthenticated(runner);
   if (mode === 'authenticated' && !authenticated) {
     throw new Error('Cloudflare is not connected. Run “Wrangler: Login” or switch SoloDrop deployment mode to Auto.');
@@ -60,12 +107,10 @@ export async function deployPreview(directory: string, name: string, mode: Deplo
   const temporary = mode === 'temporary' || !authenticated;
   const options = { env: process.env, timeout: 180_000, maxBuffer: 8 * 1024 * 1024 };
   try {
-    const result = await runner('npx', deploymentArgs(directory, name, temporary), options);
-    return parseDeploymentOutput(`${result.stdout}\n${result.stderr}`, temporary);
+    return await runDeployment(directory, name, temporary, runner, options, pause);
   } catch (error) {
     if (mode === 'auto' && !temporary && requiresTemporaryFallback(error)) {
-      const result = await runner('npx', deploymentArgs(directory, name, true), options);
-      return parseDeploymentOutput(`${result.stdout}\n${result.stderr}`, true);
+      return runDeployment(directory, name, true, runner, options, pause);
     }
     throw error;
   }
@@ -92,4 +137,4 @@ export async function verifyPreview(
   throw new Error(lastStatus ? `The published preview returned HTTP ${lastStatus}.` : 'The published preview could not be reached.');
 }
 
-export const deploymentInternals = { commandErrorOutput, deploymentArgs, requiresTemporaryFallback };
+export const deploymentInternals = { commandErrorOutput, deploymentArgs, isRetryableTemporaryProvisioningError, requiresTemporaryFallback };

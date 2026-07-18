@@ -57,3 +57,40 @@ test('auto mode retries as temporary when non-interactive authentication disappe
   assert.ok(calls[2].includes('--temporary'));
   assert.equal(result.temporary, true);
 });
+
+test('retries transient temporary account provisioning failures with bounded backoff', async () => {
+  let deployAttempts = 0;
+  const pauses = [];
+  const result = await deployPreview('/tmp/preview', 'solodrop-test', 'temporary', async (_command, args) => {
+    assert.match(args[1], /^wrangler@\d+\.\d+\.\d+$/);
+    deployAttempts += 1;
+    if (deployAttempts < 3) {
+      const error = new Error('Command failed');
+      error.stderr = 'Failed to create a temporary preview account (504 Gateway Timeout).';
+      throw error;
+    }
+    return { stdout: 'https://solodrop-test.example.workers.dev\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };
+  }, async (milliseconds) => { pauses.push(milliseconds); });
+  assert.equal(result.temporary, true);
+  assert.equal(deployAttempts, 3);
+  assert.deepEqual(pauses, [2000, 5000]);
+});
+
+test('does not retry deployment errors outside temporary account provisioning', async () => {
+  let attempts = 0;
+  await assert.rejects(() => deployPreview('/tmp/preview', 'solodrop-test', 'temporary', async () => {
+    attempts += 1;
+    const error = new Error('Command failed');
+    error.stderr = 'Failed to upload Worker script (504 Gateway Timeout).';
+    throw error;
+  }, async () => {}), /Command failed/);
+  assert.equal(attempts, 1);
+});
+
+test('turns exhausted temporary account timeouts into an actionable message', async () => {
+  await assert.rejects(() => deployPreview('/tmp/preview', 'solodrop-test', 'temporary', async () => {
+    const error = new Error('Command failed');
+    error.stderr = 'Failed to create a temporary preview account (503 Service Unavailable).';
+    throw error;
+  }, async () => {}), (error) => error.name === 'TemporaryProvisioningUnavailableError');
+});
