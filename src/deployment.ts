@@ -64,7 +64,7 @@ function requiresTemporaryFallback(error: unknown): boolean {
 
 function isRetryableTemporaryProvisioningError(error: unknown): boolean {
   const output = commandErrorOutput(error).replace(/\u001b\[[0-9;]*m/g, '');
-  return /Failed to create a temporary preview account \((?:429|502|503|504)(?:\s|[^)]*)\)/i.test(output);
+  return /Failed to (?:create a temporary preview account|request a proof-of-work challenge) \((?:429|502|503|504)(?:\s|[^)]*)\)/i.test(output);
 }
 
 async function runDeployment(
