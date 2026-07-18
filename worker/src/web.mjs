@@ -28,6 +28,7 @@ function legacyHomePage(user) {
 function homePage(user, locale = 'zh') {
   const en=locale==='en';
   let html=legacyHomePage(user);
+  html=html.replace('</head>','<style>.faq-list{max-width:none;width:100%;margin-left:0;margin-right:0}</style></head>');
   const replacements=en?[
     ['lang="zh-CN"','lang="en"'],['跳到主要内容','Skip to main content'],['主导航','Main navigation'],['VS Code 插件','VS Code extension'],['登录','Log in'],['免费注册','Sign up free'],['服务条款','Terms'],['隐私政策','Privacy'],['产品补充说明','Legal supplement'],
     ['快速把文件分享成网页 · SoloDrop','Free Temporary File Sharing — No Sign-Up | SoloDrop'],['无需登录，把文件快速变成可分享的临时网页。','Turn a file into a temporary shareable web page without signing in.'],
