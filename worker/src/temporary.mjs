@@ -31,8 +31,8 @@ async function deployTemporary(request, user, registry, origin) {
   if (form.get('accepted') !== 'yes') throw new Error('请先同意 Cloudflare 条款与隐私政策。');
   const checkpoints = String(form.get('checkpoints') || ''), challengeToken = String(form.get('challengeToken') || '');
   if (!challengeToken || !checkpoints || checkpoints.length > 500000) throw new Error('Cloudflare 安全校验结果无效。');
-  const activityId = crypto.randomUUID();
-  await registry.fetch('https://registry/activity',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:activityId,userId:user.id,email:user.email,fileName:safeName(file.name),sizeBytes:file.size,contentType:file.type,status:'provisioning'})});
+  const activityId = user ? crypto.randomUUID() : null;
+  if (user) await registry.fetch('https://registry/activity',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:activityId,userId:user.id,email:user.email,fileName:safeName(file.name),sizeBytes:file.size,contentType:file.type,status:'provisioning'})});
   try {
     const temporary = await cfJson(`${API}/provisioning/previews`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({termsOfService:'https://www.cloudflare.com/terms/',privacyPolicy:'https://www.cloudflare.com/privacypolicy/',acceptTermsOfService:'yes',challengeToken,solution:{checkpoints}})});
     const account = temporary.account, claim = temporary.claim;
@@ -50,10 +50,10 @@ async function deployTemporary(request, user, registry, origin) {
     const created = await registry.fetch('https://registry/create',{method:'POST',headers:{'content-type':'application/json','x-solodrop-client-ip':request.headers.get('cf-connecting-ip')||''},body:JSON.stringify({url:previewUrl,title:file.name,temporary:true,expiresAt:claim.expiresAt})});
     if (!created.ok) throw new Error((await created.json()).error || '短链接创建失败。');
     const link = await created.json();
-    await registry.fetch(`https://registry/activity/${activityId}`,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({status:'ready',shortSlug:link.slug,previewUrl,expiresAt:claim.expiresAt})});
+    if (activityId) await registry.fetch(`https://registry/activity/${activityId}`,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({status:'ready',shortSlug:link.slug,previewUrl,expiresAt:claim.expiresAt})});
     return {shortUrl:`${origin}/${link.slug}`,previewUrl,claimUrl:claim.url,expiresAt:claim.expiresAt};
   } catch (error) {
-    await registry.fetch(`https://registry/activity/${activityId}`,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({status:'failed'})});
+    if (activityId) await registry.fetch(`https://registry/activity/${activityId}`,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({status:'failed'})});
     throw error;
   }
 }

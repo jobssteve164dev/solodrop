@@ -1,6 +1,6 @@
 import { handleAuth, sessionUser } from './auth.mjs';
 import { challenge, deployTemporary } from './temporary.mjs';
-import { accountPage, authPage, homePage, legalPage, shell } from './web.mjs';
+import { LOGO_SVG, accountPage, authPage, homePage, legalPage, shell } from './web.mjs';
 import { powScript } from './pow.mjs';
 
 const SERVICE_NAME = 'SoloDrop';
@@ -258,6 +258,7 @@ export default {
     const registry=env.LINKS.get(env.LINKS.idFromName('registry'));
     const origin=url.origin;
     if (request.method === 'GET' && url.pathname === '/') return new Response(homePage(await sessionUser(request,registry)),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+    if (request.method === 'GET' && url.pathname === '/favicon.svg') return new Response(LOGO_SVG,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=86400','x-content-type-options':'nosniff'}});
     if (request.method === 'GET' && url.pathname === '/pow.js') return new Response(powScript(),{headers:{'content-type':'application/javascript;charset=utf-8','cache-control':'public,max-age=3600','x-content-type-options':'nosniff'}});
     if (request.method === 'GET' && ['/login','/register'].includes(url.pathname)) {
       const notices={ 'check-email':'注册成功，请查收验证邮件。','verify-first':'请先完成邮箱验证。','reset-sent':'如果账号存在，重置邮件已经发出。','verified':'邮箱验证成功，现在可以登录。','reset':'密码已重置。' };
@@ -281,11 +282,10 @@ export default {
     }
     if (url.pathname.startsWith('/api/auth/') && (request.method === 'POST' || url.pathname.endsWith('/logout'))) return handleAuth(request,env,registry,origin);
     if (request.method === 'POST' && url.pathname === '/api/temp/challenge') {
-      if(!await sessionUser(request,registry))return json({error:'请先登录。'},401);
       try{return json(await challenge())}catch(error){return json({error:error.message},502)}
     }
     if (request.method === 'POST' && url.pathname === '/api/temp/deploy') {
-      const user=await sessionUser(request,registry);if(!user)return json({error:'请先登录。'},401);
+      const user=await sessionUser(request,registry);
       try{return json(await deployTemporary(request,user,registry,origin),201)}catch(error){return json({error:error.message||'生成失败。'},422)}
     }
     if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/')) return new Response(null, { status: 204, headers: corsHeaders(request) });
