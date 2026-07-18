@@ -24,6 +24,8 @@ test('share-page action is owned by SoloDrop', async () => {
   assert.match(renderEmbedScript(), /由 SoloDrop 分享/);
   assert.match(renderEmbedScript(), /download:'下载'/);
   assert.match(renderEmbedScript(), /download:'Download'/);
+  assert.match(renderEmbedScript(), /openPdf:'打开 PDF'/);
+  assert.match(renderEmbedScript(), /openPdf:'Open the PDF'/);
   assert.match(renderEmbedScript(), /document\.documentElement\.lang=zh\?'zh-CN':'en'/);
   assert.match(renderEmbedScript(), /querySelector\('\.download'\)/);
   assert.match(renderEmbedScript(), /content="web-v1"/);

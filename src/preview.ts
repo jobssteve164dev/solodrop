@@ -70,7 +70,7 @@ export async function buildPreview(artifact: ArtifactSelection, outputDirectory:
   } else if (imageExtensions.has(extension)) {
     body = `<img src="./${encodeURIComponent(targetName)}" alt="${escapeHtml(artifact.name)}">`;
   } else if (extension === '.pdf') {
-    body = `<embed class="pdf" src="./${encodeURIComponent(targetName)}" type="application/pdf"><p><a href="./${encodeURIComponent(targetName)}">Open the PDF</a></p>`;
+    body = `<embed class="pdf" src="./${encodeURIComponent(targetName)}" type="application/pdf"><p><a class="open-pdf" href="./${encodeURIComponent(targetName)}">Open the PDF</a></p>`;
   } else if (officeExtensions.has(extension)) {
     body = `<div class="office-viewer" data-office-format="${extension.slice(1)}" data-office-src="./${encodeURIComponent(targetName)}"></div><script type="module" src="https://drop.szlk.ai/office-viewer.js"></script>`;
   } else if (extension === '.csv') {
