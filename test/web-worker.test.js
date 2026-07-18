@@ -6,12 +6,17 @@ import { homePage, MAX_FILE_BYTES } from '../worker/src/web.mjs';
 import { powScript } from '../worker/src/pow.mjs';
 import { previewWorker } from '../worker/src/temporary.mjs';
 
-test('web entry requires an account and states the no-file-storage boundary', () => {
+test('web entry lets guests share first and offers registration after success', () => {
   const guest = homePage(null);
-  assert.match(guest, /先登录后开始分享/);
+  assert.match(guest, /无需登录/);
+  assert.match(guest, /创建临时分享链接/);
+  assert.match(guest, /当前链接无需注册，已经可以使用/);
+  assert.doesNotMatch(guest, /先登录后开始分享/);
   const user = homePage({id:'user-1',email:'user@example.com'});
   assert.match(user, /不保存文件内容/);
   assert.match(user, /Cloudflare 服务条款/);
+  assert.match(guest, /favicon\.svg/);
+  assert.match(guest, /SoloDrop · A SZLK product/);
   assert.equal(MAX_FILE_BYTES, 1024 * 1024);
 });
 
