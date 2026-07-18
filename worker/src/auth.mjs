@@ -1,4 +1,5 @@
 const SESSION_COOKIE = 'solodrop_session';
+const ACTIVITY_CLAIM_COOKIE = 'solodrop_activity_claim';
 const PASSPORT_URL = 'https://passport.szlk.ai';
 
 function parseCookie(request, name) {
@@ -53,7 +54,16 @@ async function handleAuth(request, env, registry, origin) {
       const data = await passport(env, '/api/v1/auth/login', body);
       if (data.needsEmailVerification || data.user?.emailVerified === false) return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=verify-first`}});
       const cookie = await establishSession(data.user, registry);
-      return new Response(null,{status:303,headers:{location:prefix||'/', 'set-cookie':cookie}});
+      const claimToken=parseCookie(request,ACTIVITY_CLAIM_COOKIE);
+      let claimed=0, claimCompleted=false;
+      if(claimToken){
+        const response=await registry.fetch('https://registry/claim-activities',{method:'POST',headers:{'content-type':'application/json','x-claim-token':claimToken},body:JSON.stringify({userId:data.user.id,email:data.user.email})});
+        if(response.ok){claimed=(await response.json()).claimed||0;claimCompleted=true;}
+      }
+      const headers=new Headers({location:claimed?`${prefix}/account`:(prefix||'/')});
+      headers.append('set-cookie',cookie);
+      if(claimCompleted)headers.append('set-cookie',`${ACTIVITY_CLAIM_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+      return new Response(null,{status:303,headers});
     }
     if (mode === 'forgot-password') {
       await passport(env, '/api/v1/auth/forgot-password', {email:body.email,appBaseUrl:origin});
