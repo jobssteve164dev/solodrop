@@ -15,8 +15,8 @@ test('shortener only accepts HTTPS workers.dev previews', async () => {
 test('share-page action is owned by SoloDrop', async () => {
   const { PLATFORM_ACTION, renderEmbedScript } = await internals();
   assert.deepEqual(PLATFORM_ACTION, {
-    label: 'Share your own preview',
-    url: 'https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop'
+    label: 'Share your own file',
+    url: 'https://drop.szlk.ai/'
   });
   assert.match(renderEmbedScript(), /d\.action/);
   assert.doesNotMatch(renderEmbedScript(), /d\.cta/);

@@ -1,3 +1,8 @@
+import { handleAuth, sessionUser } from './auth.mjs';
+import { challenge, deployTemporary } from './temporary.mjs';
+import { accountPage, authPage, homePage, legalPage, shell } from './web.mjs';
+import { powScript } from './pow.mjs';
+
 const SERVICE_NAME = 'SoloDrop';
 const MAX_CREATES_PER_DAY = 40;
 const MAX_TEMPORARY_LIFETIME_MS = 61 * 60 * 1000;
@@ -53,8 +58,8 @@ function normalizeTarget(value) {
 }
 
 const PLATFORM_ACTION = Object.freeze({
-  label: 'Share your own preview',
-  url: 'https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop'
+  label: 'Share your own file',
+  url: 'https://drop.szlk.ai/'
 });
 
 function withLinkMarker(target, slug) {
@@ -101,11 +106,35 @@ export class LinkRegistry {
       rate_key TEXT PRIMARY KEY,
       count INTEGER NOT NULL,
       expires_at INTEGER NOT NULL
+    ); CREATE TABLE IF NOT EXISTS sessions (
+      token_hash TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      email TEXT NOT NULL,
+      name TEXT,
+      created_at INTEGER NOT NULL,
+      expires_at INTEGER NOT NULL
+    ); CREATE TABLE IF NOT EXISTS activities (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      email TEXT NOT NULL,
+      file_name TEXT NOT NULL,
+      size_bytes INTEGER NOT NULL,
+      content_type TEXT,
+      status TEXT NOT NULL,
+      short_slug TEXT,
+      preview_url TEXT,
+      created_at INTEGER NOT NULL,
+      expires_at INTEGER
     );`);
   }
 
   async fetch(request) {
     const url = new URL(request.url);
+    if (url.pathname === '/session') return this.session(request);
+    if (url.pathname === '/activity' && request.method === 'POST') return this.createActivity(request);
+    if (url.pathname === '/activities' && request.method === 'GET') return this.listActivities(request);
+    const activity = url.pathname.match(/^\/activity\/([a-f0-9-]+)$/);
+    if (activity && request.method === 'PATCH') return this.updateActivity(activity[1], request);
     if (request.method === 'POST' && url.pathname === '/create') return this.create(request);
     const match = url.pathname.match(/^\/links\/([A-Za-z0-9]+)(?:\/(config|stats))?$/);
     if (request.method === 'GET' && match) {
@@ -114,6 +143,43 @@ export class LinkRegistry {
     }
     if (request.method === 'DELETE' && match && !match[2]) return this.remove(match[1], request.headers.get('x-management-token') || '');
     return json({ error: 'Not found.' }, 404);
+  }
+
+  async session(request) {
+    const token = request.headers.get('x-session-token') || '';
+    if (!token) return json({error:'Unauthorized.'},401);
+    const hash = await sha256(token), now = Date.now();
+    if (request.method === 'POST') {
+      const body = await request.json();
+      const user = body.user || body;
+      if (!user.id || !user.email) return json({error:'Invalid user.'},400);
+      this.sql.exec(`INSERT OR REPLACE INTO sessions (token_hash,user_id,email,name,created_at,expires_at) VALUES (?,?,?,?,?,?)`,hash,user.id,user.email,user.name || '',now,now+30*24*60*60*1000);
+      return json({ok:true},201);
+    }
+    if (request.method === 'DELETE') { this.sql.exec('DELETE FROM sessions WHERE token_hash = ?',hash); return new Response(null,{status:204}); }
+    const row=[...this.sql.exec('SELECT user_id AS id,email,name,expires_at FROM sessions WHERE token_hash = ?',hash)][0];
+    if (!row || row.expires_at <= now) { if(row)this.sql.exec('DELETE FROM sessions WHERE token_hash = ?',hash); return json({error:'Unauthorized.'},401); }
+    return json(row);
+  }
+
+  async createActivity(request) {
+    const b=await request.json(), now=Date.now();
+    if(!b.id||!b.userId||!b.fileName) return json({error:'Invalid activity.'},400);
+    this.sql.exec(`INSERT INTO activities (id,user_id,email,file_name,size_bytes,content_type,status,created_at) VALUES (?,?,?,?,?,?,?,?)`,b.id,b.userId,b.email||'',b.fileName,b.sizeBytes||0,b.contentType||'',b.status||'provisioning',now);
+    return json({ok:true},201);
+  }
+
+  async updateActivity(id, request) {
+    const b=await request.json();
+    this.sql.exec(`UPDATE activities SET status=?,short_slug=COALESCE(?,short_slug),preview_url=COALESCE(?,preview_url),expires_at=COALESCE(?,expires_at) WHERE id=?`,b.status||'failed',b.shortSlug||null,b.previewUrl||null,b.expiresAt?Date.parse(b.expiresAt):null,id);
+    return json({ok:true});
+  }
+
+  listActivities(request) {
+    const userId=request.headers.get('x-user-id');
+    if(!userId)return json({error:'Unauthorized.'},401);
+    const rows=[...this.sql.exec('SELECT file_name,size_bytes,status,short_slug,created_at,expires_at FROM activities WHERE user_id=? ORDER BY created_at DESC LIMIT 50',userId)];
+    return json(rows);
   }
 
   enforceRateLimit(ip, now) {
@@ -189,6 +255,39 @@ export class LinkRegistry {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const registry=env.LINKS.get(env.LINKS.idFromName('registry'));
+    const origin=url.origin;
+    if (request.method === 'GET' && url.pathname === '/') return new Response(homePage(await sessionUser(request,registry)),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+    if (request.method === 'GET' && url.pathname === '/pow.js') return new Response(powScript(),{headers:{'content-type':'application/javascript;charset=utf-8','cache-control':'public,max-age=3600','x-content-type-options':'nosniff'}});
+    if (request.method === 'GET' && ['/login','/register'].includes(url.pathname)) {
+      const notices={ 'check-email':'注册成功，请查收验证邮件。','verify-first':'请先完成邮箱验证。','reset-sent':'如果账号存在，重置邮件已经发出。','verified':'邮箱验证成功，现在可以登录。','reset':'密码已重置。' };
+      const message=url.searchParams.get('error')||notices[url.searchParams.get('notice')]||'';
+      return new Response(authPage(url.pathname.slice(1),message),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+    }
+    if (request.method === 'GET' && url.pathname === '/forgot') return new Response(shell('找回密码','<main class="auth card"><h1>找回密码</h1><p class="muted">输入注册邮箱，我们会发送重置链接。</p><form method="post" action="/api/auth/forgot-password"><label class="field">邮箱<input type="email" name="email" required></label><button class="full">发送重置邮件</button></form></main>'),{headers:{'content-type':'text/html;charset=utf-8'}});
+    if (request.method === 'GET' && url.pathname === '/reset-password') return new Response(shell('设置新密码',`<main class="auth card"><h1>设置新密码</h1><form method="post" action="/api/auth/reset-password"><input type="hidden" name="token" value="${(url.searchParams.get('token')||'').replace(/["&<>]/g,'')}"><label class="field">新密码<input type="password" name="password" minlength="8" required></label><button class="full">保存新密码</button></form></main>`),{headers:{'content-type':'text/html;charset=utf-8'}});
+    if (request.method === 'GET' && url.pathname === '/verify-email') return new Response(shell('验证邮箱',`<main class="auth card"><h1>验证邮箱</h1><form method="post" action="/api/auth/verify-email"><input type="hidden" name="token" value="${(url.searchParams.get('token')||'').replace(/["&<>]/g,'')}"><button class="full">完成验证</button></form></main>`),{headers:{'content-type':'text/html;charset=utf-8'}});
+    if (request.method === 'GET' && url.pathname === '/account') {
+      const user=await sessionUser(request,registry); if(!user)return Response.redirect(`${origin}/login`,303);
+      const activities=await (await registry.fetch('https://registry/activities',{headers:{'x-user-id':user.id}})).json();
+      return new Response(accountPage(user,activities),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+    }
+    if (request.method === 'GET' && ['/terms','/privacy','/legal-supplement'].includes(url.pathname)) {
+      const map={'/terms':['terms_of_service','服务条款'],'/privacy':['privacy_policy','隐私政策'],'/legal-supplement':['product_legal_supplement','产品补充说明']};
+      const [type,title]=map[url.pathname], endpoint=type==='product_legal_supplement'?'product-supplement':'document';
+      const query=type==='product_legal_supplement'?`product=solodrop&locale=zh-CN`:`product=solodrop&type=${type}&locale=zh-CN`;
+      try { const response=await fetch(`https://laws.szlk.ai/api/legal/${endpoint}?${query}`); if(!response.ok)throw new Error(); const payload=await response.json(); return new Response(legalPage(title,payload.result||payload),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'public,max-age=300'}}); }
+      catch { return new Response(legalPage(title,null),{status:503,headers:{'content-type':'text/html;charset=utf-8'}}); }
+    }
+    if (url.pathname.startsWith('/api/auth/') && (request.method === 'POST' || url.pathname.endsWith('/logout'))) return handleAuth(request,env,registry,origin);
+    if (request.method === 'POST' && url.pathname === '/api/temp/challenge') {
+      if(!await sessionUser(request,registry))return json({error:'请先登录。'},401);
+      try{return json(await challenge())}catch(error){return json({error:error.message},502)}
+    }
+    if (request.method === 'POST' && url.pathname === '/api/temp/deploy') {
+      const user=await sessionUser(request,registry);if(!user)return json({error:'请先登录。'},401);
+      try{return json(await deployTemporary(request,user,registry,origin),201)}catch(error){return json({error:error.message||'生成失败。'},422)}
+    }
     if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/')) return new Response(null, { status: 204, headers: corsHeaders(request) });
     if (request.method === 'GET' && url.pathname === '/health') return json({ ok: true, service: SERVICE_NAME });
     if (request.method === 'GET' && url.pathname === '/embed.js') {
@@ -217,7 +316,7 @@ export default {
           expiresAt: parsed.expiresAt
         })
       });
-      const response = await env.LINKS.get(env.LINKS.idFromName('registry')).fetch(forwarded);
+      const response = await registry.fetch(forwarded);
       if (!response.ok) return response;
       const result = await response.json();
       return json({ ...result, shortUrl: `${url.origin}/${result.slug}` }, 201);
@@ -226,13 +325,13 @@ export default {
     const apiAction = url.pathname.startsWith('/api/') ? match[2] : '';
     const headers = apiAction === 'stats' ? { 'x-management-token': request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') || '' } : undefined;
     if (request.method === 'DELETE' && url.pathname.startsWith('/api/') && !apiAction) {
-      return env.LINKS.get(env.LINKS.idFromName('registry')).fetch(`https://registry/links/${slug}`, {
+      return registry.fetch(`https://registry/links/${slug}`, {
         method: 'DELETE',
         headers: { 'x-management-token': request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') || '' }
       });
     }
     if (request.method !== 'GET') return json({ error: 'Method not allowed.' }, 405);
-    const resolved = await env.LINKS.get(env.LINKS.idFromName('registry')).fetch(`https://registry/links/${slug}${apiAction ? `/${apiAction}` : ''}`, { headers });
+    const resolved = await registry.fetch(`https://registry/links/${slug}${apiAction ? `/${apiAction}` : ''}`, { headers });
     if (apiAction || !resolved.ok) return resolved;
     const result = await resolved.json();
     return new Response(null, {
