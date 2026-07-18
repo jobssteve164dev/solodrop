@@ -9809,3 +9809,231 @@ index a94257d58f1cae509a0ce3ae8b0524040963233f..75966ce9719a588d06bd7322a2407983
    return `<input id="file" type="file" hidden><label id="drop" class="drop" for="file"><div><span class="upload-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><strong>拖入文件，立即生成分享页</strong><span>或点击选择文件 · 最大 10 MB</span></div></label><p id="picked" class="picked">支持 Markdown、代码、文本、图片、CSV、HTML、PDF、Word 和 PowerPoint</p><div class="share-options"><label class="check"><input id="allow-download" type="checkbox" checked><span><strong>允许下载原文件</strong><small>关闭后，页面只保留在线预览</small></span></label><label class="field"><span>文字水印（可选）</span><input id="watermark" maxlength="60" placeholder="例如：仅供客户审阅"></label><label class="field"><span>链接有效期</span><select id="expiry"><option value="day">1 天</option><option value="week" selected>7 天</option><option value="month">30 天</option>${user?'<option value="never">长期保留</option>':''}</select></label></div><label class="check"><input id="terms" type="checkbox"><span>我确认文件将通过公开链接访问，并同意 SoloDrop 在所选有效期内保存文件内容，直到到期或我主动删除。</span></label><button id="share" class="full" disabled>创建分享链接</button><p id="status" class="status" role="status" aria-live="polite"></p><div id="result" class="result" hidden><div class="result-title">${checkIcon}<span>链接已经可以分享</span></div><p><a id="short" class="result-link" target="_blank" rel="noreferrer"></a></p><div class="result-actions"><button id="copy" type="button">复制链接</button><button id="delete-share" type="button" class="secondary">删除分享</button></div>${user?'':'<div class="signup-nudge"><strong>需要长期保留？</strong><p>免费注册后可创建长期链接，并在不同设备查看分享记录。</p><a class="button" href="/register?from=share-success">免费创建账号</a></div>'}</div><style>.share-options{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.share-options .check{margin:0 0 12px}.share-options small{display:block;margin-top:3px;color:var(--muted)}.share-options .field{margin:11px 0 0;font-size:13px;color:#454556}.share-options input[type=text],.share-options input:not([type]),.share-options select{width:100%;height:44px;border:1px solid #cfcfdd;border-radius:10px;padding:0 12px;background:#fff;font:inherit}.share-options select{cursor:pointer}</style>`;
  }
 
+[35m[3mexec[0m[0m
+[1m/bin/bash -lc 'git add -A && git commit --amend --no-edit && git pull --rebase origin main && git push origin main'[0m in /home/ubuntu/project/solodrop
+diff --git a//home/ubuntu/project/.solomap-global/memory/projects/solodrop.md b//home/ubuntu/project/.solomap-global/memory/projects/solodrop.md
+index ac0e676bcfd5118ba0acefd4f3bab18dba31597d..e3afb6ac657068b58a4ccae013a4730186011610
+--- a//home/ubuntu/project/.solomap-global/memory/projects/solodrop.md
++++ b//home/ubuntu/project/.solomap-global/memory/projects/solodrop.md
+@@ -2,6 +2,8 @@
+ 
+ ## Stable Facts
+ 
++- 2026-07-18: Website guest shares are tracked with an HttpOnly browser claim credential. After email verification and first login, all guest activities tied to that credential are atomically moved into the account history; the credential is cleared only after the registry confirms the claim, so a transient claim failure can retry on a later login.
++
+ - 2026-07-18: Cloudflare temporary account provisioning can finish the PoW step and then return 504 from `/provisioning/previews`. The plugin pins its verified Wrangler version and retries only explicit temporary-account creation 429/502/503/504 failures with bounded 2s/5s backoff; unrelated upload/deploy errors remain single-attempt.
+ 
+ - 2026-07-18: `drop.szlk.ai` stores website share bytes and private metadata in the `solodrop-previews` R2 bucket. Guest shares support 1, 7, or 30 days; signed-in users can also keep a share until deletion. Expired URLs return 410 immediately and an hourly scheduled task removes expired R2 objects.
+diff --git a/test/web-worker.test.js b/test/web-worker.test.js
+index 6b43504dd5a5a1cedbbf4bb03e64ed4219d50f5b..78fcce0c5c7c346825c33fce56dcd81c7fbca06b
+--- a/test/web-worker.test.js
++++ b/test/web-worker.test.js
+@@ -5,6 +5,7 @@
+ import { powScript } from '../worker/src/pow.mjs';
+ import { previewWorker, verifyTemporaryPreview } from '../worker/src/temporary.mjs';
+ import { createShare, previewPage, serveContent } from '../worker/src/shares.mjs';
++import { handleAuth } from '../worker/src/auth.mjs';
+ 
+ test('web entry lets guests share first and offers registration after success', () => {
+   const guest = homePage(null);
+@@ -19,6 +20,7 @@
+   assert.match(guest, /favicon\.svg/);
+   assert.match(guest, /SoloDrop · A SZLK product/);
+   assert.equal(MAX_FILE_BYTES, 10 * 1024 * 1024);
++  assert.match(guest, /<svg width="20" height="20" viewBox="0 0 24 24"/);
+ });
+ 
+ test('publishes complete Chinese and English SEO/GEO entry pages', async () => {
+@@ -111,14 +113,40 @@
+   form.set('allowDownload','no');
+   form.set('watermark','Client <review>');
+   form.set('expiry','week');
+-  const registry={fetch:async()=>new Response('{}')};
+-  const created=await createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:form}),{PREVIEWS:bucket},null,registry,'https://drop.szlk.ai');
++  const registryRequests=[];
++  const registry={fetch:async(url,options)=>{registryRequests.push({url,options});return new Response('{}');}};
++  const created=await createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:form}),{PREVIEWS:bucket},null,registry,'https://drop.szlk.ai','claim-secret');
+   const slug=new URL(created.shortUrl).pathname.slice(1);
+   const page=previewPage(JSON.parse(new TextDecoder().decode(objects.get(`shares/${slug}.json`).bytes)));
+   assert.match(page,/Client &lt;review&gt;/);
++  assert.match(page,/user-select:none/);
++  assert.match(page,/selectstart/);
++  assert.match(page,/\.content \.pdf\{pointer-events:none\}/);
+   assert.doesNotMatch(page,/class="download"/);
++  assert.equal(registryRequests[0].url,'https://registry/guest-activity');
++  assert.equal(registryRequests[0].options.headers['x-claim-token'],'claim-secret');
+   const inline=await serveContent(new Request(`https://drop.szlk.ai/api/shares/${slug}/content`),slug,{PREVIEWS:bucket});
+   assert.equal(inline.status,200);
+   const download=await serveContent(new Request(`https://drop.szlk.ai/api/shares/${slug}/content?download=1`),slug,{PREVIEWS:bucket});
+   assert.equal(download.status,403);
+ });
++
++test('login claims guest share activity and opens account history', async () => {
++  const originalFetch=globalThis.fetch;
++  globalThis.fetch=async()=>new Response(JSON.stringify({data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
++  const requests=[];
++  const registry={fetch:async(url,options={})=>{
++    requests.push({url,options});
++    if(url==='https://registry/claim-activities') return new Response(JSON.stringify({claimed:1}),{headers:{'content-type':'application/json'}});
++    return new Response('{}',{status:201});
++  }};
++  try {
++    const request=new Request('https://drop.szlk.ai/api/auth/login',{method:'POST',headers:{cookie:'solodrop_activity_claim=claim-secret'},body:new URLSearchParams({email:'user@example.com',password:'password1'})});
++    const response=await handleAuth(request,{SZLK_PASSPORT_SECRET:'secret'},registry,'https://drop.szlk.ai');
++    assert.equal(response.status,303);
++    assert.equal(response.headers.get('location'),'/account');
++    const claim=requests.find(({url})=>url==='https://registry/claim-activities');
++    assert.equal(claim.options.headers['x-claim-token'],'claim-secret');
++    assert.match(response.headers.get('set-cookie'),/solodrop_session=/);
++  } finally { globalThis.fetch=originalFetch; }
++});
+diff --git a/worker/src/auth.mjs b/worker/src/auth.mjs
+index c5bfa51e53fe0735d83903b6128fc699a9f564e5..627efa871d8c7475819d10ee74b19dcd63698e52
+--- a/worker/src/auth.mjs
++++ b/worker/src/auth.mjs
+@@ -1,4 +1,5 @@
+ const SESSION_COOKIE = 'solodrop_session';
++const ACTIVITY_CLAIM_COOKIE = 'solodrop_activity_claim';
+ const PASSPORT_URL = 'https://passport.szlk.ai';
+ 
+ function parseCookie(request, name) {
+@@ -53,7 +54,16 @@
+       const data = await passport(env, '/api/v1/auth/login', body);
+       if (data.needsEmailVerification || data.user?.emailVerified === false) return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=verify-first`}});
+       const cookie = await establishSession(data.user, registry);
+-      return new Response(null,{status:303,headers:{location:prefix||'/', 'set-cookie':cookie}});
++      const claimToken=parseCookie(request,ACTIVITY_CLAIM_COOKIE);
++      let claimed=0, claimCompleted=false;
++      if(claimToken){
++        const response=await registry.fetch('https://registry/claim-activities',{method:'POST',headers:{'content-type':'application/json','x-claim-token':claimToken},body:JSON.stringify({userId:data.user.id,email:data.user.email})});
++        if(response.ok){claimed=(await response.json()).claimed||0;claimCompleted=true;}
++      }
++      const headers=new Headers({location:claimed?`${prefix}/account`:(prefix||'/')});
++      headers.append('set-cookie',cookie);
++      if(claimCompleted)headers.append('set-cookie',`${ACTIVITY_CLAIM_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
++      return new Response(null,{status:303,headers});
+     }
+     if (mode === 'forgot-password') {
+       await passport(env, '/api/v1/auth/forgot-password', {email:body.email,appBaseUrl:origin});
+diff --git a/worker/src/index.mjs b/worker/src/index.mjs
+index 983d3ef8ca64e9301a0123b0bd626b0e77ed44a6..d7e5bd30f95d35262d12c8870e2d486a0cd848a6
+--- a/worker/src/index.mjs
++++ b/worker/src/index.mjs
+@@ -113,6 +113,17 @@
+       name TEXT,
+       created_at INTEGER NOT NULL,
+       expires_at INTEGER NOT NULL
++    ); CREATE TABLE IF NOT EXISTS guest_activities (
++      id TEXT PRIMARY KEY,
++      claim_hash TEXT NOT NULL,
++      file_name TEXT NOT NULL,
++      size_bytes INTEGER NOT NULL,
++      content_type TEXT,
++      status TEXT NOT NULL,
++      short_slug TEXT NOT NULL,
++      preview_url TEXT NOT NULL,
++      created_at INTEGER NOT NULL,
++      expires_at INTEGER
+     ); CREATE TABLE IF NOT EXISTS activities (
+       id TEXT PRIMARY KEY,
+       user_id TEXT NOT NULL,
+@@ -132,6 +143,8 @@
+     const url = new URL(request.url);
+     if (url.pathname === '/session') return this.session(request);
+     if (url.pathname === '/activity' && request.method === 'POST') return this.createActivity(request);
++    if (url.pathname === '/guest-activity' && request.method === 'POST') return this.createGuestActivity(request);
++    if (url.pathname === '/claim-activities' && request.method === 'POST') return this.claimActivities(request);
+     if (url.pathname === '/rate' && request.method === 'POST') {
+       try { this.enforceRateLimit(request.headers.get('x-solodrop-client-ip') || '', Date.now()); return json({ok:true}); }
+       catch (error) { return json({error:error.message},429); }
+@@ -173,6 +186,23 @@
+     return json({ok:true},201);
+   }
+ 
++  async createGuestActivity(request) {
++    const b=await request.json(), token=request.headers.get('x-claim-token')||'', now=Date.now();
++    if(!token||!b.id||!b.fileName||!b.shortSlug) return json({error:'Invalid guest activity.'},400);
++    this.sql.exec(`INSERT INTO guest_activities (id,claim_hash,file_name,size_bytes,content_type,status,short_slug,preview_url,created_at,expires_at) VALUES (?,?,?,?,?,?,?,?,?,?)`,b.id,await sha256(token),b.fileName,b.sizeBytes||0,b.contentType||'',b.status||'ready',b.shortSlug,b.previewUrl||'',now,b.expiresAt?Date.parse(b.expiresAt):null);
++    return json({ok:true},201);
++  }
++
++  async claimActivities(request) {
++    const b=await request.json(), token=request.headers.get('x-claim-token')||'';
++    if(!token||!b.userId||!b.email) return json({error:'Invalid activity claim.'},400);
++    const claimHash=await sha256(token);
++    this.sql.exec(`INSERT OR IGNORE INTO activities (id,user_id,email,file_name,size_bytes,content_type,status,short_slug,preview_url,created_at,expires_at) SELECT id,?,?,file_name,size_bytes,content_type,status,short_slug,preview_url,created_at,expires_at FROM guest_activities WHERE claim_hash=?`,b.userId,b.email,claimHash);
++    const claimed=[...this.sql.exec('SELECT changes() AS count')][0]?.count||0;
++    this.sql.exec('DELETE FROM guest_activities WHERE claim_hash=?',claimHash);
++    return json({ok:true,claimed});
++  }
++
+   async updateActivity(id, request) {
+     const b=await request.json();
+     this.sql.exec(`UPDATE activities SET status=?,short_slug=COALESCE(?,short_slug),preview_url=COALESCE(?,preview_url),expires_at=COALESCE(?,expires_at) WHERE id=?`,b.status||'failed',b.shortSlug||null,b.previewUrl||null,b.expiresAt?Date.parse(b.expiresAt):null,id);
+@@ -295,7 +325,14 @@
+     if (request.method === 'POST' && url.pathname === '/api/shares') {
+       const limited=await registry.fetch('https://registry/rate',{method:'POST',headers:{'x-solodrop-client-ip':request.headers.get('cf-connecting-ip')||''}});
+       if(!limited.ok)return limited;
+-      try{return json(await createShare(request,env,await sessionUser(request,registry),registry,origin),201)}catch(error){return json({error:error.message||'分享失败。'},422)}
++      try {
++        const user=await sessionUser(request,registry);
++        const existingClaim=request.headers.get('cookie')?.split(';').map((value)=>value.trim()).find((value)=>value.startsWith('solodrop_activity_claim='))?.slice('solodrop_activity_claim='.length);
++        const claimToken=user?null:(existingClaim?decodeURIComponent(existingClaim):randomToken());
++        const result=await createShare(request,env,user,registry,origin,claimToken);
++        const headers=claimToken?{'set-cookie':`solodrop_activity_claim=${encodeURIComponent(claimToken)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000`}:{};
++        return json(result,201,headers);
++      } catch(error) { return json({error:error.message||'分享失败。'},422); }
+     }
+     const shareContent=url.pathname.match(/^\/api\/shares\/([A-Za-z0-9]+)\/content$/);
+     if(shareContent&&request.method==='GET')return serveContent(request,shareContent[1],env);
+diff --git a/worker/src/shares.mjs b/worker/src/shares.mjs
+index 9f792cff644d06ff225480fa7308b43ce7d4bdf3..6e53e5cbd4b331041e41f8f367810145d449a4bc
+--- a/worker/src/shares.mjs
++++ b/worker/src/shares.mjs
+@@ -45,12 +45,13 @@
+ 
+ function previewPage(meta) {
+   const download = meta.allowDownload ? `<a class="download" href="/api/shares/${encodeURIComponent(meta.slug)}/content?download=1" download>Download</a>` : '';
++  const selectionProtection = meta.watermark ? '<style>.content,.content *{-webkit-user-select:none;user-select:none}.content .pdf{pointer-events:none}</style><script>document.addEventListener("copy",function(event){if(event.target.closest(".content"))event.preventDefault()});document.addEventListener("selectstart",function(event){if(event.target.closest(".content"))event.preventDefault()})<\/script>' : '';
+   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="solodrop-preview" content="r2-v1"><meta name="robots" content="noindex,nofollow"><title>${esc(meta.name)}</title><style>
+ :root{font-family:Inter,"Noto Sans SC",system-ui,sans-serif;color:#20212b;background:#f7f7fb;--brand:#5046e5;--surface:#fff;--line:#e2e3ed;--muted:#666979}*{box-sizing:border-box}body{margin:0}.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}.brand{display:flex;align-items:center;gap:10px;min-width:0;font-weight:750}.mark{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;display:grid;place-items:center}.title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.download{min-height:44px;display:inline-flex;align-items:center;color:#4546bd;font-weight:700;text-decoration:none}.content{position:relative;z-index:1;width:min(100% - 32px,960px);min-height:60vh;margin:36px auto 24px;padding:clamp(20px,4vw,48px);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 60px rgba(30,31,62,.08);overflow:auto}.media{display:block;max-width:100%;margin:auto}.pdf{width:100%;height:78vh;border:0}.office-viewer{min-height:50vh}.office-status,.file-fallback{text-align:center;color:var(--muted);padding:40px 16px}pre{white-space:pre-wrap;overflow-wrap:anywhere}.share-actions{position:relative;z-index:3;width:min(100% - 32px,960px);margin:0 auto 44px;display:flex;justify-content:flex-end;gap:12px}.solodrop-cta,.solodrop-powered{min-height:44px;display:inline-flex;align-items:center;text-decoration:none;font-weight:650}.solodrop-cta{padding:0 18px;border-radius:10px;background:var(--brand);color:#fff}.solodrop-powered{color:var(--muted)}.watermark{position:fixed;inset:0;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:150px;place-items:center;overflow:hidden;pointer-events:none;user-select:none}.watermark span{max-width:220px;color:rgba(67,58,150,.16);font-size:18px;font-weight:760;transform:rotate(-24deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media(max-width:600px){.top{padding:10px 16px}.content{width:100%;margin:0 0 20px;border:0;border-radius:0;padding:22px 18px}.watermark{grid-template-columns:repeat(2,1fr)}.share-actions{width:100%;padding:0 18px;display:grid}.solodrop-cta,.solodrop-powered{justify-content:center}}
+-</style></head><body><header class="top"><div class="brand"><span class="mark">S</span><span class="title">${esc(meta.name)}</span></div>${download}</header><main class="content">${previewBody(meta)}</main>${watermark(meta.watermark)}<aside class="share-actions" data-solodrop-actions hidden aria-label="Shared page actions"></aside><script defer src="/embed.js?v=3"></script></body></html>`;
++</style>${selectionProtection}</head><body><header class="top"><div class="brand"><span class="mark">S</span><span class="title">${esc(meta.name)}</span></div>${download}</header><main class="content">${previewBody(meta)}</main>${watermark(meta.watermark)}<aside class="share-actions" data-solodrop-actions hidden aria-label="Shared page actions"></aside><script defer src="/embed.js?v=3"></script></body></html>`;
+ }
+ 
+-async function createShare(request, env, user, registry, origin) {
++async function createShare(request, env, user, registry, origin, claimToken = null) {
+   const form = await request.formData();
+   const file = form.get('file');
+   if (!(file instanceof File) || !file.size) throw new Error('请选择要分享的文件。');
+@@ -76,6 +77,8 @@
+     const activityId=crypto.randomUUID();
+     await registry.fetch('https://registry/activity',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:activityId,userId:user.id,email:user.email,fileName:meta.name,sizeBytes:meta.size,contentType:meta.type,status:'ready'})});
+     await registry.fetch(`https://registry/activity/${activityId}`,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({status:'ready',shortSlug:slug,previewUrl:`${origin}/${slug}`,expiresAt:expiresAt?new Date(expiresAt).toISOString():null})});
++  } else if (claimToken) {
++    await registry.fetch('https://registry/guest-activity',{method:'POST',headers:{'content-type':'application/json','x-claim-token':claimToken},body:JSON.stringify({id:crypto.randomUUID(),fileName:meta.name,sizeBytes:meta.size,contentType:meta.type,status:'ready',shortSlug:slug,previewUrl:`${origin}/${slug}`,expiresAt:expiresAt?new Date(expiresAt).toISOString():null})});
+   }
+   return { shortUrl: `${origin}/${slug}`, previewUrl: `${origin}/${slug}`, managementToken, expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null };
+ }
+diff --git a/worker/src/web.mjs b/worker/src/web.mjs
+index a94257d58f1cae509a0ce3ae8b0524040963233f..75966ce9719a588d06bd7322a240798341c3097c
+--- a/worker/src/web.mjs
++++ b/worker/src/web.mjs
+@@ -18,7 +18,7 @@
+ </style></head><body><a class="skip" href="#main">${t.skip}</a><header class="nav-shell"><nav class="nav" aria-label="${t.nav}"><a class="brand" href="${home}"><img src="/favicon.svg" alt=""><span>SoloDrop</span></a><div class="navlinks"><a class="navlink optional" href="https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop">${t.plugin}</a>${user?`<a class="navlink" href="${t.prefix}/account">${t.account}</a><a class="navbutton" href="/api/auth/logout">${t.logout}</a>`:`<a class="navlink" href="${t.prefix}/login">${t.login}</a><a class="navbutton" href="${t.prefix}/register">${t.register}</a>`}<a class="navlink" href="${alternate}" lang="${locale==='zh'?'en':'zh-CN'}" hreflang="${locale==='zh'?'en':'zh-CN'}">${t.language}</a></div></nav></header>${body}<footer class="footer"><div class="page footer-inner"><span>© 2026 SoloDrop · A SZLK product</span><div class="footer-links"><a href="${t.prefix}/terms">${t.terms}</a><a href="${t.prefix}/privacy">${t.privacy}</a><a href="${t.prefix}/legal-supplement">${t.legal}</a><a href="https://github.com/jobssteve164dev/solodrop">GitHub</a></div></div></footer>${script}</body></html>`;
+ }
+ 
+-const checkIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
++const checkIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ function managedShareForm(user) {
+   return `<input id="file" type="file" hidden><label id="drop" class="drop" for="file"><div><span class="upload-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><strong>拖入文件，立即生成分享页</strong><span>或点击选择文件 · 最大 10 MB</span></div></label><p id="picked" class="picked">支持 Markdown、代码、文本、图片、CSV、HTML、PDF、Word 和 PowerPoint</p><div class="share-options"><label class="check"><input id="allow-download" type="checkbox" checked><span><strong>允许下载原文件</strong><small>关闭后，页面只保留在线预览</small></span></label><label class="field"><span>文字水印（可选）</span><input id="watermark" maxlength="60" placeholder="例如：仅供客户审阅"></label><label class="field"><span>链接有效期</span><select id="expiry"><option value="day">1 天</option><option value="week" selected>7 天</option><option value="month">30 天</option>${user?'<option value="never">长期保留</option>':''}</select></label></div><label class="check"><input id="terms" type="checkbox"><span>我确认文件将通过公开链接访问，并同意 SoloDrop 在所选有效期内保存文件内容，直到到期或我主动删除。</span></label><button id="share" class="full" disabled>创建分享链接</button><p id="status" class="status" role="status" aria-live="polite"></p><div id="result" class="result" hidden><div class="result-title">${checkIcon}<span>链接已经可以分享</span></div><p><a id="short" class="result-link" target="_blank" rel="noreferrer"></a></p><div class="result-actions"><button id="copy" type="button">复制链接</button><button id="delete-share" type="button" class="secondary">删除分享</button></div>${user?'':'<div class="signup-nudge"><strong>需要长期保留？</strong><p>免费注册后可创建长期链接，并在不同设备查看分享记录。</p><a class="button" href="/register?from=share-success">免费创建账号</a></div>'}</div><style>.share-options{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.share-options .check{margin:0 0 12px}.share-options small{display:block;margin-top:3px;color:var(--muted)}.share-options .field{margin:11px 0 0;font-size:13px;color:#454556}.share-options input[type=text],.share-options input:not([type]),.share-options select{width:100%;height:44px;border:1px solid #cfcfdd;border-radius:10px;padding:0 12px;background:#fff;font:inherit}.share-options select{cursor:pointer}</style>`;
+ }
+
+[31m exited 1 in 612ms:[0m
+From https://github.com/jobssteve164dev/solodrop
+ * branch            main       -> FETCH_HEAD
+error: cannot rebase: You have unstaged changes.
+error: Please commit or stash them.
+
+[35m[3mexec[0m[0m
+[1m/bin/bash -lc 'git pull --rebase --autostash origin main && git push origin main'[0m in /home/ubuntu/project/solodrop

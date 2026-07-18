@@ -1,10 +1,11 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-07-18T11:18:08.828Z",
-  "runCount": 9,
+  "updatedAt": "2026-07-18T14:03:25.719Z",
+  "runCount": 10,
   "indexes": {
     "byNode": {
       "__solo__": [
+        "__solo__-10",
         "__solo__-9",
         "__solo__-8",
         "__solo__-7",
@@ -18,6 +19,7 @@
     },
     "byAgent": {
       "/usr/local/bin/codex": [
+        "__solo__-10",
         "__solo__-9",
         "__solo__-8",
         "__solo__-7",
@@ -30,6 +32,27 @@
       ]
     },
     "byFile": {
+      "worker/.wrangler/state/v3/do/solodrop-links-LinkRegistry/df99b48b8b8615c87c15248483bc4de95df9ee0d48ae5578376b572eebba2cce.sqlite": [
+        "__solo__-10"
+      ],
+      "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/5a50e9b3e94df999322d3df4e7e36a8cf8631ac8b2c7c29f94b84f519decc7d8.sqlite": [
+        "__solo__-10"
+      ],
+      "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite": [
+        "__solo__-10"
+      ],
+      "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-shm": [
+        "__solo__-10"
+      ],
+      "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-wal": [
+        "__solo__-10"
+      ],
+      "worker/.wrangler/state/v3/r2/solodrop-previews/blobs/294777d937462c61e0b09c17185e1341675f691a2b6a33878b9d21cdd9e568cf0000019f758376c5": [
+        "__solo__-10"
+      ],
+      "worker/.wrangler/state/v3/r2/solodrop-previews/blobs/5db566f9318d9f8ea04dbdb897b64e1d3aaef33c54ee51a0ee25d4766c2904c60000019f758376cf": [
+        "__solo__-10"
+      ],
       "solodrop-0.0.17.vsix": [
         "__solo__-8"
       ],
@@ -86,21 +109,30 @@
       ]
     },
     "byStatus": {
-      "Recorded": [
-        "__solo__-9",
-        "__solo__-7",
-        "__solo__-3"
-      ],
       "Completed": [
+        "__solo__-10",
         "__solo__-8",
         "__solo__-6",
         "__solo__-5",
         "__solo__-4",
         "__solo__-2",
         "__solo__-1"
+      ],
+      "Recorded": [
+        "__solo__-9",
+        "__solo__-7",
+        "__solo__-3"
       ]
     },
     "byFailure": {
+      "error: cannot rebase: You have unstaged changes.": [
+        "__solo__-10",
+        "__solo__-8"
+      ],
+      "error: Please commit or stash them.": [
+        "__solo__-10",
+        "__solo__-8"
+      ],
       "+ const error = new Error('Command failed');": [
         "__solo__-8"
       ],
@@ -113,17 +145,14 @@
       "+ }, async () => {}), (error) => error.name === 'TemporaryProvisioningUnavailableError');": [
         "__solo__-8"
       ],
-      "error: cannot rebase: You have unstaged changes.": [
-        "__solo__-8"
-      ],
-      "error: Please commit or stash them.": [
-        "__solo__-8"
-      ],
       "│ d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const x=JSON.parse(d);console.log(x.version||x.error||'unknown')})\"": [
         "__solo__-7"
       ]
     },
     "byCommand": {
+      "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-c...": [
+        "__solo__-10"
+      ],
       "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'": [
         "__solo__-9"
       ],
@@ -153,6 +182,26 @@
       ]
     },
     "byExperience": {
+      "exp-failure-33814e1842a926de": [
+        "__solo__-10",
+        "__solo__-8"
+      ],
+      "exp-failure-5babd001326fc6ef": [
+        "__solo__-10",
+        "__solo__-8"
+      ],
+      "exp-reusable-signal-bbd83203f5340823": [
+        "__solo__-10",
+        "__solo__-8",
+        "__solo__-6",
+        "__solo__-5",
+        "__solo__-4",
+        "__solo__-2",
+        "__solo__-1"
+      ],
+      "exp-handoff-action-1d0590b195d0b2fa": [
+        "__solo__-10"
+      ],
       "exp-verification-0a0ffdc11cd12df4": [
         "__solo__-9"
       ],
@@ -205,20 +254,6 @@
       ],
       "exp-failure-ecdbf674dc8cbd86": [
         "__solo__-8"
-      ],
-      "exp-failure-33814e1842a926de": [
-        "__solo__-8"
-      ],
-      "exp-failure-5babd001326fc6ef": [
-        "__solo__-8"
-      ],
-      "exp-reusable-signal-bbd83203f5340823": [
-        "__solo__-8",
-        "__solo__-6",
-        "__solo__-5",
-        "__solo__-4",
-        "__solo__-2",
-        "__solo__-1"
       ],
       "exp-handoff-action-a173b7bb1e7f2733": [
         "__solo__-8"
@@ -321,6 +356,173 @@
     }
   },
   "experienceNodes": {
+    "exp-failure-33814e1842a926de": {
+      "id": "exp-failure-33814e1842a926de",
+      "type": "failure",
+      "centralMeaning": "error: cannot rebase: You have unstaged changes.",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-10",
+        "__solo__-8"
+      ],
+      "appliesWhen": [
+        "worker/.wrangler/state/v3/do/solodrop-links-LinkRegistry/df99b48b8b8615c87c15248483bc4de95df9ee0d48ae5578376b572eebba2cce.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/5a50e9b3e94df999322d3df4e7e36a8cf8631ac8b2c7c29f94b84f519decc7d8.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-shm",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-wal",
+        "同一路线图入口：__solo__",
+        "solodrop-0.0.17.vsix",
+        "package-lock.json"
+      ],
+      "doThis": "先复核已知失败原因，再决定重试、回退、补验证或调整计划。",
+      "avoidThis": "不要无视同类失败历史直接重复上一条路径。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/8/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+ const result = await deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {",
+        "+ return { stdout: 'https://solodrop-test.example.workers.dev\\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };",
+        "test('does not retry deployment errors outside temporary account provisioning', async () => {",
+        "await assert.rejects(() => deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {"
+      ],
+      "stats": {
+        "uses": 2,
+        "wins": 0,
+        "losses": 0,
+        "neutral": 2,
+        "alpha": 1,
+        "beta": 1,
+        "winRate": 0.5,
+        "lastUsed": "2026-07-18T14:03:25.714Z"
+      }
+    },
+    "exp-failure-5babd001326fc6ef": {
+      "id": "exp-failure-5babd001326fc6ef",
+      "type": "failure",
+      "centralMeaning": "error: Please commit or stash them.",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-10",
+        "__solo__-8"
+      ],
+      "appliesWhen": [
+        "worker/.wrangler/state/v3/do/solodrop-links-LinkRegistry/df99b48b8b8615c87c15248483bc4de95df9ee0d48ae5578376b572eebba2cce.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/5a50e9b3e94df999322d3df4e7e36a8cf8631ac8b2c7c29f94b84f519decc7d8.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-shm",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-wal",
+        "同一路线图入口：__solo__",
+        "solodrop-0.0.17.vsix",
+        "package-lock.json"
+      ],
+      "doThis": "先复核已知失败原因，再决定重试、回退、补验证或调整计划。",
+      "avoidThis": "不要无视同类失败历史直接重复上一条路径。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/8/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+ const result = await deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {",
+        "+ return { stdout: 'https://solodrop-test.example.workers.dev\\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };",
+        "test('does not retry deployment errors outside temporary account provisioning', async () => {",
+        "await assert.rejects(() => deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {"
+      ],
+      "stats": {
+        "uses": 2,
+        "wins": 0,
+        "losses": 0,
+        "neutral": 2,
+        "alpha": 1,
+        "beta": 1,
+        "winRate": 0.5,
+        "lastUsed": "2026-07-18T14:03:25.714Z"
+      }
+    },
+    "exp-reusable-signal-bbd83203f5340823": {
+      "id": "exp-reusable-signal-bbd83203f5340823",
+      "type": "reusable_signal",
+      "centralMeaning": "Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-10",
+        "__solo__-8",
+        "__solo__-6",
+        "__solo__-5",
+        "__solo__-4",
+        "__solo__-2",
+        "__solo__-1"
+      ],
+      "appliesWhen": [
+        "worker/.wrangler/state/v3/do/solodrop-links-LinkRegistry/df99b48b8b8615c87c15248483bc4de95df9ee0d48ae5578376b572eebba2cce.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/5a50e9b3e94df999322d3df4e7e36a8cf8631ac8b2c7c29f94b84f519decc7d8.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-shm",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-wal",
+        "同一路线图入口：__solo__",
+        "solodrop-0.0.17.vsix",
+        "package-lock.json"
+      ],
+      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
+      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/8/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "+ const result = await deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {",
+        "+ return { stdout: 'https://solodrop-test.example.workers.dev\\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };",
+        "test('does not retry deployment errors outside temporary account provisioning', async () => {",
+        "await assert.rejects(() => deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/6/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/5/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -"
+      ],
+      "stats": {
+        "uses": 7,
+        "wins": 7,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 8,
+        "beta": 1,
+        "winRate": 0.8889,
+        "lastUsed": "2026-07-18T14:03:25.714Z"
+      }
+    },
+    "exp-handoff-action-1d0590b195d0b2fa": {
+      "id": "exp-handoff-action-1d0590b195d0b2fa",
+      "type": "handoff_action",
+      "centralMeaning": "先阅读上一轮改动/触达文件：worker/.wrangler/state/v3/do/solodrop-links-LinkRegistry/df99b48b8b8615c87c15248483bc4de95df9ee0d48ae5578376b572eebba2cce.sqlite, worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/5a50e9b3e94df999322d3d...",
+      "sourceKinds": [
+        "solo"
+      ],
+      "sourceRefs": [
+        "__solo__-10"
+      ],
+      "appliesWhen": [
+        "worker/.wrangler/state/v3/do/solodrop-links-LinkRegistry/df99b48b8b8615c87c15248483bc4de95df9ee0d48ae5578376b572eebba2cce.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/5a50e9b3e94df999322d3df4e7e36a8cf8631ac8b2c7c29f94b84f519decc7d8.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-shm",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-wal",
+        "接手同一路线图入口：__solo__"
+      ],
+      "doThis": "把这条交接动作转成当前任务的第一步检查或验证。",
+      "avoidThis": "不要把 handoff 当成已验证结论；先和当前代码、日志、测试对齐。",
+      "checks": [
+        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 0,
+        "losses": 0,
+        "neutral": 1,
+        "alpha": 1,
+        "beta": 1,
+        "winRate": 0.5,
+        "lastUsed": "2026-07-18T14:03:25.714Z"
+      }
+    },
     "exp-verification-0a0ffdc11cd12df4": {
       "id": "exp-verification-0a0ffdc11cd12df4",
       "type": "verification",
@@ -941,130 +1143,6 @@
         "alpha": 1,
         "beta": 1,
         "winRate": 0.5,
-        "lastUsed": "2026-07-18T04:27:24.472Z"
-      }
-    },
-    "exp-failure-33814e1842a926de": {
-      "id": "exp-failure-33814e1842a926de",
-      "type": "failure",
-      "centralMeaning": "error: cannot rebase: You have unstaged changes.",
-      "sourceKinds": [
-        "solo"
-      ],
-      "sourceRefs": [
-        "__solo__-8"
-      ],
-      "appliesWhen": [
-        "solodrop-0.0.17.vsix",
-        "package-lock.json",
-        "package.json",
-        "PROJECT_MEMORY.md",
-        "同一路线图入口：__solo__",
-        "后续任务出现相同失败、相同命令或相同文件区域"
-      ],
-      "doThis": "先复核已知失败原因，再决定重试、回退、补验证或调整计划。",
-      "avoidThis": "不要无视同类失败历史直接重复上一条路径。",
-      "checks": [
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/8/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "+ const result = await deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {",
-        "+ return { stdout: 'https://solodrop-test.example.workers.dev\\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };",
-        "test('does not retry deployment errors outside temporary account provisioning', async () => {",
-        "await assert.rejects(() => deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {"
-      ],
-      "stats": {
-        "uses": 1,
-        "wins": 0,
-        "losses": 0,
-        "neutral": 1,
-        "alpha": 1,
-        "beta": 1,
-        "winRate": 0.5,
-        "lastUsed": "2026-07-18T04:27:24.472Z"
-      }
-    },
-    "exp-failure-5babd001326fc6ef": {
-      "id": "exp-failure-5babd001326fc6ef",
-      "type": "failure",
-      "centralMeaning": "error: Please commit or stash them.",
-      "sourceKinds": [
-        "solo"
-      ],
-      "sourceRefs": [
-        "__solo__-8"
-      ],
-      "appliesWhen": [
-        "solodrop-0.0.17.vsix",
-        "package-lock.json",
-        "package.json",
-        "PROJECT_MEMORY.md",
-        "同一路线图入口：__solo__",
-        "后续任务出现相同失败、相同命令或相同文件区域"
-      ],
-      "doThis": "先复核已知失败原因，再决定重试、回退、补验证或调整计划。",
-      "avoidThis": "不要无视同类失败历史直接重复上一条路径。",
-      "checks": [
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/8/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "+ const result = await deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {",
-        "+ return { stdout: 'https://solodrop-test.example.workers.dev\\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };",
-        "test('does not retry deployment errors outside temporary account provisioning', async () => {",
-        "await assert.rejects(() => deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {"
-      ],
-      "stats": {
-        "uses": 1,
-        "wins": 0,
-        "losses": 0,
-        "neutral": 1,
-        "alpha": 1,
-        "beta": 1,
-        "winRate": 0.5,
-        "lastUsed": "2026-07-18T04:27:24.472Z"
-      }
-    },
-    "exp-reusable-signal-bbd83203f5340823": {
-      "id": "exp-reusable-signal-bbd83203f5340823",
-      "type": "reusable_signal",
-      "centralMeaning": "Completion: Solo 对话已完成，等待用户决定是否关联到路线图环节。",
-      "sourceKinds": [
-        "solo"
-      ],
-      "sourceRefs": [
-        "__solo__-8",
-        "__solo__-6",
-        "__solo__-5",
-        "__solo__-4",
-        "__solo__-2",
-        "__solo__-1"
-      ],
-      "appliesWhen": [
-        "solodrop-0.0.17.vsix",
-        "package-lock.json",
-        "package.json",
-        "PROJECT_MEMORY.md",
-        "同一路线图入口：__solo__",
-        "后续任务出现相同目标、文件或验证需求",
-        "solodrop-0.0.8.vsix",
-        "package.nls.json"
-      ],
-      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
-      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
-      "checks": [
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/8/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "+ const result = await deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {",
-        "+ return { stdout: 'https://solodrop-test.example.workers.dev\\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };",
-        "test('does not retry deployment errors outside temporary account provisioning', async () => {",
-        "await assert.rejects(() => deployPreview('<tmp>', 'solodrop-test', 'temporary', async () => {",
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/6/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/5/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -",
-        "npm run package"
-      ],
-      "stats": {
-        "uses": 6,
-        "wins": 6,
-        "losses": 0,
-        "neutral": 0,
-        "alpha": 7,
-        "beta": 1,
-        "winRate": 0.875,
         "lastUsed": "2026-07-18T04:27:24.472Z"
       }
     },
@@ -2207,6 +2285,54 @@
   },
   "usageEdges": [
     {
+      "runId": "__solo__-10",
+      "experienceId": "exp-failure-33814e1842a926de",
+      "phase": "failed",
+      "outcome": "neutral",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-10.json",
+        "execution_logs:10",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -"
+      ],
+      "createdAt": "2026-07-18T14:03:25.714Z"
+    },
+    {
+      "runId": "__solo__-10",
+      "experienceId": "exp-failure-5babd001326fc6ef",
+      "phase": "failed",
+      "outcome": "neutral",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-10.json",
+        "execution_logs:10",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -"
+      ],
+      "createdAt": "2026-07-18T14:03:25.714Z"
+    },
+    {
+      "runId": "__solo__-10",
+      "experienceId": "exp-reusable-signal-bbd83203f5340823",
+      "phase": "observed",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-10.json",
+        "execution_logs:10",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -"
+      ],
+      "createdAt": "2026-07-18T14:03:25.714Z"
+    },
+    {
+      "runId": "__solo__-10",
+      "experienceId": "exp-handoff-action-1d0590b195d0b2fa",
+      "phase": "observed",
+      "outcome": "neutral",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-10.json",
+        "execution_logs:10",
+        "check:cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -"
+      ],
+      "createdAt": "2026-07-18T14:03:25.714Z"
+    },
+    {
       "runId": "__solo__-9",
       "experienceId": "exp-verification-0a0ffdc11cd12df4",
       "phase": "verified",
@@ -3133,6 +3259,30 @@
     }
   ],
   "runs": [
+    {
+      "runId": "__solo__-10",
+      "executionLogId": 10,
+      "nodeId": "__solo__",
+      "runKind": "solo",
+      "agentCli": "/usr/local/bin/codex",
+      "status": "Completed",
+      "finishedAt": "2026-07-18T14:03:25.714Z",
+      "changedFiles": [],
+      "touchedFiles": [
+        "worker/.wrangler/state/v3/do/solodrop-links-LinkRegistry/df99b48b8b8615c87c15248483bc4de95df9ee0d48ae5578376b572eebba2cce.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/5a50e9b3e94df999322d3df4e7e36a8cf8631ac8b2c7c29f94b84f519decc7d8.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-shm",
+        "worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-wal",
+        "worker/.wrangler/state/v3/r2/solodrop-previews/blobs/294777d937462c61e0b09c17185e1341675f691a2b6a33878b9d21cdd9e568cf0000019f758376c5",
+        "worker/.wrangler/state/v3/r2/solodrop-previews/blobs/5db566f9318d9f8ea04dbdb897b64e1d3aaef33c54ee51a0ee25d4766c2904c60000019f758376cf"
+      ],
+      "failures": [
+        "error: cannot rebase: You have unstaged changes.",
+        "error: Please commit or stash them."
+      ],
+      "handoffSummary": "Solo 对话已完成，等待用户决定是否关联到路线图环节。 优先查看 worker/.wrangler/state/v3/do/solodrop-links-LinkRegistry/df99b48b8b8615c87c15248483bc4de95df9ee0d48ae5578376b572eebba2cce.sqlite, worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/5a50e9b3e94df999322d3df4e7e36a8cf8631ac8b2c7c29f94b84f519decc7d8.sqlite, worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite, worker/.wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-shm。 阻塞/风险：error: cannot rebase: You have unstaged changes. / error: Please commit or stash them.。 建议验证：cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -。"
+    },
     {
       "runId": "__solo__-9",
       "executionLogId": 9,
