@@ -49,7 +49,7 @@ Give recipients a clean browser experience instead of asking them to download a 
 Supported previews / 支持的预览类型：
 
 - Markdown, text, code and JSON / Markdown、文本、代码与 JSON
-- Images and PDF / 图片与 PDF
+- Images, PDF, Word (`.docx`) and PowerPoint (`.pptx`) / 图片、PDF、Word（`.docx`）与 PowerPoint（`.pptx`）
 - CSV tables / CSV 表格
 - HTML / HTML 页面
 

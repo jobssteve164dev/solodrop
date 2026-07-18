@@ -130,15 +130,19 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "test": "node --test test/*.test.js",
-    "worker:check": "wrangler deploy --dry-run --config worker/wrangler.jsonc",
+    "worker:build": "node scripts/build-office-viewer.mjs",
+    "worker:check": "npm run worker:build && wrangler deploy --dry-run --config worker/wrangler.jsonc",
     "check": "npm run compile && npm test",
     "check:all": "npm run check && npm run worker:check",
     "package": "npx @vscode/vsce package"
   },
   "devDependencies": {
+    "@aiden0z/pptx-renderer": "^1.2.4",
     "@types/node": "^20.17.0",
     "@types/vscode": "^1.85.0",
     "@vscode/vsce": "^3.6.0",
+    "docx-preview": "^0.4.0",
+    "esbuild": "^0.25.0",
     "typescript": "^5.7.0",
     "wrangler": "^4.112.0"
   }

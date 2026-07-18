@@ -4,6 +4,7 @@ function legacyPowScript() {
 
 function powScript() {
   let source=legacyPowScript().replace('initShare:function(max){','initShare:function(max){var en=document.documentElement.lang===\'en\';');
+  source=source.replace("var cr=await fetch('/api/temp/challenge',{method:'POST'}),c=await cr.json();if(!cr.ok)throw Error(c.error);", "var c,last,cr;for(var ca=1;ca<=4;ca++){try{cr=await fetch('/api/temp/challenge',{method:'POST'});c=await cr.json();if(cr.ok)break;last=Error(c.error)}catch(x){last=x}if(ca<4){status.textContent=(en?'Cloudflare is busy. Retrying…':'Cloudflare 暂时繁忙，正在重试…');await new Promise(function(resolve){setTimeout(resolve,[2000,5000,10000][ca-1])})}}if(!cr||!cr.ok)throw last||Error(en?'Could not prepare Cloudflare.':'无法准备 Cloudflare 临时账户。');");
   const pairs=[
     ["'第一版最多支持 1 MB 文件。'","(en?'The first version supports files up to 1 MB.':'第一版最多支持 1 MB 文件。')"],
     ["'正在准备 Cloudflare 临时账户…'","(en?'Preparing a temporary Cloudflare account…':'正在准备 Cloudflare 临时账户…')"],

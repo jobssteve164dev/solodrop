@@ -42,3 +42,23 @@ test('builds a content-first branded page with a non-blocking managed action slo
   fs.unlinkSync(source);
   fs.rmdirSync(directory);
 });
+
+test('builds browser-rendered Office previews instead of reading OOXML as text', async () => {
+  for (const extension of ['docx', 'pptx']) {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), `solodrop-${extension}-test-`));
+    const source = path.join(directory, `sample.${extension}`);
+    const output = path.join(directory, 'output');
+    fs.writeFileSync(source, Buffer.from([0x50, 0x4b, 0x03, 0x04]));
+    await buildPreview({ path: source, name: `sample.${extension}`, size: 4, kind: extension.toUpperCase() }, output);
+    const html = fs.readFileSync(path.join(output, 'index.html'), 'utf8');
+    assert.match(html, new RegExp(`data-office-format="${extension}"`));
+    assert.match(html, /https:\/\/drop\.szlk\.ai\/office-viewer\.js/);
+    assert.doesNotMatch(html, /<pre><code>PK/);
+    fs.unlinkSync(path.join(output, 'index.html'));
+    fs.unlinkSync(path.join(output, '_headers'));
+    fs.unlinkSync(path.join(output, `sample.${extension}`));
+    fs.rmdirSync(output);
+    fs.unlinkSync(source);
+    fs.rmdirSync(directory);
+  }
+});

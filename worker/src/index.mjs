@@ -300,6 +300,7 @@ export default {
     if (request.method === 'GET' && url.pathname === '/embed.js') {
       return new Response(renderEmbedScript(), { headers: { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'public, max-age=300', 'x-content-type-options': 'nosniff' } });
     }
+    if (request.method === 'GET' && url.pathname === '/office-viewer.js') return env.ASSETS.fetch(request);
     const create = request.method === 'POST' && url.pathname === '/api/links';
     const match = url.pathname.match(/^\/api\/links\/([A-Za-z0-9]+)(?:\/(config|stats))?$/) || url.pathname.match(/^\/([A-Za-z0-9]+)$/);
     if (!create && !match) return json({ error: 'Not found.' }, 404);

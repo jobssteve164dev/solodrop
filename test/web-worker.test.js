@@ -52,6 +52,14 @@ test('temporary preview embeds bytes in the Cloudflare Worker and keeps the plat
   assert.doesNotMatch(source, /R2|Durable Object/);
 });
 
+test('temporary Office previews load the shared browser renderer', () => {
+  const docx=previewWorker('proposal.docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document',new Uint8Array([1,2,3]));
+  const pptx=previewWorker('deck.pptx','application/vnd.openxmlformats-officedocument.presentationml.presentation',new Uint8Array([1,2,3]));
+  assert.match(docx,/office-viewer\.js/);
+  assert.match(docx,/docx\?'docx':'pptx'/);
+  assert.match(pptx,/office-viewer\.js/);
+});
+
 test('website waits through slow temporary Worker route propagation without reusing cached 404s', async () => {
   const requested=[];
   const pauses=[];
@@ -77,4 +85,11 @@ test('browser proof-of-work solver produces Cloudflare-compatible checkpoints', 
   const checkpoints = [hash];
   for (let segment=0;segment<2;segment+=1) { for(let i=0;i<3;i+=1) hash=createHash('sha256').update(hash).digest(); checkpoints.push(hash); }
   assert.equal(actual, Buffer.concat(checkpoints).toString('base64'));
+});
+
+test('browser retries temporary-account challenge connection failures', () => {
+  const source=powScript();
+  assert.match(source,/ca<=4/);
+  assert.match(source,/\[2000,5000,10000\]/);
+  assert.match(source,/Cloudflare 暂时繁忙，正在重试/);
 });
