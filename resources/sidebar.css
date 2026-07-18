@@ -43,6 +43,13 @@ h1, h2, p { margin: 0; }
 .file-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
 .file-copy small { color: var(--muted); font-size: 10px; }
 .selection.empty { opacity: .72; }
+.share-options { display: grid; gap: 7px; margin: 0 0 9px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; }
+.share-options legend { padding: 0 4px; color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.toggle { display: flex; align-items: center; gap: 7px; min-height: 26px; font-size: 10px; cursor: pointer; }
+.toggle input { width: 16px; height: 16px; margin: 0; accent-color: var(--brand-strong); }
+.option-field { display: grid; gap: 4px; color: var(--muted); font-size: 9px; }
+.option-field input, .option-field select { width: 100%; min-height: 30px; padding: 0 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--vscode-input-background); color: var(--vscode-input-foreground); font: inherit; font-size: 10px; }
+.option-field input::placeholder { color: var(--vscode-input-placeholderForeground); }
 
 .primary, .secondary, .result-actions button, .claim {
   width: 100%; min-height: 34px; border-radius: 7px; border: 1px solid transparent; cursor: pointer;

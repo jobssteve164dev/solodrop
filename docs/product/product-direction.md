@@ -27,7 +27,7 @@ This creates three sender controls:
 - Entry points: sidebar drag-and-drop, file picker, active editor and Explorer context menu.
 - Preview types: Markdown, text, code, JSON, images, PDF, CSV and HTML.
 - Web delivery: the managed Worker stores artifact bytes in private Cloudflare R2 and serves a short preview URL directly. Expired objects are denied immediately and removed by scheduled cleanup.
-- Extension delivery: existing authenticated or temporary Wrangler deployment remains available; the managed R2 web path does not expose cloud storage concepts in the extension's primary action.
+- Extension delivery: the sidebar uses the same managed R2 share path as the website and exposes the same lifetime, watermark and download choices without exposing cloud-storage concepts.
 - Safety: explicit public-upload confirmation, common credential detection, isolated preview generation and separation of public and claim URLs.
 - Verification: every successful share is opened over HTTP before the public link is copied.
 - Web trust: the public site uses the official SoloDrop mark, consistent navigation, legal routes, explicit data handling and a professional responsive interface. Trust is established with verifiable boundaries, not vague security claims.

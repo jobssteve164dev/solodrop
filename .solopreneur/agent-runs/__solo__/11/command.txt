@@ -1,0 +1,1 @@
+'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f757e-7e2a-7743-bccd-8fd75f71f0ca'

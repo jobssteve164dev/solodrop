@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-18T14:03:27.739Z",
+  "updatedAt": "2026-07-18T14:16:05.543Z",
   "documents": [
     {
       "path": "README.md",
@@ -8,7 +8,7 @@
       "status": "active",
       "solves": "说明项目是什么、服务谁、成功标准和对外表达。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-18T13:25:43.697Z"
+      "lastTouchedAt": "2026-07-18T14:15:05.477Z"
     },
     {
       "path": ".solopreneur/README.md",
@@ -24,7 +24,7 @@
       "status": "active",
       "solves": "保存项目长期解释性背景。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-18T13:25:43.697Z"
+      "lastTouchedAt": "2026-07-18T14:15:05.479Z"
     },
     {
       "path": "docs/product/share-page-commercialization.md",
@@ -48,7 +48,7 @@
       "status": "active",
       "solves": "约束长期 UI 或治理面如何服务用户动作。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-16T10:42:45.762Z"
+      "lastTouchedAt": "2026-07-18T14:15:05.478Z"
     }
   ],
   "pendingReview": [
