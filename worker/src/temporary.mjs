@@ -11,6 +11,7 @@ async function cfJson(url, options = {}) {
 
 function safeName(name) { return String(name || 'shared-file').split(/[\\/]/).pop().replace(/[\u0000-\u001f\u007f]/g,'').slice(0,120) || 'shared-file'; }
 function js(value) { return JSON.stringify(value).replace(/</g,'\\u003c'); }
+const PREVIEW_CHECK_DELAYS_MS = [1000,2000,3000,5000,8000,10000,10000,10000,10000];
 
 function previewWorker(name, type, bytes) {
   let binary = ''; for (let i=0;i<bytes.length;i+=32768) binary += String.fromCharCode(...bytes.subarray(i,i+32768));
@@ -22,6 +23,19 @@ async function challenge() {
   const result = await cfJson(`${API}/provisioning/previews/challenge`,{method:'POST',headers:{'content-type':'application/json'},body:'{}'});
   if (!result.challengeToken || !result.seed || !Number.isInteger(result.k) || !Number.isInteger(result.g) || result.k * result.g > 64000000) throw new Error('Cloudflare returned an unsupported challenge.');
   return result;
+}
+
+async function verifyTemporaryPreview(previewUrl, fetcher = fetch, pause = (milliseconds) => new Promise((resolve) => setTimeout(resolve,milliseconds)), attempts = 10) {
+  for (let attempt=1;attempt<=attempts;attempt+=1) {
+    try {
+      const url=new URL(previewUrl); url.searchParams.set('_solodrop_check',String(attempt));
+      const response=await fetcher(url,{cache:'no-store',headers:{'cache-control':'no-cache'}});
+      if (response.ok&&(await response.text()).includes('solodrop-preview')) return;
+      if (response.status!==404&&response.status<500) break;
+    } catch {}
+    if (attempt<attempts) await pause(PREVIEW_CHECK_DELAYS_MS[Math.min(attempt-1,PREVIEW_CHECK_DELAYS_MS.length-1)]);
+  }
+  throw new Error('分享页已部署，但上线检查未通过。');
 }
 
 async function deployTemporary(request, user, registry, origin) {
@@ -45,8 +59,7 @@ async function deployTemporary(request, user, registry, origin) {
     await cfJson(`${API}/accounts/${account.id}/workers/scripts/${scriptName}`,{method:'PUT',headers,body:upload});
     const sub = await cfJson(`${API}/accounts/${account.id}/workers/subdomain`,{headers});
     const previewUrl = `https://${scriptName}.${sub.subdomain}.workers.dev`;
-    let live = false; for (let i=0;i<6;i++){const response=await fetch(previewUrl);if(response.ok&&(await response.text()).includes('solodrop-preview')){live=true;break}await new Promise((r)=>setTimeout(r,1000));}
-    if (!live) throw new Error('分享页已部署，但上线检查未通过。');
+    await verifyTemporaryPreview(previewUrl);
     const created = await registry.fetch('https://registry/create',{method:'POST',headers:{'content-type':'application/json','x-solodrop-client-ip':request.headers.get('cf-connecting-ip')||''},body:JSON.stringify({url:previewUrl,title:file.name,temporary:true,expiresAt:claim.expiresAt})});
     if (!created.ok) throw new Error((await created.json()).error || '短链接创建失败。');
     const link = await created.json();
@@ -58,4 +71,4 @@ async function deployTemporary(request, user, registry, origin) {
   }
 }
 
-export { challenge, deployTemporary, previewWorker };
+export { challenge, deployTemporary, previewWorker, verifyTemporaryPreview };
