@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-18T01:37:22.904Z",
+  "updatedAt": "2026-07-18T04:23:32.525Z",
   "documents": [
     {
       "path": "README.md",
@@ -8,7 +8,7 @@
       "status": "active",
       "solves": "说明项目是什么、服务谁、成功标准和对外表达。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-17T13:44:31.702Z"
+      "lastTouchedAt": "2026-07-18T01:43:51.471Z"
     },
     {
       "path": ".solopreneur/README.md",
@@ -24,7 +24,7 @@
       "status": "active",
       "solves": "保存项目长期解释性背景。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-17T13:44:31.701Z"
+      "lastTouchedAt": "2026-07-18T03:15:44.978Z"
     },
     {
       "path": "docs/product/share-page-commercialization.md",
@@ -32,7 +32,7 @@
       "status": "active",
       "solves": "保存项目长期解释性背景。",
       "lastReviewedAt": "",
-      "lastTouchedAt": "2026-07-17T13:44:31.700Z"
+      "lastTouchedAt": "2026-07-18T01:43:51.468Z"
     },
     {
       "path": "docs/research/cloudflare-drop-vscode-plugin.md",
