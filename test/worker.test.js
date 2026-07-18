@@ -20,6 +20,14 @@ test('share-page action is owned by SoloDrop', async () => {
   });
   assert.match(renderEmbedScript(), /d\.action/);
   assert.match(renderEmbedScript(), /Share your own file/);
+  assert.match(renderEmbedScript(), /分享你自己的文件/);
+  assert.match(renderEmbedScript(), /由 SoloDrop 分享/);
+  assert.match(renderEmbedScript(), /download:'下载'/);
+  assert.match(renderEmbedScript(), /download:'Download'/);
+  assert.match(renderEmbedScript(), /document\.documentElement\.lang=zh\?'zh-CN':'en'/);
+  assert.match(renderEmbedScript(), /querySelector\('\.download'\)/);
+  assert.match(renderEmbedScript(), /navigator\.languages/);
+  assert.match(renderEmbedScript(), /\^zh/);
   assert.match(renderEmbedScript(), /https:\/\/drop\.szlk\.ai\//);
   assert.doesNotMatch(renderEmbedScript(), /!s\|\|!slot/);
   assert.doesNotMatch(renderEmbedScript(), /d\.cta/);
