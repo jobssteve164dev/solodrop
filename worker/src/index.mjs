@@ -1,7 +1,7 @@
 import { handleAuth, sessionUser } from './auth.mjs';
-import { challenge, deployTemporary } from './temporary.mjs';
 import { LOGO_SVG, SITE_URL, SOCIAL_CARD_SVG, accountPage, authPage, homePage, legalPage, localizeSecondaryPage, shell } from './web.mjs';
 import { powScript } from './pow.mjs';
+import { createShare, deleteShare, purgeExpiredShares, serveContent, serveShare } from './shares.mjs';
 
 const SERVICE_NAME = 'SoloDrop';
 const MAX_CREATES_PER_DAY = 40;
@@ -132,6 +132,10 @@ export class LinkRegistry {
     const url = new URL(request.url);
     if (url.pathname === '/session') return this.session(request);
     if (url.pathname === '/activity' && request.method === 'POST') return this.createActivity(request);
+    if (url.pathname === '/rate' && request.method === 'POST') {
+      try { this.enforceRateLimit(request.headers.get('x-solodrop-client-ip') || '', Date.now()); return json({ok:true}); }
+      catch (error) { return json({error:error.message},429); }
+    }
     if (url.pathname === '/activities' && request.method === 'GET') return this.listActivities(request);
     const activity = url.pathname.match(/^\/activity\/([a-f0-9-]+)$/);
     if (activity && request.method === 'PATCH') return this.updateActivity(activity[1], request);
@@ -288,13 +292,15 @@ export default {
       catch { return new Response(localizeSecondaryPage(legalPage(title,null),locale),{status:503,headers:{'content-type':'text/html;charset=utf-8'}}); }
     }
     if (url.pathname.startsWith('/api/auth/') && (request.method === 'POST' || url.pathname.endsWith('/logout'))) return handleAuth(request,env,registry,origin);
-    if (request.method === 'POST' && url.pathname === '/api/temp/challenge') {
-      try{return json(await challenge())}catch(error){return json({error:error.message},502)}
+    if (request.method === 'POST' && url.pathname === '/api/shares') {
+      const limited=await registry.fetch('https://registry/rate',{method:'POST',headers:{'x-solodrop-client-ip':request.headers.get('cf-connecting-ip')||''}});
+      if(!limited.ok)return limited;
+      try{return json(await createShare(request,env,await sessionUser(request,registry),registry,origin),201)}catch(error){return json({error:error.message||'分享失败。'},422)}
     }
-    if (request.method === 'POST' && url.pathname === '/api/temp/deploy') {
-      const user=await sessionUser(request,registry);
-      try{return json(await deployTemporary(request,user,registry,origin),201)}catch(error){return json({error:error.message||'生成失败。'},422)}
-    }
+    const shareContent=url.pathname.match(/^\/api\/shares\/([A-Za-z0-9]+)\/content$/);
+    if(shareContent&&request.method==='GET')return serveContent(request,shareContent[1],env);
+    const shareDelete=url.pathname.match(/^\/api\/shares\/([A-Za-z0-9]+)$/);
+    if(shareDelete&&request.method==='DELETE')return deleteShare(request,shareDelete[1],env,await sessionUser(request,registry));
     if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/')) return new Response(null, { status: 204, headers: corsHeaders(request) });
     if (request.method === 'GET' && url.pathname === '/health') return json({ ok: true, service: SERVICE_NAME });
     if (request.method === 'GET' && url.pathname === '/embed.js') {
@@ -345,6 +351,7 @@ export default {
       });
     }
     if (request.method !== 'GET') return json({ error: 'Method not allowed.' }, 405);
+    if(!apiAction){const managed=await serveShare(slug,env);if(managed.status!==404)return managed;}
     const resolved = await registry.fetch(`https://registry/links/${slug}${apiAction ? `/${apiAction}` : ''}`, { headers });
     if (apiAction || !resolved.ok) return resolved;
     const result = await resolved.json();
@@ -352,7 +359,8 @@ export default {
       status: 302,
       headers: { location: result.target, 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' }
     });
-  }
+  },
+  async scheduled(_event,env,ctx){ctx.waitUntil(purgeExpiredShares(env));}
 };
 
 export const workerInternals = { normalizeTarget, PLATFORM_ACTION, randomSlug, renderEmbedScript, sha256, verifyPreview, withLinkMarker };

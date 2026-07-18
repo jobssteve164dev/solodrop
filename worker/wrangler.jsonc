@@ -12,6 +12,15 @@
   "vars": {
     "SZLK_PASSPORT_URL": "https://passport.szlk.ai"
   },
+  "r2_buckets": [
+    {
+      "binding": "PREVIEWS",
+      "bucket_name": "solodrop-previews"
+    }
+  ],
+  "triggers": {
+    "crons": ["17 * * * *"]
+  },
   "routes": [
     {
       "pattern": "drop.szlk.ai",
