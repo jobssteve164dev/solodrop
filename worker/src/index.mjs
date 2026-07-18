@@ -1,6 +1,6 @@
 import { handleAuth, sessionUser } from './auth.mjs';
 import { challenge, deployTemporary } from './temporary.mjs';
-import { LOGO_SVG, accountPage, authPage, homePage, legalPage, shell } from './web.mjs';
+import { LOGO_SVG, SITE_URL, SOCIAL_CARD_SVG, accountPage, authPage, homePage, legalPage, localizeSecondaryPage, shell } from './web.mjs';
 import { powScript } from './pow.mjs';
 
 const SERVICE_NAME = 'SoloDrop';
@@ -255,30 +255,37 @@ export class LinkRegistry {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const locale=url.pathname==='/en'||url.pathname.startsWith('/en/')?'en':'zh';
+    const pagePath=locale==='en'?(url.pathname.slice(3)||'/'):url.pathname;
     const registry=env.LINKS.get(env.LINKS.idFromName('registry'));
     const origin=url.origin;
-    if (request.method === 'GET' && url.pathname === '/') return new Response(homePage(await sessionUser(request,registry)),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+    if (request.method === 'GET' && pagePath === '/') return new Response(homePage(await sessionUser(request,registry),locale),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store','content-language':locale==='en'?'en':'zh-CN'}});
     if (request.method === 'GET' && url.pathname === '/favicon.svg') return new Response(LOGO_SVG,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=86400','x-content-type-options':'nosniff'}});
+    if (request.method === 'GET' && url.pathname === '/social-card.svg') return new Response(SOCIAL_CARD_SVG,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=86400','x-content-type-options':'nosniff'}});
+    if (request.method === 'GET' && url.pathname === '/robots.txt') return new Response(`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /account\nDisallow: /en/account\nDisallow: /login\nDisallow: /register\nDisallow: /forgot\nSitemap: ${SITE_URL}/sitemap.xml\n`,{headers:{'content-type':'text/plain;charset=utf-8','cache-control':'public,max-age=3600'}});
+    if (request.method === 'GET' && url.pathname === '/sitemap.xml') return new Response(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml"><url><loc>${SITE_URL}/</loc><xhtml:link rel="alternate" hreflang="zh-CN" href="${SITE_URL}/"/><xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}/en"/><xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/"/></url><url><loc>${SITE_URL}/en</loc><xhtml:link rel="alternate" hreflang="zh-CN" href="${SITE_URL}/"/><xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}/en"/><xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/"/></url></urlset>`,{headers:{'content-type':'application/xml;charset=utf-8','cache-control':'public,max-age=3600'}});
     if (request.method === 'GET' && url.pathname === '/pow.js') return new Response(powScript(),{headers:{'content-type':'application/javascript;charset=utf-8','cache-control':'public,max-age=3600','x-content-type-options':'nosniff'}});
-    if (request.method === 'GET' && ['/login','/register'].includes(url.pathname)) {
-      const notices={ 'check-email':'注册成功，请查收验证邮件。','verify-first':'请先完成邮箱验证。','reset-sent':'如果账号存在，重置邮件已经发出。','verified':'邮箱验证成功，现在可以登录。','reset':'密码已重置。' };
+    if (request.method === 'GET' && ['/login','/register'].includes(pagePath)) {
+      const notices=locale==='en'?{ 'check-email':'Account created. Check your email to verify it.','verify-first':'Verify your email before logging in.','reset-sent':'If the account exists, a reset email has been sent.','verified':'Email verified. You can now log in.','reset':'Password reset.' }:{ 'check-email':'注册成功，请查收验证邮件。','verify-first':'请先完成邮箱验证。','reset-sent':'如果账号存在，重置邮件已经发出。','verified':'邮箱验证成功，现在可以登录。','reset':'密码已重置。' };
       const message=url.searchParams.get('error')||notices[url.searchParams.get('notice')]||'';
-      return new Response(authPage(url.pathname.slice(1),message),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+      return new Response(authPage(pagePath.slice(1),message,locale),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
     }
-    if (request.method === 'GET' && url.pathname === '/forgot') return new Response(shell('找回密码','<main class="auth card"><h1>找回密码</h1><p class="muted">输入注册邮箱，我们会发送重置链接。</p><form method="post" action="/api/auth/forgot-password"><label class="field">邮箱<input type="email" name="email" required></label><button class="full">发送重置邮件</button></form></main>'),{headers:{'content-type':'text/html;charset=utf-8'}});
+    if (request.method === 'GET' && pagePath === '/forgot') return new Response(shell(locale==='en'?'Reset password':'找回密码',locale==='en'?'<main id="main" class="auth card"><h1>Reset password</h1><p class="muted">Enter your account email and we will send a reset link.</p><form method="post" action="/api/auth/forgot-password"><input type="hidden" name="locale" value="en"><label class="field">Email<input type="email" name="email" required></label><button class="full">Send reset email</button></form></main>':'<main id="main" class="auth card"><h1>找回密码</h1><p class="muted">输入注册邮箱，我们会发送重置链接。</p><form method="post" action="/api/auth/forgot-password"><label class="field">邮箱<input type="email" name="email" required></label><button class="full">发送重置邮件</button></form></main>','',null,locale),{headers:{'content-type':'text/html;charset=utf-8'}});
+    if (request.method === 'GET' && pagePath === '/reset-password') { const token=(url.searchParams.get('token')||'').replace(/["&<>]/g,''); return new Response(shell(locale==='en'?'Set a new password':'设置新密码',locale==='en'?`<main id="main" class="auth card"><h1>Set a new password</h1><form method="post" action="/api/auth/reset-password"><input type="hidden" name="locale" value="en"><input type="hidden" name="token" value="${token}"><label class="field">New password<input type="password" name="password" minlength="8" required></label><button class="full">Save new password</button></form></main>`:`<main id="main" class="auth card"><h1>设置新密码</h1><form method="post" action="/api/auth/reset-password"><input type="hidden" name="token" value="${token}"><label class="field">新密码<input type="password" name="password" minlength="8" required></label><button class="full">保存新密码</button></form></main>`,'',null,locale),{headers:{'content-type':'text/html;charset=utf-8'}}); }
+    if (request.method === 'GET' && pagePath === '/verify-email') { const token=(url.searchParams.get('token')||'').replace(/["&<>]/g,''); return new Response(shell(locale==='en'?'Verify email':'验证邮箱',locale==='en'?`<main id="main" class="auth card"><h1>Verify email</h1><form method="post" action="/api/auth/verify-email"><input type="hidden" name="locale" value="en"><input type="hidden" name="token" value="${token}"><button class="full">Complete verification</button></form></main>`:`<main id="main" class="auth card"><h1>验证邮箱</h1><form method="post" action="/api/auth/verify-email"><input type="hidden" name="token" value="${token}"><button class="full">完成验证</button></form></main>`,'',null,locale),{headers:{'content-type':'text/html;charset=utf-8'}}); }
     if (request.method === 'GET' && url.pathname === '/reset-password') return new Response(shell('设置新密码',`<main class="auth card"><h1>设置新密码</h1><form method="post" action="/api/auth/reset-password"><input type="hidden" name="token" value="${(url.searchParams.get('token')||'').replace(/["&<>]/g,'')}"><label class="field">新密码<input type="password" name="password" minlength="8" required></label><button class="full">保存新密码</button></form></main>`),{headers:{'content-type':'text/html;charset=utf-8'}});
     if (request.method === 'GET' && url.pathname === '/verify-email') return new Response(shell('验证邮箱',`<main class="auth card"><h1>验证邮箱</h1><form method="post" action="/api/auth/verify-email"><input type="hidden" name="token" value="${(url.searchParams.get('token')||'').replace(/["&<>]/g,'')}"><button class="full">完成验证</button></form></main>`),{headers:{'content-type':'text/html;charset=utf-8'}});
-    if (request.method === 'GET' && url.pathname === '/account') {
-      const user=await sessionUser(request,registry); if(!user)return Response.redirect(`${origin}/login`,303);
+    if (request.method === 'GET' && pagePath === '/account') {
+      const user=await sessionUser(request,registry); if(!user)return Response.redirect(`${origin}${locale==='en'?'/en':''}/login`,303);
       const activities=await (await registry.fetch('https://registry/activities',{headers:{'x-user-id':user.id}})).json();
-      return new Response(accountPage(user,activities),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+      return new Response(localizeSecondaryPage(accountPage(user,activities),locale),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
     }
-    if (request.method === 'GET' && ['/terms','/privacy','/legal-supplement'].includes(url.pathname)) {
+    if (request.method === 'GET' && ['/terms','/privacy','/legal-supplement'].includes(pagePath)) {
       const map={'/terms':['terms_of_service','服务条款'],'/privacy':['privacy_policy','隐私政策'],'/legal-supplement':['product_legal_supplement','产品补充说明']};
-      const [type,title]=map[url.pathname], endpoint=type==='product_legal_supplement'?'product-supplement':'document';
-      const query=type==='product_legal_supplement'?`product=solodrop&locale=zh-CN`:`product=solodrop&type=${type}&locale=zh-CN`;
-      try { const response=await fetch(`https://laws.szlk.ai/api/legal/${endpoint}?${query}`); if(!response.ok)throw new Error(); const payload=await response.json(); return new Response(legalPage(title,payload.result||payload),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'public,max-age=300'}}); }
-      catch { return new Response(legalPage(title,null),{status:503,headers:{'content-type':'text/html;charset=utf-8'}}); }
+      const [type,zhTitle]=map[pagePath], title=locale==='en'?({'terms_of_service':'Terms of Service','privacy_policy':'Privacy Policy','product_legal_supplement':'Product Legal Supplement'}[type]):zhTitle, endpoint=type==='product_legal_supplement'?'product-supplement':'document';
+      const legalLocale=locale==='en'?'en':'zh-CN', query=type==='product_legal_supplement'?`product=solodrop&locale=${legalLocale}`:`product=solodrop&type=${type}&locale=${legalLocale}`;
+      try { const response=await fetch(`https://laws.szlk.ai/api/legal/${endpoint}?${query}`); if(!response.ok)throw new Error(); const payload=await response.json(); return new Response(localizeSecondaryPage(legalPage(title,payload.result||payload),locale),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'public,max-age=300'}}); }
+      catch { return new Response(localizeSecondaryPage(legalPage(title,null),locale),{status:503,headers:{'content-type':'text/html;charset=utf-8'}}); }
     }
     if (url.pathname.startsWith('/api/auth/') && (request.method === 'POST' || url.pathname.endsWith('/logout'))) return handleAuth(request,env,registry,origin);
     if (request.method === 'POST' && url.pathname === '/api/temp/challenge') {

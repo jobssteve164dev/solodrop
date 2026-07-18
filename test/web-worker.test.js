@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import vm from 'node:vm';
-import { homePage, MAX_FILE_BYTES } from '../worker/src/web.mjs';
+import worker from '../worker/src/index.mjs';
+import { authPage, homePage, MAX_FILE_BYTES } from '../worker/src/web.mjs';
 import { powScript } from '../worker/src/pow.mjs';
 import { previewWorker } from '../worker/src/temporary.mjs';
 
@@ -18,6 +19,29 @@ test('web entry lets guests share first and offers registration after success', 
   assert.match(guest, /favicon\.svg/);
   assert.match(guest, /SoloDrop · A SZLK product/);
   assert.equal(MAX_FILE_BYTES, 1024 * 1024);
+});
+
+test('publishes complete Chinese and English SEO/GEO entry pages', async () => {
+  const zh=homePage(null,'zh');
+  const en=homePage(null,'en');
+  assert.match(zh, /免费临时文件分享｜无需登录生成网页/);
+  assert.match(zh, /hreflang="en" href="https:\/\/drop\.szlk\.ai\/en"/);
+  assert.match(zh, /SoloDrop 是什么？/);
+  assert.match(en, /<html lang="en">/);
+  assert.match(en, /Free Temporary File Sharing — No Sign-Up/);
+  assert.match(en, /What is SoloDrop\?/);
+  assert.match(en, /Temporary file sharing FAQ/);
+  assert.doesNotMatch(en.replace('>中<','><'), /[\u4e00-\u9fff]/);
+  const schema=JSON.parse(en.match(/<script type="application\/ld\+json">([\s\S]+?)<\/script>/)[1]);
+  assert.deepEqual(schema['@graph'].map((item)=>item['@type']),['WebSite','SoftwareApplication','FAQPage']);
+  assert.match(authPage('register','', 'en'), /name="locale" value="en"/);
+
+  const env={LINKS:{idFromName:()=>({}),get:()=>({})}};
+  const sitemap=await worker.fetch(new Request('https://drop.szlk.ai/sitemap.xml'),env);
+  assert.equal(sitemap.status,200);
+  assert.match(await sitemap.text(), /<loc>https:\/\/drop\.szlk\.ai\/en<\/loc>/);
+  const robots=await worker.fetch(new Request('https://drop.szlk.ai/robots.txt'),env);
+  assert.match(await robots.text(), /Sitemap: https:\/\/drop\.szlk\.ai\/sitemap\.xml/);
 });
 
 test('temporary preview embeds bytes in the Cloudflare Worker and keeps the platform action external', () => {
