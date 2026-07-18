@@ -31,6 +31,7 @@ test('publishes complete Chinese and English SEO/GEO entry pages', async () => {
   assert.match(en, /Free Temporary File Sharing — No Sign-Up/);
   assert.match(en, /What is SoloDrop\?/);
   assert.match(en, /Temporary file sharing FAQ/);
+  assert.match(en, /\.faq-list\{max-width:none;width:100%;margin-left:0;margin-right:0\}/);
   assert.doesNotMatch(en.replace('>中<','><'), /[\u4e00-\u9fff]/);
   const schema=JSON.parse(en.match(/<script type="application\/ld\+json">([\s\S]+?)<\/script>/)[1]);
   assert.deepEqual(schema['@graph'].map((item)=>item['@type']),['WebSite','SoftwareApplication','FAQPage']);
