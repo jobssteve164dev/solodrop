@@ -6,6 +6,8 @@ const execFileAsync = promisify(execFile);
 const WRANGLER_VERSION = '4.112.0';
 const TEMPORARY_PROVISIONING_ATTEMPTS = 3;
 const TEMPORARY_RETRY_DELAYS_MS = [2_000, 5_000];
+const PREVIEW_VERIFICATION_ATTEMPTS = 10;
+const PREVIEW_VERIFICATION_DELAYS_MS = [1_000, 2_000, 3_000, 5_000, 8_000, 10_000, 10_000, 10_000, 10_000];
 
 export class TemporaryProvisioningUnavailableError extends Error {
   constructor() {
@@ -120,19 +122,28 @@ export async function verifyPreview(
   url: string,
   fetcher: typeof fetch = fetch,
   pause: (milliseconds: number) => Promise<void> = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
-  attempts = 6
+  attempts = PREVIEW_VERIFICATION_ATTEMPTS
 ): Promise<void> {
   let lastStatus = 0;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      const response = await fetcher(url, { signal: AbortSignal.timeout(20_000) });
+      const verificationUrl = new URL(url);
+      verificationUrl.searchParams.set('_solodrop_check', String(attempt));
+      const response = await fetcher(verificationUrl, {
+        cache: 'no-store',
+        headers: { 'cache-control': 'no-cache' },
+        signal: AbortSignal.timeout(20_000)
+      });
       lastStatus = response.status;
       if (response.ok) return;
       if (response.status !== 404 && response.status < 500) break;
     } catch {
       lastStatus = 0;
     }
-    if (attempt < attempts) await pause(2_000);
+    if (attempt < attempts) {
+      const delayIndex = Math.min(attempt - 1, PREVIEW_VERIFICATION_DELAYS_MS.length - 1);
+      await pause(PREVIEW_VERIFICATION_DELAYS_MS[delayIndex]);
+    }
   }
   throw new Error(lastStatus ? `The published preview returned HTTP ${lastStatus}.` : 'The published preview could not be reached.');
 }

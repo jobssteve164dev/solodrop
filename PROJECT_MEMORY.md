@@ -26,6 +26,7 @@ This file stores stable project facts future agents should reuse. Do not paste r
 - The web upload request forwards file bytes directly into a temporary Cloudflare Worker deployment and discards its temporary API token after the request. The claim URL is returned only in that share request's browser response and is never written to general activity records or logs.
 - Public and claim URLs remain separate; link-management tokens stay in extension state and are not sent to the sidebar Webview.
 - Plugin-side temporary deployment retries only Cloudflare temporary-account provisioning failures with explicit 429/502/503/504 evidence, including Wrangler's temporary-account creation and proof-of-work challenge request stages. Worker upload and other ambiguous deployment failures are not blindly retried; this avoids turning resilience into duplicate publishing.
+- A successful Wrangler deploy can precede global `workers.dev` route availability. Public-preview verification allows about 60 seconds of progressive propagation and cache-busts each probe so a transient edge 404 does not falsely fail an otherwise successful share; the link is still accepted only after a real 2xx response.
 
 ## Verification
 
