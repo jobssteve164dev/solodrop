@@ -10,7 +10,7 @@ test('web entry lets guests share first and offers registration after success', 
   const guest = homePage(null);
   assert.match(guest, /无需登录/);
   assert.match(guest, /创建分享链接/);
-  assert.match(guest, /Cloudflare R2/);
+  assert.match(guest, /文件加密存储/);
   assert.match(guest, /允许下载原文件/);
   assert.match(guest, /文字水印/);
   assert.doesNotMatch(guest, /先登录后开始分享/);

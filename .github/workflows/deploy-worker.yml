@@ -46,7 +46,12 @@ jobs:
           const form=new FormData();
           form.set('file',new File(['SoloDrop production smoke test'],'r2-smoke.txt',{type:'text/plain'}));
           form.set('allowDownload','no'); form.set('watermark','SoloDrop smoke'); form.set('expiry','day');
-          const created=await fetch('https://drop.szlk.ai/api/shares',{method:'POST',body:form});
+          let created;
+          for(let attempt=0;attempt<6;attempt+=1){
+            created=await fetch('https://drop.szlk.ai/api/shares',{method:'POST',body:form});
+            if(created.status!==404)break;
+            await new Promise(resolve=>setTimeout(resolve,2000));
+          }
           const result=await created.json();
           if(!created.ok)throw new Error(result.error||'R2 share creation failed');
           try {
