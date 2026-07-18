@@ -19,9 +19,30 @@ test('creates valid bounded Worker names', () => {
 
 test('waits through an initial Cloudflare route 404', async () => {
   const statuses = [404, 200];
-  let pauses = 0;
-  await verifyPreview('https://example.workers.dev', async () => new Response('', { status: statuses.shift() }), async () => { pauses += 1; }, 3);
-  assert.equal(pauses, 1);
+  const requested = [];
+  const pauses = [];
+  await verifyPreview('https://example.workers.dev', async (url, options) => {
+    requested.push({ url: url.toString(), options });
+    return new Response('', { status: statuses.shift() });
+  }, async (milliseconds) => { pauses.push(milliseconds); }, 3);
+  assert.deepEqual(pauses, [1000]);
+  assert.deepEqual(requested.map(({ url }) => url), [
+    'https://example.workers.dev/?_solodrop_check=1',
+    'https://example.workers.dev/?_solodrop_check=2'
+  ]);
+  assert.equal(requested[0].options.cache, 'no-store');
+  assert.equal(requested[0].options.headers['cache-control'], 'no-cache');
+});
+
+test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {
+  const pauses = [];
+  let requests = 0;
+  await verifyPreview('https://example.workers.dev/report?lang=en', async () => {
+    requests += 1;
+    return new Response('', { status: requests < 10 ? 404 : 200 });
+  }, async (milliseconds) => { pauses.push(milliseconds); });
+  assert.equal(requests, 10);
+  assert.deepEqual(pauses, [1000, 2000, 3000, 5000, 8000, 10000, 10000, 10000, 10000]);
 });
 
 test('does not treat unauthenticated whoami exit code zero as authentication', async () => {
