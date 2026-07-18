@@ -5,6 +5,7 @@ import { authPage, homePage, MAX_FILE_BYTES } from '../worker/src/web.mjs';
 import { powScript } from '../worker/src/pow.mjs';
 import { previewWorker, verifyTemporaryPreview } from '../worker/src/temporary.mjs';
 import { createShare, previewPage, serveContent } from '../worker/src/shares.mjs';
+import { handleAuth } from '../worker/src/auth.mjs';
 
 test('web entry lets guests share first and offers registration after success', () => {
   const guest = homePage(null);
@@ -19,6 +20,7 @@ test('web entry lets guests share first and offers registration after success', 
   assert.match(guest, /favicon\.svg/);
   assert.match(guest, /SoloDrop · A SZLK product/);
   assert.equal(MAX_FILE_BYTES, 10 * 1024 * 1024);
+  assert.match(guest, /<svg width="20" height="20" viewBox="0 0 24 24"/);
 });
 
 test('publishes complete Chinese and English SEO/GEO entry pages', async () => {
@@ -111,14 +113,40 @@ test('R2 shares enforce download preference and render escaped watermarks', asyn
   form.set('allowDownload','no');
   form.set('watermark','Client <review>');
   form.set('expiry','week');
-  const registry={fetch:async()=>new Response('{}')};
-  const created=await createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:form}),{PREVIEWS:bucket},null,registry,'https://drop.szlk.ai');
+  const registryRequests=[];
+  const registry={fetch:async(url,options)=>{registryRequests.push({url,options});return new Response('{}');}};
+  const created=await createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:form}),{PREVIEWS:bucket},null,registry,'https://drop.szlk.ai','claim-secret');
   const slug=new URL(created.shortUrl).pathname.slice(1);
   const page=previewPage(JSON.parse(new TextDecoder().decode(objects.get(`shares/${slug}.json`).bytes)));
   assert.match(page,/Client &lt;review&gt;/);
+  assert.match(page,/user-select:none/);
+  assert.match(page,/selectstart/);
+  assert.match(page,/\.content \.pdf\{pointer-events:none\}/);
   assert.doesNotMatch(page,/class="download"/);
+  assert.equal(registryRequests[0].url,'https://registry/guest-activity');
+  assert.equal(registryRequests[0].options.headers['x-claim-token'],'claim-secret');
   const inline=await serveContent(new Request(`https://drop.szlk.ai/api/shares/${slug}/content`),slug,{PREVIEWS:bucket});
   assert.equal(inline.status,200);
   const download=await serveContent(new Request(`https://drop.szlk.ai/api/shares/${slug}/content?download=1`),slug,{PREVIEWS:bucket});
   assert.equal(download.status,403);
+});
+
+test('login claims guest share activity and opens account history', async () => {
+  const originalFetch=globalThis.fetch;
+  globalThis.fetch=async()=>new Response(JSON.stringify({data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
+  const requests=[];
+  const registry={fetch:async(url,options={})=>{
+    requests.push({url,options});
+    if(url==='https://registry/claim-activities') return new Response(JSON.stringify({claimed:1}),{headers:{'content-type':'application/json'}});
+    return new Response('{}',{status:201});
+  }};
+  try {
+    const request=new Request('https://drop.szlk.ai/api/auth/login',{method:'POST',headers:{cookie:'solodrop_activity_claim=claim-secret'},body:new URLSearchParams({email:'user@example.com',password:'password1'})});
+    const response=await handleAuth(request,{SZLK_PASSPORT_SECRET:'secret'},registry,'https://drop.szlk.ai');
+    assert.equal(response.status,303);
+    assert.equal(response.headers.get('location'),'/account');
+    const claim=requests.find(({url})=>url==='https://registry/claim-activities');
+    assert.equal(claim.options.headers['x-claim-token'],'claim-secret');
+    assert.match(response.headers.get('set-cookie'),/solodrop_session=/);
+  } finally { globalThis.fetch=originalFetch; }
 });

@@ -113,6 +113,17 @@ export class LinkRegistry {
       name TEXT,
       created_at INTEGER NOT NULL,
       expires_at INTEGER NOT NULL
+    ); CREATE TABLE IF NOT EXISTS guest_activities (
+      id TEXT PRIMARY KEY,
+      claim_hash TEXT NOT NULL,
+      file_name TEXT NOT NULL,
+      size_bytes INTEGER NOT NULL,
+      content_type TEXT,
+      status TEXT NOT NULL,
+      short_slug TEXT NOT NULL,
+      preview_url TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      expires_at INTEGER
     ); CREATE TABLE IF NOT EXISTS activities (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
@@ -132,6 +143,8 @@ export class LinkRegistry {
     const url = new URL(request.url);
     if (url.pathname === '/session') return this.session(request);
     if (url.pathname === '/activity' && request.method === 'POST') return this.createActivity(request);
+    if (url.pathname === '/guest-activity' && request.method === 'POST') return this.createGuestActivity(request);
+    if (url.pathname === '/claim-activities' && request.method === 'POST') return this.claimActivities(request);
     if (url.pathname === '/rate' && request.method === 'POST') {
       try { this.enforceRateLimit(request.headers.get('x-solodrop-client-ip') || '', Date.now()); return json({ok:true}); }
       catch (error) { return json({error:error.message},429); }
@@ -171,6 +184,23 @@ export class LinkRegistry {
     if(!b.id||!b.userId||!b.fileName) return json({error:'Invalid activity.'},400);
     this.sql.exec(`INSERT INTO activities (id,user_id,email,file_name,size_bytes,content_type,status,created_at) VALUES (?,?,?,?,?,?,?,?)`,b.id,b.userId,b.email||'',b.fileName,b.sizeBytes||0,b.contentType||'',b.status||'provisioning',now);
     return json({ok:true},201);
+  }
+
+  async createGuestActivity(request) {
+    const b=await request.json(), token=request.headers.get('x-claim-token')||'', now=Date.now();
+    if(!token||!b.id||!b.fileName||!b.shortSlug) return json({error:'Invalid guest activity.'},400);
+    this.sql.exec(`INSERT INTO guest_activities (id,claim_hash,file_name,size_bytes,content_type,status,short_slug,preview_url,created_at,expires_at) VALUES (?,?,?,?,?,?,?,?,?,?)`,b.id,await sha256(token),b.fileName,b.sizeBytes||0,b.contentType||'',b.status||'ready',b.shortSlug,b.previewUrl||'',now,b.expiresAt?Date.parse(b.expiresAt):null);
+    return json({ok:true},201);
+  }
+
+  async claimActivities(request) {
+    const b=await request.json(), token=request.headers.get('x-claim-token')||'';
+    if(!token||!b.userId||!b.email) return json({error:'Invalid activity claim.'},400);
+    const claimHash=await sha256(token);
+    this.sql.exec(`INSERT OR IGNORE INTO activities (id,user_id,email,file_name,size_bytes,content_type,status,short_slug,preview_url,created_at,expires_at) SELECT id,?,?,file_name,size_bytes,content_type,status,short_slug,preview_url,created_at,expires_at FROM guest_activities WHERE claim_hash=?`,b.userId,b.email,claimHash);
+    const claimed=[...this.sql.exec('SELECT changes() AS count')][0]?.count||0;
+    this.sql.exec('DELETE FROM guest_activities WHERE claim_hash=?',claimHash);
+    return json({ok:true,claimed});
   }
 
   async updateActivity(id, request) {
@@ -295,7 +325,14 @@ export default {
     if (request.method === 'POST' && url.pathname === '/api/shares') {
       const limited=await registry.fetch('https://registry/rate',{method:'POST',headers:{'x-solodrop-client-ip':request.headers.get('cf-connecting-ip')||''}});
       if(!limited.ok)return limited;
-      try{return json(await createShare(request,env,await sessionUser(request,registry),registry,origin),201)}catch(error){return json({error:error.message||'分享失败。'},422)}
+      try {
+        const user=await sessionUser(request,registry);
+        const existingClaim=request.headers.get('cookie')?.split(';').map((value)=>value.trim()).find((value)=>value.startsWith('solodrop_activity_claim='))?.slice('solodrop_activity_claim='.length);
+        const claimToken=user?null:(existingClaim?decodeURIComponent(existingClaim):randomToken());
+        const result=await createShare(request,env,user,registry,origin,claimToken);
+        const headers=claimToken?{'set-cookie':`solodrop_activity_claim=${encodeURIComponent(claimToken)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000`}:{};
+        return json(result,201,headers);
+      } catch(error) { return json({error:error.message||'分享失败。'},422); }
     }
     const shareContent=url.pathname.match(/^\/api\/shares\/([A-Za-z0-9]+)\/content$/);
     if(shareContent&&request.method==='GET')return serveContent(request,shareContent[1],env);

@@ -1,0 +1,1 @@
+cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/10/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox -
