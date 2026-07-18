@@ -14,6 +14,7 @@ This file stores stable project facts future agents should reuse. Do not paste r
 - Managed short links use `drop.szlk.ai`; short-link failure falls back to the already verified original preview instead of blocking delivery.
 - Preview content is independent of the managed component. The platform-owned action, attribution and statistics cannot become prerequisites for reading or downloading an artifact.
 - The share-page action is designed and controlled by SoloDrop. Sharing users only choose an artifact and must never be asked to configure action copy, destination or monetization policy.
+- The platform action renders from the managed embed even when a preview is opened through its original `workers.dev` URL or managed-link configuration is unavailable. Short-link markers enhance configuration and statistics; they are not a visibility prerequisite for the action.
 - The first web version validates demand with Cloudflare temporary accounts only. SoloDrop may retain Passport-linked account sessions and activity metadata, but must not persist artifact bytes in Durable Objects, R2, or another product-owned store.
 - Web sharing is guest-first. Login and registration must never block the first temporary share; account creation is offered after the link works as an enhancement for future cross-device activity history.
 - The public web experience has first-class Chinese (`/`) and English (`/en`) routes. Language switching covers sharing status, account flows, activity and legal pages; SEO/GEO content stays after the primary sharing action.

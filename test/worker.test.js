@@ -19,6 +19,9 @@ test('share-page action is owned by SoloDrop', async () => {
     url: 'https://drop.szlk.ai/'
   });
   assert.match(renderEmbedScript(), /d\.action/);
+  assert.match(renderEmbedScript(), /Share your own file/);
+  assert.match(renderEmbedScript(), /https:\/\/drop\.szlk\.ai\//);
+  assert.doesNotMatch(renderEmbedScript(), /!s\|\|!slot/);
   assert.doesNotMatch(renderEmbedScript(), /d\.cta/);
 });
 
@@ -27,10 +30,12 @@ test('redirect preserves target query and adds an opaque link marker', async () 
   assert.equal(withLinkMarker('https://artifact.example.workers.dev/?view=1', 'Ab3xY7'), 'https://artifact.example.workers.dev/?view=1&sd=Ab3xY7');
 });
 
-test('embed script fails closed without hiding preview content', async () => {
+test('embed script keeps the platform action when managed-link config is unavailable', async () => {
   const { renderEmbedScript } = await internals();
   const script = renderEmbedScript();
   assert.match(script, /data-solodrop-actions/);
-  assert.match(script, /\.catch\(function\(\)\{slot\.hidden=true\}\)/);
+  assert.match(script, /render\(\{action:/);
+  assert.match(script, /\.catch\(function\(\)\{\}\)/);
+  assert.doesNotMatch(script, /slot\.hidden=true/);
   assert.doesNotMatch(script, /document\.body\.replace/);
 });
