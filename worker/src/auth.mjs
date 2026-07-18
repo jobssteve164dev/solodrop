@@ -38,36 +38,38 @@ async function handleAuth(request, env, registry, origin) {
   if (url.pathname === '/api/auth/logout') {
     const token = parseCookie(request, SESSION_COOKIE);
     if (token) await registry.fetch('https://registry/session', {method:'DELETE',headers:{'x-session-token':token}});
-    return new Response(null,{status:303,headers:{location:'/', 'set-cookie':`${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`}});
+    return new Response(null,{status:303,headers:{location:url.searchParams.get('locale')==='en'?'/en':'/', 'set-cookie':`${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`}});
   }
   const mode = url.pathname.split('/').pop();
   const body = await formBody(request);
+  const prefix=body.locale==='en'?'/en':'';
+  delete body.locale;
   try {
     if (mode === 'register') {
       const data = await passport(env, '/api/v1/auth/register', {...body,appBaseUrl:origin});
-      return new Response(null,{status:303,headers:{location:'/login?notice=check-email'}});
+      return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=check-email`}});
     }
     if (mode === 'login') {
       const data = await passport(env, '/api/v1/auth/login', body);
-      if (data.needsEmailVerification || data.user?.emailVerified === false) return new Response(null,{status:303,headers:{location:'/login?notice=verify-first'}});
+      if (data.needsEmailVerification || data.user?.emailVerified === false) return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=verify-first`}});
       const cookie = await establishSession(data.user, registry);
-      return new Response(null,{status:303,headers:{location:'/', 'set-cookie':cookie}});
+      return new Response(null,{status:303,headers:{location:prefix||'/', 'set-cookie':cookie}});
     }
     if (mode === 'forgot-password') {
       await passport(env, '/api/v1/auth/forgot-password', {email:body.email,appBaseUrl:origin});
-      return new Response(null,{status:303,headers:{location:'/login?notice=reset-sent'}});
+      return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=reset-sent`}});
     }
     if (mode === 'verify-email') {
       await passport(env, '/api/v1/auth/verify-email', {token:body.token});
-      return new Response(null,{status:303,headers:{location:'/login?notice=verified'}});
+      return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=verified`}});
     }
     if (mode === 'reset-password') {
       await passport(env, '/api/v1/auth/reset-password', {token:body.token,password:body.password});
-      return new Response(null,{status:303,headers:{location:'/login?notice=reset'}});
+      return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=reset`}});
     }
     throw new Error('Unsupported account action.');
   } catch (error) {
-    return new Response(null,{status:303,headers:{location:`/${mode === 'register' ? 'register' : 'login'}?error=${encodeURIComponent(error.message)}`}});
+    return new Response(null,{status:303,headers:{location:`${prefix}/${mode === 'register' ? 'register' : 'login'}?error=${encodeURIComponent(error.message)}`}});
   }
 }
 

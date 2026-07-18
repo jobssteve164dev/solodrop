@@ -20,6 +20,7 @@ On the web, this action must remain available before login. The user's immediate
 - Safety: explicit public-upload confirmation, common credential detection, isolated preview generation and separation of public and claim URLs.
 - Verification: every successful share is opened over HTTP before the public link is copied.
 - Web trust: the public site uses the official SoloDrop mark, consistent navigation, legal routes, explicit data handling and a professional responsive interface. Trust is established with verifiable boundaries, not vague security claims.
+- Web discovery: Chinese and English are first-class, switchable site routes. Each language keeps the same sharing, account and legal journey while publishing its own canonical URL, reciprocal language alternatives and self-contained answers about the product's real limits.
 
 ## Product boundaries
 
@@ -36,3 +37,4 @@ On the web, this action must remain available before login. The user's immediate
 - The receiver can read the result in a browser without installing the source application.
 - Failure messages state whether selection, safety checking, preview generation, deployment or verification failed.
 - The main sidebar action remains understandable without documentation.
+- Search and AI answer optimization must remain below the immediate sharing action; discoverability cannot turn the homepage into an article or delay the first share.
