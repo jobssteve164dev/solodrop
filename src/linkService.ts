@@ -1,5 +1,3 @@
-import { ShareCta } from './types';
-
 export const LINK_SERVICE_URL = 'https://drop.szlk.ai';
 
 interface CreateLinkInput {
@@ -7,7 +5,6 @@ interface CreateLinkInput {
   title: string;
   temporary: boolean;
   expiresAt?: string;
-  cta?: ShareCta;
 }
 
 interface CreateLinkResponse {
@@ -58,16 +55,4 @@ export async function verifyManagedLink(shortUrl: string, expectedTarget: string
   if (actual.origin !== expected.origin || actual.pathname !== expected.pathname || !actual.searchParams.get('sd')) {
     throw new Error('Short link returned an unexpected destination.');
   }
-}
-
-export function normalizeShareCta(input?: Partial<ShareCta> | null): ShareCta | undefined {
-  const label = input?.label?.trim() || '';
-  const rawUrl = input?.url?.trim() || '';
-  if (!label && !rawUrl) return undefined;
-  if (!label || !rawUrl) throw new Error('CTA label and URL must be provided together.');
-  if (label.length > 48) throw new Error('CTA label must be 48 characters or fewer.');
-  let url: URL;
-  try { url = new URL(rawUrl); } catch { throw new Error('CTA URL is invalid.'); }
-  if (url.protocol !== 'https:' || url.username || url.password) throw new Error('CTA URL must use HTTPS.');
-  return { label, url: url.toString() };
 }

@@ -7,11 +7,6 @@ export interface ArtifactSelection {
   kind: string;
 }
 
-export interface ShareCta {
-  label: string;
-  url: string;
-}
-
 export interface ShareRecord {
   id: string;
   name: string;

@@ -1,10 +1,11 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-07-17T13:22:55.062Z",
-  "runCount": 6,
+  "updatedAt": "2026-07-18T01:37:21.033Z",
+  "runCount": 7,
   "indexes": {
     "byNode": {
       "__solo__": [
+        "__solo__-7",
         "__solo__-6",
         "__solo__-5",
         "__solo__-4",
@@ -15,6 +16,7 @@
     },
     "byAgent": {
       "/usr/local/bin/codex": [
+        "__solo__-7",
         "__solo__-6",
         "__solo__-5",
         "__solo__-4",
@@ -72,19 +74,27 @@
       ]
     },
     "byStatus": {
+      "Recorded": [
+        "__solo__-7",
+        "__solo__-3"
+      ],
       "Completed": [
         "__solo__-6",
         "__solo__-5",
         "__solo__-4",
         "__solo__-2",
         "__solo__-1"
-      ],
-      "Recorded": [
-        "__solo__-3"
       ]
     },
-    "byFailure": {},
+    "byFailure": {
+      "│ d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const x=JSON.parse(d);console.log(x.version||x.error||'unknown')})\"": [
+        "__solo__-7"
+      ]
+    },
     "byCommand": {
+      "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'": [
+        "__solo__-7"
+      ],
       "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/6/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-ch...": [
         "__solo__-6"
       ],
@@ -105,6 +115,19 @@
       ]
     },
     "byExperience": {
+      "exp-failure-e4f7229b52d28d4f": [
+        "__solo__-7"
+      ],
+      "exp-reusable-signal-1477c0bd97fdae96": [
+        "__solo__-7",
+        "__solo__-3"
+      ],
+      "exp-reusable-signal-cb638e2376527768": [
+        "__solo__-7"
+      ],
+      "exp-reusable-signal-0f35450dda765ee9": [
+        "__solo__-7"
+      ],
       "exp-reusable-signal-bbd83203f5340823": [
         "__solo__-6",
         "__solo__-5",
@@ -162,9 +185,6 @@
       "exp-verification-44a2e6a5f34c999d": [
         "__solo__-3"
       ],
-      "exp-reusable-signal-1477c0bd97fdae96": [
-        "__solo__-3"
-      ],
       "exp-reusable-signal-51627a968c549197": [
         "__solo__-3"
       ],
@@ -201,6 +221,130 @@
     }
   },
   "experienceNodes": {
+    "exp-failure-e4f7229b52d28d4f": {
+      "id": "exp-failure-e4f7229b52d28d4f",
+      "type": "failure",
+      "centralMeaning": "│ d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const x=JSON.parse(d);console.log(x.version||x.error||'unknown')})\"",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-7"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务出现相同失败、相同命令或相同文件区域"
+      ],
+      "doThis": "先复核已知失败原因，再决定重试、回退、补验证或调整计划。",
+      "avoidThis": "不要无视同类失败历史直接重复上一条路径。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 0,
+        "losses": 0,
+        "neutral": 1,
+        "alpha": 1,
+        "beta": 1,
+        "winRate": 0.5,
+        "lastUsed": "2026-07-18T01:37:21.027Z"
+      }
+    },
+    "exp-reusable-signal-1477c0bd97fdae96": {
+      "id": "exp-reusable-signal-1477c0bd97fdae96",
+      "type": "reusable_signal",
+      "centralMeaning": "Completion: 续聊已记录；不参与任务完成、失败或进行中判断。",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-7",
+        "__solo__-3"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务出现相同目标、文件或验证需求"
+      ],
+      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
+      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'",
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
+        "• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
+      ],
+      "stats": {
+        "uses": 2,
+        "wins": 2,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 3,
+        "beta": 1,
+        "winRate": 0.75,
+        "lastUsed": "2026-07-18T01:37:21.027Z"
+      }
+    },
+    "exp-reusable-signal-cb638e2376527768": {
+      "id": "exp-reusable-signal-cb638e2376527768",
+      "type": "reusable_signal",
+      "centralMeaning": "• 发布闭环已完成：v0.0.11 已推送、Visual Studio Marketplace 与 Open VSX 发布步骤成功，Open VSX API 已返回 0.0.11，生产 drop.szlk.ai/health 仍为 200。›Find and fix a bug in @filenamegpt-5.6-sol low · ~/project/solodrop",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-7"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务出现相同目标、文件或验证需求"
+      ],
+      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
+      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-18T01:37:21.027Z"
+      }
+    },
+    "exp-reusable-signal-0f35450dda765ee9": {
+      "id": "exp-reusable-signal-0f35450dda765ee9",
+      "type": "reusable_signal",
+      "centralMeaning": "我最后同步自动生成的 release commit 到本地，并复核所有远端运行与工作区状态；不会再触发新发布。•Working(0s • esc to interrupt)›Find and fix a bug in @filenamegpt-5.6-sol low · ~/project/solodroprkkiinngg◦1•WWoorrkkiinWng◦Wogorrk2kiinngg · 1 background terminal...",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-7"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务出现相同目标、文件或验证需求"
+      ],
+      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
+      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-18T01:37:21.027Z"
+      }
+    },
     "exp-reusable-signal-bbd83203f5340823": {
       "id": "exp-reusable-signal-bbd83203f5340823",
       "type": "reusable_signal",
@@ -818,38 +962,6 @@
         "lastUsed": "2026-07-16T09:29:09.177Z"
       }
     },
-    "exp-reusable-signal-1477c0bd97fdae96": {
-      "id": "exp-reusable-signal-1477c0bd97fdae96",
-      "type": "reusable_signal",
-      "centralMeaning": "Completion: 续聊已记录；不参与任务完成、失败或进行中判断。",
-      "sourceKinds": [
-        "solo_continue"
-      ],
-      "sourceRefs": [
-        "__solo__-3"
-      ],
-      "appliesWhen": [
-        "同一路线图入口：__solo__",
-        "后续任务出现相同目标、文件或验证需求"
-      ],
-      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
-      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
-      "checks": [
-        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
-        "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
-        "• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
-      ],
-      "stats": {
-        "uses": 1,
-        "wins": 1,
-        "losses": 0,
-        "neutral": 0,
-        "alpha": 2,
-        "beta": 1,
-        "winRate": 0.6667,
-        "lastUsed": "2026-07-16T09:29:09.177Z"
-      }
-    },
     "exp-reusable-signal-51627a968c549197": {
       "id": "exp-reusable-signal-51627a968c549197",
       "type": "reusable_signal",
@@ -1252,6 +1364,54 @@
     }
   },
   "usageEdges": [
+    {
+      "runId": "__solo__-7",
+      "experienceId": "exp-failure-e4f7229b52d28d4f",
+      "phase": "failed",
+      "outcome": "neutral",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-7.json",
+        "execution_logs:7",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'"
+      ],
+      "createdAt": "2026-07-18T01:37:21.027Z"
+    },
+    {
+      "runId": "__solo__-7",
+      "experienceId": "exp-reusable-signal-1477c0bd97fdae96",
+      "phase": "observed",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-7.json",
+        "execution_logs:7",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'"
+      ],
+      "createdAt": "2026-07-18T01:37:21.027Z"
+    },
+    {
+      "runId": "__solo__-7",
+      "experienceId": "exp-reusable-signal-cb638e2376527768",
+      "phase": "observed",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-7.json",
+        "execution_logs:7",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'"
+      ],
+      "createdAt": "2026-07-18T01:37:21.027Z"
+    },
+    {
+      "runId": "__solo__-7",
+      "experienceId": "exp-reusable-signal-0f35450dda765ee9",
+      "phase": "observed",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-7.json",
+        "execution_logs:7",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'"
+      ],
+      "createdAt": "2026-07-18T01:37:21.027Z"
+    },
     {
       "runId": "__solo__-6",
       "experienceId": "exp-reusable-signal-bbd83203f5340823",
@@ -1801,6 +1961,21 @@
     }
   ],
   "runs": [
+    {
+      "runId": "__solo__-7",
+      "executionLogId": 7,
+      "nodeId": "__solo__",
+      "runKind": "solo_continue",
+      "agentCli": "/usr/local/bin/codex",
+      "status": "Recorded",
+      "finishedAt": "2026-07-18T01:37:21.027Z",
+      "changedFiles": [],
+      "touchedFiles": [],
+      "failures": [
+        "│ d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const x=JSON.parse(d);console.log(x.version||x.error||'unknown')})\""
+      ],
+      "handoffSummary": "续聊已记录；不参与任务完成、失败或进行中判断。 阻塞/风险：│ d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const x=JSON.parse(d);console.log(x.version||x.error||'unknown')})\"。"
+    },
     {
       "runId": "__solo__-6",
       "executionLogId": 6,

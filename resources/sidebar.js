@@ -14,9 +14,7 @@
     claim: document.getElementById('claim-link'),
     refresh: document.getElementById('refresh'),
     language: document.getElementById('language'),
-    history: document.getElementById('history'),
-    ctaLabel: document.getElementById('cta-label'),
-    ctaUrl: document.getElementById('cta-url')
+    history: document.getElementById('history')
   };
   elements.dropZone = document.getElementById('drop-zone');
   let latestRecord = null;
@@ -69,16 +67,12 @@
     });
   }
   elements.choose.addEventListener('click', () => post('choose'));
-  function ctaValue() { return { label: elements.ctaLabel.value.trim(), url: elements.ctaUrl.value.trim() }; }
-  function saveCta() { post('setCta', { cta: ctaValue() }); }
-  elements.share.addEventListener('click', () => post('share', { cta: ctaValue() }));
+  elements.share.addEventListener('click', () => post('share'));
   elements.refresh.addEventListener('click', () => post('refresh'));
   elements.language.addEventListener('click', () => post('setLanguage'));
   elements.open.addEventListener('click', () => latestRecord && post('open', { url: latestRecord.previewUrl }));
   elements.copy.addEventListener('click', () => latestRecord && post('copy', { url: latestRecord.previewUrl }));
   elements.claim.addEventListener('click', () => latestRecord?.claimUrl && post('open', { url: latestRecord.claimUrl }));
-  elements.ctaLabel.addEventListener('change', saveCta);
-  elements.ctaUrl.addEventListener('change', saveCta);
   let dragDepth = 0;
   elements.dropZone.addEventListener('dragenter', (event) => { event.preventDefault(); dragDepth += 1; elements.dropZone.classList.add('dragging'); });
   elements.dropZone.addEventListener('dragover', (event) => { event.preventDefault(); if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy'; });
@@ -86,10 +80,16 @@
   elements.dropZone.addEventListener('drop', async (event) => {
     event.preventDefault(); dragDepth = 0; elements.dropZone.classList.remove('dragging');
     const transfer = event.dataTransfer;
-    const uriList = transfer?.getData('text/uri-list') || transfer?.getData('application/vnd.code.uri-list');
+    const uriList = transfer?.getData('text/uri-list')
+      || transfer?.getData('application/vnd.code.uri-list')
+      || transfer?.getData('application/vnd.code.resource')
+      || transfer?.getData('text/plain');
     if (uriList) {
-      const uri = uriList.split(/\r?\n/).find((line) => line && !line.startsWith('#'));
-      if (uri) { post('dropUri', { uri }); return; }
+      const value = uriList.split(/\r?\n/).map((line) => line.trim()).find((line) => line && !line.startsWith('#'));
+      if (value) {
+        const uri = value.startsWith('file:') ? value : `file://${value}`;
+        post('dropUri', { uri }); return;
+      }
     }
     const file = transfer?.files?.[0];
     if (!file) { elements.status.textContent = text.dropOneFile; return; }
@@ -101,7 +101,6 @@
     const message = event.data;
     if (message.command === 'selectionChanged') renderSelection(message.selection);
     if (message.command === 'historyLoaded') renderHistory(message.records);
-    if (message.command === 'ctaLoaded') { elements.ctaLabel.value = message.cta?.label || ''; elements.ctaUrl.value = message.cta?.url || ''; }
     if (message.command === 'shareStarted') setLoading(true);
     if (message.command === 'shareFailed') { setLoading(false); elements.status.textContent = message.message; }
     if (message.command === 'shareCompleted') {

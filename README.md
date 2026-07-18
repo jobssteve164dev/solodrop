@@ -71,11 +71,11 @@ SoloDrop creates and verifies a compact `drop.szlk.ai` link after the preview is
 
 预览上线后，SoloDrop 会生成并验证简洁的 `drop.szlk.ai` 短链接。即使短链服务暂时不可用，仍会返回已经验证过的原始预览地址，不阻断交付。
 
-### ↗️ Give readers one clear next step / 给接收者一个明确的下一步
+### ↗️ Turn every share into product discovery / 让每次分享自然带来产品发现
 
-Optionally add one action to the share page, such as viewing a project, contacting you or booking a demo. The artifact always remains the page's main content, and recent shares show basic visit counts.
+SoloDrop adds one consistent, unobtrusive product action after the artifact. It is designed and managed by SoloDrop, requires no setup from the person sharing, and never blocks the content. Recent shares also show basic visit counts.
 
-你可以选择为分享页增加一个行动按钮，例如查看项目、联系你或预约演示。产物始终是页面主体，最近分享中还会显示基础访问次数。
+SoloDrop 会在产物之后增加一个统一、克制的产品行动入口。它由 SoloDrop 设计和管理，分享者无需配置，也不会阻塞内容。最近分享中还会显示基础访问次数。
 
 ### 🌍 Start now, sign in when you need more / 无需登录也能开始
 

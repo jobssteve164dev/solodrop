@@ -1,16 +1,13 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
-const { createManagedLink, getManagedLinkStats, normalizeShareCta, verifyManagedLink } = require('../out/linkService.js');
-
-test('normalizes an optional safe CTA', () => {
-  assert.equal(normalizeShareCta({ label: '', url: '' }), undefined);
-  assert.deepEqual(normalizeShareCta({ label: ' View project ', url: 'https://example.com/demo' }), { label: 'View project', url: 'https://example.com/demo' });
-  assert.throws(() => normalizeShareCta({ label: 'View', url: 'http://example.com' }), /must use HTTPS/);
-});
+const { createManagedLink, getManagedLinkStats, verifyManagedLink } = require('../out/linkService.js');
 
 test('accepts a valid managed short-link response', async () => {
-  const result = await createManagedLink({ url: 'https://artifact.example.workers.dev', title: 'Report', temporary: false }, async () => new Response(JSON.stringify({ shortUrl: 'https://drop.szlk.ai/Ab3xY7z', slug: 'Ab3xY7z', managementToken: 'token' }), { status: 201, headers: { 'content-type': 'application/json' } }));
+  const result = await createManagedLink({ url: 'https://artifact.example.workers.dev', title: 'Report', temporary: false }, async (_url, options) => {
+    assert.deepEqual(JSON.parse(options.body), { url: 'https://artifact.example.workers.dev', title: 'Report', temporary: false });
+    return new Response(JSON.stringify({ shortUrl: 'https://drop.szlk.ai/Ab3xY7z', slug: 'Ab3xY7z', managementToken: 'token' }), { status: 201, headers: { 'content-type': 'application/json' } });
+  });
   assert.equal(result.shortUrl, 'https://drop.szlk.ai/Ab3xY7z');
   assert.equal(result.managementToken, 'token');
 });

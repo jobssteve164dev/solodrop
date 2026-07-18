@@ -52,16 +52,10 @@ function normalizeTarget(value) {
   return target.toString();
 }
 
-function normalizeCta(cta) {
-  const label = typeof cta?.label === 'string' ? cta.label.trim().slice(0, 48) : '';
-  const rawUrl = typeof cta?.url === 'string' ? cta.url.trim() : '';
-  if (!label && !rawUrl) return null;
-  if (!label || !rawUrl) throw new Error('CTA label and URL must be provided together.');
-  let url;
-  try { url = new URL(rawUrl); } catch { throw new Error('The CTA URL is invalid.'); }
-  if (url.protocol !== 'https:' || url.username || url.password) throw new Error('The CTA URL must use HTTPS.');
-  return { label, url: url.toString() };
-}
+const PLATFORM_ACTION = Object.freeze({
+  label: 'Share your own preview',
+  url: 'https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop'
+});
 
 function withLinkMarker(target, slug) {
   const url = new URL(target);
@@ -85,7 +79,7 @@ async function verifyPreview(target, fetcher = fetch) {
 }
 
 function renderEmbedScript() {
-  return `(function(){try{var s=new URL(location.href).searchParams.get('sd');var slot=document.querySelector('[data-solodrop-actions]');if(!s||!slot)return;fetch('https://drop.szlk.ai/api/links/'+encodeURIComponent(s)+'/config',{mode:'cors'}).then(function(r){if(!r.ok)throw new Error();return r.json()}).then(function(d){var f=document.createDocumentFragment();if(d.cta){var a=document.createElement('a');a.className='solodrop-cta';a.href=d.cta.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=d.cta.label;f.appendChild(a)}var b=document.createElement('a');b.className='solodrop-powered';b.href='https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop';b.target='_blank';b.rel='noopener noreferrer';b.textContent='Shared with SoloDrop';f.appendChild(b);slot.replaceChildren(f);slot.hidden=false}).catch(function(){slot.hidden=true})}catch(e){}})();`;
+  return `(function(){try{var s=new URL(location.href).searchParams.get('sd');var slot=document.querySelector('[data-solodrop-actions]');if(!s||!slot)return;fetch('https://drop.szlk.ai/api/links/'+encodeURIComponent(s)+'/config',{mode:'cors'}).then(function(r){if(!r.ok)throw new Error();return r.json()}).then(function(d){var f=document.createDocumentFragment();if(d.action){var a=document.createElement('a');a.className='solodrop-cta';a.href=d.action.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=d.action.label;f.appendChild(a)}var b=document.createElement('a');b.className='solodrop-powered';b.href='https://marketplace.visualstudio.com/items?itemName=SZLK.solodrop';b.target='_blank';b.rel='noopener noreferrer';b.textContent='Shared with SoloDrop';f.appendChild(b);slot.replaceChildren(f);slot.hidden=false}).catch(function(){slot.hidden=true})}catch(e){}})();`;
 }
 
 export class LinkRegistry {
@@ -141,7 +135,6 @@ export class LinkRegistry {
       const target = normalizeTarget(body.url);
       const title = String(body.title || 'Shared preview').trim().slice(0, 160) || 'Shared preview';
       const temporary = body.temporary === true;
-      const cta = normalizeCta(body.cta);
       const managementToken = randomToken();
       const managementHash = await sha256(managementToken);
       let expiresAt = body.expiresAt ? Date.parse(body.expiresAt) : null;
@@ -156,7 +149,7 @@ export class LinkRegistry {
         slug = randomSlug();
       }
       this.sql.exec(`INSERT INTO links (slug, target_url, title, cta_label, cta_url, temporary, created_at, expires_at, management_hash)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, slug, target, title, cta?.label || null, cta?.url || null, temporary ? 1 : 0, now, expiresAt, managementHash);
+        VALUES (?, ?, ?, NULL, NULL, ?, ?, ?, ?)`, slug, target, title, temporary ? 1 : 0, now, expiresAt, managementHash);
       return json({ slug, managementToken, expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null });
     } catch (error) {
       return json({ error: error instanceof Error ? error.message : 'Could not create short link.' }, 422);
@@ -170,7 +163,7 @@ export class LinkRegistry {
     if (configOnly) {
       return json({
         title: row.title,
-        cta: row.cta_label && row.cta_url ? { label: row.cta_label, url: row.cta_url } : null
+        action: PLATFORM_ACTION
       }, 200, { 'access-control-allow-origin': '*' });
     }
     this.sql.exec('UPDATE links SET clicks = clicks + 1 WHERE slug = ?', slug);
@@ -217,7 +210,12 @@ export default {
       const forwarded = new Request('https://registry/create', {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-solodrop-client-ip': request.headers.get('cf-connecting-ip') || '' },
-        body: JSON.stringify({ ...parsed, url: target })
+        body: JSON.stringify({
+          url: target,
+          title: parsed.title,
+          temporary: parsed.temporary,
+          expiresAt: parsed.expiresAt
+        })
       });
       const response = await env.LINKS.get(env.LINKS.idFromName('registry')).fetch(forwarded);
       if (!response.ok) return response;
@@ -244,4 +242,4 @@ export default {
   }
 };
 
-export const workerInternals = { normalizeCta, normalizeTarget, randomSlug, renderEmbedScript, sha256, verifyPreview, withLinkMarker };
+export const workerInternals = { normalizeTarget, PLATFORM_ACTION, randomSlug, renderEmbedScript, sha256, verifyPreview, withLinkMarker };
