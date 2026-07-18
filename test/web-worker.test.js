@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import worker from '../worker/src/index.mjs';
 import { authPage, homePage, MAX_FILE_BYTES } from '../worker/src/web.mjs';
 import { powScript } from '../worker/src/pow.mjs';
-import { previewWorker } from '../worker/src/temporary.mjs';
+import { previewWorker, verifyTemporaryPreview } from '../worker/src/temporary.mjs';
 
 test('web entry lets guests share first and offers registration after success', () => {
   const guest = homePage(null);
@@ -50,6 +50,21 @@ test('temporary preview embeds bytes in the Cloudflare Worker and keeps the plat
   assert.match(source, /aGVsbG8=/);
   assert.match(source, /https:\/\/drop\.szlk\.ai\/embed\.js/);
   assert.doesNotMatch(source, /R2|Durable Object/);
+});
+
+test('website waits through slow temporary Worker route propagation without reusing cached 404s', async () => {
+  const requested=[];
+  const pauses=[];
+  let attempts=0;
+  await verifyTemporaryPreview('https://preview.example.workers.dev',async (url,options)=>{
+    attempts+=1; requested.push({url:url.toString(),options});
+    return new Response(attempts<10?'not found':'<meta name="solodrop-preview">',{status:attempts<10?404:200});
+  },async (milliseconds)=>{pauses.push(milliseconds);});
+  assert.equal(attempts,10);
+  assert.deepEqual(pauses,[1000,2000,3000,5000,8000,10000,10000,10000,10000]);
+  assert.equal(new Set(requested.map(({url})=>url)).size,10);
+  assert.equal(requested[0].options.cache,'no-store');
+  assert.equal(requested[0].options.headers['cache-control'],'no-cache');
 });
 
 test('browser proof-of-work solver produces Cloudflare-compatible checkpoints', () => {

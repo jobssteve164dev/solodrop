@@ -1,10 +1,11 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-07-18T04:27:24.478Z",
-  "runCount": 8,
+  "updatedAt": "2026-07-18T11:18:08.828Z",
+  "runCount": 9,
   "indexes": {
     "byNode": {
       "__solo__": [
+        "__solo__-9",
         "__solo__-8",
         "__solo__-7",
         "__solo__-6",
@@ -17,6 +18,7 @@
     },
     "byAgent": {
       "/usr/local/bin/codex": [
+        "__solo__-9",
         "__solo__-8",
         "__solo__-7",
         "__solo__-6",
@@ -84,6 +86,11 @@
       ]
     },
     "byStatus": {
+      "Recorded": [
+        "__solo__-9",
+        "__solo__-7",
+        "__solo__-3"
+      ],
       "Completed": [
         "__solo__-8",
         "__solo__-6",
@@ -91,10 +98,6 @@
         "__solo__-4",
         "__solo__-2",
         "__solo__-1"
-      ],
-      "Recorded": [
-        "__solo__-7",
-        "__solo__-3"
       ]
     },
     "byFailure": {
@@ -121,6 +124,9 @@
       ]
     },
     "byCommand": {
+      "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'": [
+        "__solo__-9"
+      ],
       "cat '/home/ubuntu/project/solodrop/.solopreneur/agent-runs/__solo__/8/prompt.txt' | '/usr/local/bin/codex' exec --color always -C '/home/ubuntu/project/solodrop' --skip-git-repo-ch...": [
         "__solo__-8"
       ],
@@ -147,6 +153,29 @@
       ]
     },
     "byExperience": {
+      "exp-verification-0a0ffdc11cd12df4": [
+        "__solo__-9"
+      ],
+      "exp-verification-a967cb12e9008b7d": [
+        "__solo__-9"
+      ],
+      "exp-verification-842282c8f60b1478": [
+        "__solo__-9"
+      ],
+      "exp-verification-25db545cac84a2e4": [
+        "__solo__-9"
+      ],
+      "exp-reusable-signal-1477c0bd97fdae96": [
+        "__solo__-9",
+        "__solo__-7",
+        "__solo__-3"
+      ],
+      "exp-handoff-action-1507d21392caba36": [
+        "__solo__-9"
+      ],
+      "exp-handoff-action-029ba7f9e72bd452": [
+        "__solo__-9"
+      ],
       "exp-verification-db288292816e8720": [
         "__solo__-8"
       ],
@@ -199,10 +228,6 @@
       ],
       "exp-failure-e4f7229b52d28d4f": [
         "__solo__-7"
-      ],
-      "exp-reusable-signal-1477c0bd97fdae96": [
-        "__solo__-7",
-        "__solo__-3"
       ],
       "exp-reusable-signal-cb638e2376527768": [
         "__solo__-7"
@@ -296,6 +321,249 @@
     }
   },
   "experienceNodes": {
+    "exp-verification-0a0ffdc11cd12df4": {
+      "id": "exp-verification-0a0ffdc11cd12df4",
+      "type": "verification",
+      "centralMeaning": "37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-9"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环"
+      ],
+      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
+      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "• Ran npm run check",
+        "• Ran npm run check:all && npm run package && git diff --check && git diff --stat",
+        "test/deployment.test.js | 27 ++++++++++++++++++++++++---"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-18T11:18:08.820Z"
+      }
+    },
+    "exp-verification-a967cb12e9008b7d": {
+      "id": "exp-verification-a967cb12e9008b7d",
+      "type": "verification",
+      "centralMeaning": "• Ran npm run check",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-9"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环"
+      ],
+      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
+      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "• Ran npm run check",
+        "• Ran npm run check:all && npm run package && git diff --check && git diff --stat",
+        "test/deployment.test.js | 27 ++++++++++++++++++++++++---"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-18T11:18:08.820Z"
+      }
+    },
+    "exp-verification-842282c8f60b1478": {
+      "id": "exp-verification-842282c8f60b1478",
+      "type": "verification",
+      "centralMeaning": "• Ran npm run check:all && npm run package && git diff --check && git diff --stat",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-9"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环"
+      ],
+      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
+      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "• Ran npm run check",
+        "• Ran npm run check:all && npm run package && git diff --check && git diff --stat",
+        "test/deployment.test.js | 27 ++++++++++++++++++++++++---"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-18T11:18:08.820Z"
+      }
+    },
+    "exp-verification-25db545cac84a2e4": {
+      "id": "exp-verification-25db545cac84a2e4",
+      "type": "verification",
+      "centralMeaning": "test/deployment.test.js | 27 ++++++++++++++++++++++++---",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-9"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务需要证明相同区域或相同命令链路已闭环"
+      ],
+      "doThis": "优先复用或改写这组验证动作，并验证最终产物。",
+      "avoidThis": "不要只凭实现描述或完成摘要宣称闭环。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "• Ran npm run check",
+        "• Ran npm run check:all && npm run package && git diff --check && git diff --stat",
+        "test/deployment.test.js | 27 ++++++++++++++++++++++++---"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 1,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 2,
+        "beta": 1,
+        "winRate": 0.6667,
+        "lastUsed": "2026-07-18T11:18:08.820Z"
+      }
+    },
+    "exp-reusable-signal-1477c0bd97fdae96": {
+      "id": "exp-reusable-signal-1477c0bd97fdae96",
+      "type": "reusable_signal",
+      "centralMeaning": "Completion: 续聊已记录；不参与任务完成、失败或进行中判断。",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-9",
+        "__solo__-7",
+        "__solo__-3"
+      ],
+      "appliesWhen": [
+        "同一路线图入口：__solo__",
+        "后续任务出现相同目标、文件或验证需求"
+      ],
+      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
+      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "• Ran npm run check",
+        "• Ran npm run check:all && npm run package && git diff --check && git diff --stat",
+        "test/deployment.test.js | 27 ++++++++++++++++++++++++---",
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'",
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
+        "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test"
+      ],
+      "stats": {
+        "uses": 3,
+        "wins": 3,
+        "losses": 0,
+        "neutral": 0,
+        "alpha": 4,
+        "beta": 1,
+        "winRate": 0.8,
+        "lastUsed": "2026-07-18T11:18:08.820Z"
+      }
+    },
+    "exp-handoff-action-1507d21392caba36": {
+      "id": "exp-handoff-action-1507d21392caba36",
+      "type": "handoff_action",
+      "centralMeaning": "# todo 0",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-9"
+      ],
+      "appliesWhen": [
+        "接手同一路线图入口：__solo__",
+        "后续 Agent 需要接续上一轮未完全显式化的上下文"
+      ],
+      "doThis": "把这条交接动作转成当前任务的第一步检查或验证。",
+      "avoidThis": "不要把 handoff 当成已验证结论；先和当前代码、日志、测试对齐。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "• Ran npm run check",
+        "• Ran npm run check:all && npm run package && git diff --check && git diff --stat",
+        "test/deployment.test.js | 27 ++++++++++++++++++++++++---"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 0,
+        "losses": 0,
+        "neutral": 1,
+        "alpha": 1,
+        "beta": 1,
+        "winRate": 0.5,
+        "lastUsed": "2026-07-18T11:18:08.820Z"
+      }
+    },
+    "exp-handoff-action-029ba7f9e72bd452": {
+      "id": "exp-handoff-action-029ba7f9e72bd452",
+      "type": "handoff_action",
+      "centralMeaning": "复用或复跑验证信号：37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => { / • Ran npm run check",
+      "sourceKinds": [
+        "solo_continue"
+      ],
+      "sourceRefs": [
+        "__solo__-9"
+      ],
+      "appliesWhen": [
+        "接手同一路线图入口：__solo__",
+        "后续 Agent 需要接续上一轮未完全显式化的上下文"
+      ],
+      "doThis": "把这条交接动作转成当前任务的第一步检查或验证。",
+      "avoidThis": "不要把 handoff 当成已验证结论；先和当前代码、日志、测试对齐。",
+      "checks": [
+        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "• Ran npm run check",
+        "• Ran npm run check:all && npm run package && git diff --check && git diff --stat",
+        "test/deployment.test.js | 27 ++++++++++++++++++++++++---"
+      ],
+      "stats": {
+        "uses": 1,
+        "wins": 0,
+        "losses": 0,
+        "neutral": 1,
+        "alpha": 1,
+        "beta": 1,
+        "winRate": 0.5,
+        "lastUsed": "2026-07-18T11:18:08.820Z"
+      }
+    },
     "exp-verification-db288292816e8720": {
       "id": "exp-verification-db288292816e8720",
       "type": "verification",
@@ -903,40 +1171,6 @@
         "alpha": 1,
         "beta": 1,
         "winRate": 0.5,
-        "lastUsed": "2026-07-18T01:37:21.027Z"
-      }
-    },
-    "exp-reusable-signal-1477c0bd97fdae96": {
-      "id": "exp-reusable-signal-1477c0bd97fdae96",
-      "type": "reusable_signal",
-      "centralMeaning": "Completion: 续聊已记录；不参与任务完成、失败或进行中判断。",
-      "sourceKinds": [
-        "solo_continue"
-      ],
-      "sourceRefs": [
-        "__solo__-7",
-        "__solo__-3"
-      ],
-      "appliesWhen": [
-        "同一路线图入口：__solo__",
-        "后续任务出现相同目标、文件或验证需求"
-      ],
-      "doThis": "在下一次执行前召回这条经验，并转成具体动作或验证。",
-      "avoidThis": "不要只复述历史摘要；必须用当前证据确认适用性。",
-      "checks": [
-        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f703c-4b33-7cb1-874b-5442e53dcd97'",
-        "'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f6a38-6c2f-7853-aa8c-616016e542fa'",
-        "│ SKIPPED:.vscodeignore; fi; rg -n \"vscodeignore|\\.solopreneur\" test",
-        "• Ran npm run package && unzip -p solodrop-0.0.5.vsix extension/resources/"
-      ],
-      "stats": {
-        "uses": 2,
-        "wins": 2,
-        "losses": 0,
-        "neutral": 0,
-        "alpha": 3,
-        "beta": 1,
-        "winRate": 0.75,
         "lastUsed": "2026-07-18T01:37:21.027Z"
       }
     },
@@ -1973,6 +2207,111 @@
   },
   "usageEdges": [
     {
+      "runId": "__solo__-9",
+      "experienceId": "exp-verification-0a0ffdc11cd12df4",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-9.json",
+        "execution_logs:9",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "check:37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "check:• Ran npm run check",
+        "check:• Ran npm run check:all && npm run package && git diff --check && git diff --stat"
+      ],
+      "createdAt": "2026-07-18T11:18:08.820Z"
+    },
+    {
+      "runId": "__solo__-9",
+      "experienceId": "exp-verification-a967cb12e9008b7d",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-9.json",
+        "execution_logs:9",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "check:37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "check:• Ran npm run check",
+        "check:• Ran npm run check:all && npm run package && git diff --check && git diff --stat"
+      ],
+      "createdAt": "2026-07-18T11:18:08.820Z"
+    },
+    {
+      "runId": "__solo__-9",
+      "experienceId": "exp-verification-842282c8f60b1478",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-9.json",
+        "execution_logs:9",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "check:37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "check:• Ran npm run check",
+        "check:• Ran npm run check:all && npm run package && git diff --check && git diff --stat"
+      ],
+      "createdAt": "2026-07-18T11:18:08.820Z"
+    },
+    {
+      "runId": "__solo__-9",
+      "experienceId": "exp-verification-25db545cac84a2e4",
+      "phase": "verified",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-9.json",
+        "execution_logs:9",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "check:37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "check:• Ran npm run check",
+        "check:• Ran npm run check:all && npm run package && git diff --check && git diff --stat"
+      ],
+      "createdAt": "2026-07-18T11:18:08.820Z"
+    },
+    {
+      "runId": "__solo__-9",
+      "experienceId": "exp-reusable-signal-1477c0bd97fdae96",
+      "phase": "observed",
+      "outcome": "win",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-9.json",
+        "execution_logs:9",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "check:37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "check:• Ran npm run check",
+        "check:• Ran npm run check:all && npm run package && git diff --check && git diff --stat"
+      ],
+      "createdAt": "2026-07-18T11:18:08.820Z"
+    },
+    {
+      "runId": "__solo__-9",
+      "experienceId": "exp-handoff-action-1507d21392caba36",
+      "phase": "observed",
+      "outcome": "neutral",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-9.json",
+        "execution_logs:9",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "check:37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "check:• Ran npm run check",
+        "check:• Ran npm run check:all && npm run package && git diff --check && git diff --stat"
+      ],
+      "createdAt": "2026-07-18T11:18:08.820Z"
+    },
+    {
+      "runId": "__solo__-9",
+      "experienceId": "exp-handoff-action-029ba7f9e72bd452",
+      "phase": "observed",
+      "outcome": "neutral",
+      "evidenceRefs": [
+        "digest:.solopreneur/run-digests/__solo__-9.json",
+        "execution_logs:9",
+        "check:'/usr/local/bin/codex' resume --include-non-interactive --all -C '/home/ubuntu/project/solodrop' '019f7377-b9b6-72b2-b126-1e411865a8ad'",
+        "check:37 +test('allows slow Cloudflare route propagation before rejecting a published preview', async () => {",
+        "check:• Ran npm run check",
+        "check:• Ran npm run check:all && npm run package && git diff --check && git diff --stat"
+      ],
+      "createdAt": "2026-07-18T11:18:08.820Z"
+    },
+    {
       "runId": "__solo__-8",
       "experienceId": "exp-verification-db288292816e8720",
       "phase": "verified",
@@ -2794,6 +3133,19 @@
     }
   ],
   "runs": [
+    {
+      "runId": "__solo__-9",
+      "executionLogId": 9,
+      "nodeId": "__solo__",
+      "runKind": "solo_continue",
+      "agentCli": "/usr/local/bin/codex",
+      "status": "Recorded",
+      "finishedAt": "2026-07-18T11:18:08.820Z",
+      "changedFiles": [],
+      "touchedFiles": [],
+      "failures": [],
+      "handoffSummary": "续聊已记录；不参与任务完成、失败或进行中判断。"
+    },
     {
       "runId": "__solo__-8",
       "executionLogId": 8,
