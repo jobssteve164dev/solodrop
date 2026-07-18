@@ -65,6 +65,12 @@ A successful deployment is not enough. SoloDrop opens the published URL over HTT
 
 部署成功不等于交付成功。SoloDrop 会先通过 HTTP 确认预览地址可访问，再复制公开链接。
 
+### 🧭 Control how the result is delivered / 控制交付方式
+
+Web shares can hide the original-file download action, add a custom text watermark and expire after 1, 7 or 30 days. Signed-in users can also keep a share until they delete it. Watermarks and hidden downloads guide normal recipient behavior; they are not presented as DRM.
+
+网页分享可以隐藏原文件下载入口、添加自定义文字水印，并选择 1 天、7 天或 30 天有效期。登录用户还可以长期保留，直到主动删除。水印与隐藏下载用于约束常规接收行为，不会被宣传成 DRM。
+
 ### 🔗 Send a clean short link / 分享更简洁的短链接
 
 SoloDrop creates and verifies a compact `drop.szlk.ai` link after the preview is online. If the short-link service is temporarily unavailable, sharing still completes with the verified original preview URL.

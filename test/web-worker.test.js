@@ -1,36 +1,36 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import test from 'node:test';
-import vm from 'node:vm';
 import worker from '../worker/src/index.mjs';
 import { authPage, homePage, MAX_FILE_BYTES } from '../worker/src/web.mjs';
 import { powScript } from '../worker/src/pow.mjs';
 import { previewWorker, verifyTemporaryPreview } from '../worker/src/temporary.mjs';
+import { createShare, previewPage, serveContent } from '../worker/src/shares.mjs';
 
 test('web entry lets guests share first and offers registration after success', () => {
   const guest = homePage(null);
   assert.match(guest, /无需登录/);
-  assert.match(guest, /创建临时分享链接/);
-  assert.match(guest, /当前链接无需注册，已经可以使用/);
+  assert.match(guest, /创建分享链接/);
+  assert.match(guest, /Cloudflare R2/);
+  assert.match(guest, /允许下载原文件/);
+  assert.match(guest, /文字水印/);
   assert.doesNotMatch(guest, /先登录后开始分享/);
   const user = homePage({id:'user-1',email:'user@example.com'});
-  assert.match(user, /不保存文件内容/);
-  assert.match(user, /Cloudflare 服务条款/);
+  assert.match(user, /长期保留/);
   assert.match(guest, /favicon\.svg/);
   assert.match(guest, /SoloDrop · A SZLK product/);
-  assert.equal(MAX_FILE_BYTES, 1024 * 1024);
+  assert.equal(MAX_FILE_BYTES, 10 * 1024 * 1024);
 });
 
 test('publishes complete Chinese and English SEO/GEO entry pages', async () => {
   const zh=homePage(null,'zh');
   const en=homePage(null,'en');
-  assert.match(zh, /免费临时文件分享｜无需登录生成网页/);
+  assert.match(zh, /可控文件分享｜生成带水印的网页预览/);
   assert.match(zh, /hreflang="en" href="https:\/\/drop\.szlk\.ai\/en"/);
   assert.match(zh, /SoloDrop 是什么？/);
   assert.match(en, /<html lang="en">/);
-  assert.match(en, /Free Temporary File Sharing — No Sign-Up/);
+  assert.match(en, /Controlled File Sharing as a Web Page/);
   assert.match(en, /What is SoloDrop\?/);
-  assert.match(en, /Temporary file sharing FAQ/);
+  assert.match(en, /Temporary file sharing FAQ|Straight answers/);
   assert.match(en, /\.faq-list\{max-width:none;width:100%;margin-left:0;margin-right:0\}/);
   assert.doesNotMatch(en.replace('>中<','><'), /[\u4e00-\u9fff]/);
   const schema=JSON.parse(en.match(/<script type="application\/ld\+json">([\s\S]+?)<\/script>/)[1]);
@@ -89,21 +89,36 @@ test('website waits through slow temporary Worker route propagation without reus
   assert.equal(requested[0].options.headers['cache-control'],'no-cache');
 });
 
-test('browser proof-of-work solver produces Cloudflare-compatible checkpoints', () => {
-  const window = {};
-  const source = powScript().replace('window.SoloDrop={', 'window.SoloDrop={solve:solve,');
-  vm.runInNewContext(source, { window, Uint8Array, Uint32Array, DataView, Array, Number, String, Error, atob, btoa });
-  const seed = Buffer.alloc(32, 7);
-  const actual = window.SoloDrop.solve({challengeToken:'test',seed:seed.toString('base64url'),k:2,g:3},()=>{});
-  let hash = createHash('sha256').update(seed).digest();
-  const checkpoints = [hash];
-  for (let segment=0;segment<2;segment+=1) { for(let i=0;i<3;i+=1) hash=createHash('sha256').update(hash).digest(); checkpoints.push(hash); }
-  assert.equal(actual, Buffer.concat(checkpoints).toString('base64'));
+test('browser submits R2 share controls instead of temporary Worker proof-of-work', () => {
+  const source=powScript();
+  assert.match(source,/fetch\('\/api\/shares'/);
+  assert.match(source,/allowDownload/);
+  assert.match(source,/watermark/);
+  assert.match(source,/expiry/);
+  assert.doesNotMatch(source,/api\/temp\/challenge/);
 });
 
-test('browser retries temporary-account challenge connection failures', () => {
-  const source=powScript();
-  assert.match(source,/ca<=4/);
-  assert.match(source,/\[2000,5000,10000\]/);
-  assert.match(source,/Cloudflare 暂时繁忙，正在重试/);
+test('R2 shares enforce download preference and render escaped watermarks', async () => {
+  const objects=new Map();
+  const bucket={
+    async head(key){return objects.has(key)?{}:null;},
+    async put(key,value,options={}){objects.set(key,{bytes:new Uint8Array(await new Response(value).arrayBuffer()),type:options.httpMetadata?.contentType||'application/octet-stream'});},
+    async get(key){const item=objects.get(key);if(!item)return null;return {body:item.bytes,httpEtag:'"test"',range:null,async json(){return JSON.parse(new TextDecoder().decode(item.bytes));},writeHttpMetadata(headers){headers.set('content-type',item.type);}};},
+    async delete(keys){for(const key of Array.isArray(keys)?keys:[keys])objects.delete(key);}
+  };
+  const form=new FormData();
+  form.set('file',new File(['hello'],'review.txt',{type:'text/plain'}));
+  form.set('allowDownload','no');
+  form.set('watermark','Client <review>');
+  form.set('expiry','week');
+  const registry={fetch:async()=>new Response('{}')};
+  const created=await createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:form}),{PREVIEWS:bucket},null,registry,'https://drop.szlk.ai');
+  const slug=new URL(created.shortUrl).pathname.slice(1);
+  const page=previewPage(JSON.parse(new TextDecoder().decode(objects.get(`shares/${slug}.json`).bytes)));
+  assert.match(page,/Client &lt;review&gt;/);
+  assert.doesNotMatch(page,/class="download"/);
+  const inline=await serveContent(new Request(`https://drop.szlk.ai/api/shares/${slug}/content`),slug,{PREVIEWS:bucket});
+  assert.equal(inline.status,200);
+  const download=await serveContent(new Request(`https://drop.szlk.ai/api/shares/${slug}/content?download=1`),slug,{PREVIEWS:bucket});
+  assert.equal(download.status,403);
 });

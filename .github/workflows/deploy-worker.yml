@@ -35,8 +35,29 @@ jobs:
         run: |
           test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::CLOUDFLARE_API_TOKEN is missing"; exit 1; }
           test -n "$SZLK_PASSPORT_SECRET" || { echo "::error::SZLK_PASSPORT_SECRET is missing"; exit 1; }
+          npx wrangler r2 bucket create solodrop-previews --config worker/wrangler.jsonc || npx wrangler r2 bucket info solodrop-previews --config worker/wrangler.jsonc
           printf '%s' "$SZLK_PASSPORT_SECRET" | npx wrangler secret put SZLK_PASSPORT_SECRET --config worker/wrangler.jsonc
           npx wrangler deploy --config worker/wrangler.jsonc
       - name: Verify production service
         run: |
           node -e "fetch('https://drop.szlk.ai/health').then(async r=>{const d=await r.json();if(!r.ok||d.ok!==true||d.service!=='SoloDrop')process.exit(1)})"
+          node - <<'NODE'
+          (async()=>{
+          const form=new FormData();
+          form.set('file',new File(['SoloDrop production smoke test'],'r2-smoke.txt',{type:'text/plain'}));
+          form.set('allowDownload','no'); form.set('watermark','SoloDrop smoke'); form.set('expiry','day');
+          const created=await fetch('https://drop.szlk.ai/api/shares',{method:'POST',body:form});
+          const result=await created.json();
+          if(!created.ok)throw new Error(result.error||'R2 share creation failed');
+          try {
+            const page=await fetch(result.shortUrl); const html=await page.text();
+            if(!page.ok||!html.includes('SoloDrop smoke')||html.includes('class="download"'))throw new Error('R2 preview policy verification failed');
+            const slug=new URL(result.shortUrl).pathname.slice(1);
+            const download=await fetch(`https://drop.szlk.ai/api/shares/${slug}/content?download=1`);
+            if(download.status!==403)throw new Error('Download policy verification failed');
+          } finally {
+            const slug=new URL(result.shortUrl).pathname.slice(1);
+            await fetch(`https://drop.szlk.ai/api/shares/${slug}`,{method:'DELETE',headers:{authorization:`Bearer ${result.managementToken}`}});
+          }
+          })().catch(error=>{console.error(error);process.exit(1)});
+          NODE
