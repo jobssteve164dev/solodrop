@@ -76,6 +76,23 @@ test('retries transient temporary account provisioning failures with bounded bac
   assert.deepEqual(pauses, [2000, 5000]);
 });
 
+test('retries Wrangler proof-of-work challenge timeouts during temporary provisioning', async () => {
+  let deployAttempts = 0;
+  const pauses = [];
+  const result = await deployPreview('/tmp/preview', 'solodrop-test', 'temporary', async () => {
+    deployAttempts += 1;
+    if (deployAttempts === 1) {
+      const error = new Error('Command failed: npx wrangler deploy --temporary');
+      error.stderr = '\u001b[31m✘ \u001b[41;31m[ERROR]\u001b[0m Failed to request a proof-of-work challenge (504 Gateway Timeout).';
+      throw error;
+    }
+    return { stdout: 'https://solodrop-test.example.workers.dev\nhttps://dash.cloudflare.com/claim-preview?claimToken=secret', stderr: '' };
+  }, async (milliseconds) => { pauses.push(milliseconds); });
+  assert.equal(result.temporary, true);
+  assert.equal(deployAttempts, 2);
+  assert.deepEqual(pauses, [2000]);
+});
+
 test('does not retry deployment errors outside temporary account provisioning', async () => {
   let attempts = 0;
   await assert.rejects(() => deployPreview('/tmp/preview', 'solodrop-test', 'temporary', async () => {
@@ -93,4 +110,15 @@ test('turns exhausted temporary account timeouts into an actionable message', as
     error.stderr = 'Failed to create a temporary preview account (503 Service Unavailable).';
     throw error;
   }, async () => {}), (error) => error.name === 'TemporaryProvisioningUnavailableError');
+});
+
+test('turns exhausted proof-of-work challenge timeouts into an actionable message', async () => {
+  let attempts = 0;
+  await assert.rejects(() => deployPreview('/tmp/preview', 'solodrop-test', 'temporary', async () => {
+    attempts += 1;
+    const error = new Error('Command failed');
+    error.stderr = 'Failed to request a proof-of-work challenge (504 Gateway Timeout).';
+    throw error;
+  }, async () => {}), (error) => error.name === 'TemporaryProvisioningUnavailableError');
+  assert.equal(attempts, 3);
 });
