@@ -16,7 +16,7 @@ export async function createWebShare(artifact: ArtifactSelection, options: Share
   form.set('file', new File([bytes], artifact.name));
   form.set('allowDownload', options.allowDownload ? 'yes' : 'no');
   form.set('watermark', options.watermark.trim().slice(0, 60));
-  form.set('expiry', options.expiry);
+  form.set('expiry', 'day');
   const response = await fetcher(`${SERVICE_URL}/api/shares`, { method: 'POST', body: form });
   const payload = await response.json().catch(() => ({})) as Partial<WebShareResult> & { error?: string };
   if (!response.ok) throw new Error(payload.error || `SoloDrop share service returned HTTP ${response.status}.`);

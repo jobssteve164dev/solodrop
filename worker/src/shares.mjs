@@ -56,8 +56,9 @@ async function createShare(request, env, user, registry, origin, claimToken = nu
   const file = form.get('file');
   if (!(file instanceof File) || !file.size) throw new Error('请选择要分享的文件。');
   if (file.size > MAX_SHARE_BYTES) throw new Error('当前支持最大 10 MB 的文件。');
-  const expiry = String(form.get('expiry') || 'week');
-  if (!(expiry in EXPIRY_MS) && !(expiry === 'never' && user)) throw new Error('分享有效期无效。');
+  const expiry = String(form.get('expiry') || (user ? 'week' : 'day'));
+  if (!user && expiry !== 'day') throw new Error('未登录用户只能创建 1 天有效期的分享。');
+  if (user && !(expiry in EXPIRY_MS) && expiry !== 'never') throw new Error('分享有效期无效。');
   const allowDownload = form.get('allowDownload') !== 'no';
   const watermarkText = String(form.get('watermark') || '').trim().slice(0, 60);
   let slug=randomValue(7);

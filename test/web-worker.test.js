@@ -15,7 +15,12 @@ test('web entry lets guests share first and offers registration after success', 
   assert.match(guest, /允许下载原文件/);
   assert.match(guest, /文字水印/);
   assert.doesNotMatch(guest, /先登录后开始分享/);
+  assert.match(guest, /id="expiry" type="hidden" value="day"/);
+  assert.doesNotMatch(guest, /<option value="week"/);
+  assert.doesNotMatch(guest, /<option value="month"/);
   const user = homePage({id:'user-1',email:'user@example.com'});
+  assert.match(user, /<option value="week" selected>/);
+  assert.match(user, /<option value="month">/);
   assert.match(user, /长期保留/);
   assert.match(guest, /favicon\.svg/);
   assert.match(guest, /SoloDrop · A SZLK product/);
@@ -112,7 +117,7 @@ test('R2 shares enforce download preference and render escaped watermarks', asyn
   form.set('file',new File(['hello'],'review.txt',{type:'text/plain'}));
   form.set('allowDownload','no');
   form.set('watermark','Client <review>');
-  form.set('expiry','week');
+  form.set('expiry','day');
   const registryRequests=[];
   const registry={fetch:async(url,options)=>{registryRequests.push({url,options});return new Response('{}');}};
   const created=await createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:form}),{PREVIEWS:bucket},null,registry,'https://drop.szlk.ai','claim-secret');
@@ -129,6 +134,24 @@ test('R2 shares enforce download preference and render escaped watermarks', asyn
   assert.equal(inline.status,200);
   const download=await serveContent(new Request(`https://drop.szlk.ai/api/shares/${slug}/content?download=1`),slug,{PREVIEWS:bucket});
   assert.equal(download.status,403);
+
+  const signedInForm=new FormData();
+  signedInForm.set('file',new File(['hello'],'signed-in.txt',{type:'text/plain'}));
+  signedInForm.set('expiry','month');
+  const signedIn=await createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:signedInForm}),{PREVIEWS:bucket},{id:'user-1',email:'user@example.com'},registry,'https://drop.szlk.ai');
+  const signedInLifetime=new Date(signedIn.expiresAt).getTime()-Date.now();
+  assert.ok(signedInLifetime>29*24*60*60*1000);
+  assert.ok(signedInLifetime<=30*24*60*60*1000);
+});
+
+test('R2 shares reject multi-day lifetimes for guests', async () => {
+  const form=new FormData();
+  form.set('file',new File(['hello'],'review.txt',{type:'text/plain'}));
+  form.set('expiry','week');
+  await assert.rejects(
+    ()=>createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:form}),{},null,{},'https://drop.szlk.ai','claim-secret'),
+    /未登录用户只能创建 1 天有效期/
+  );
 });
 
 test('login claims guest share activity and opens account history', async () => {

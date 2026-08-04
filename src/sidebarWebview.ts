@@ -34,7 +34,7 @@ export function getSidebarHtml(webview: vscode.Webview, extensionUri: vscode.Uri
         <legend>${escapeHtml(text.shareOptions)}</legend>
         <label class="toggle"><input id="allow-download" type="checkbox" checked><span>${escapeHtml(text.allowDownload)}</span></label>
         <label class="option-field"><span>${escapeHtml(text.watermark)}</span><input id="watermark" type="text" maxlength="60" placeholder="${escapeHtml(text.watermarkPlaceholder)}"></label>
-        <label class="option-field"><span>${escapeHtml(text.linkLifetime)}</span><select id="expiry"><option value="day">${escapeHtml(text.oneDay)}</option><option value="week" selected>${escapeHtml(text.sevenDays)}</option><option value="month">${escapeHtml(text.thirtyDays)}</option></select></label>
+        <label class="option-field"><span>${escapeHtml(text.linkLifetime)}</span><input id="expiry" type="hidden" value="day"><strong class="option-value">${escapeHtml(text.oneDay)}</strong></label>
       </fieldset>
       <button id="share" class="primary" type="button" disabled>
         <span class="button-label">${escapeHtml(text.sharePreview)}</span><span class="spinner" aria-hidden="true"></span>

@@ -67,9 +67,9 @@ A successful deployment is not enough. SoloDrop opens the published URL over HTT
 
 ### 🧭 Control how the result is delivered / 控制交付方式
 
-Web shares can hide the original-file download action, add a custom text watermark and expire after 1, 7 or 30 days. Signed-in users can also keep a share until they delete it. Watermarks and hidden downloads guide normal recipient behavior; they are not presented as DRM.
+Guest shares expire after 1 day. Signed-in users can choose 1, 7 or 30 days, or keep a share until they delete it. Web shares can also hide the original-file download action and add a custom text watermark. Watermarks and hidden downloads guide normal recipient behavior; they are not presented as DRM.
 
-网页分享可以隐藏原文件下载入口、添加自定义文字水印，并选择 1 天、7 天或 30 天有效期。登录用户还可以长期保留，直到主动删除。水印与隐藏下载用于约束常规接收行为，不会被宣传成 DRM。
+未登录分享固定为 1 天有效期。登录用户可选择 1 天、7 天、30 天，或长期保留直到主动删除。网页分享还可以隐藏原文件下载入口、添加自定义文字水印。水印与隐藏下载用于约束常规接收行为，不会被宣传成 DRM。
 
 ### 🔗 Send a clean short link / 分享更简洁的短链接
 
@@ -85,9 +85,9 @@ SoloDrop 会在产物之后增加一个统一、克制的产品行动入口。�
 
 ### 🌍 Start now, sign in when you need more / 无需登录也能开始
 
-The website and VS Code extension use the same managed sharing service. Before sharing, choose a 1, 7 or 30-day lifetime, add an optional text watermark and decide whether to show the original-file download action.
+The website and VS Code extension use the same managed sharing service. Guest shares last 1 day; signed-in website users can choose additional lifetimes. Before sharing, you can also add an optional text watermark and decide whether to show the original-file download action.
 
-官网与 VS Code 插件使用同一套分享服务。分享前可以选择保留 1 天、7 天或 30 天，按需添加文字水印，并决定是否显示原文件下载入口。
+官网与 VS Code 插件使用同一套分享服务。未登录分享固定保留 1 天；官网登录用户可选择更多有效期。分享前还可以按需添加文字水印，并决定是否显示原文件下载入口。
 
 ## Quick start / 60 秒开始分享
 

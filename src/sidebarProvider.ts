@@ -65,7 +65,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     if (selected?.[0]) await this.select(selected[0].fsPath);
   }
 
-  async shareSelection(options: ShareOptions = { allowDownload: true, watermark: '', expiry: 'week' }): Promise<void> {
+  async shareSelection(options: ShareOptions = { allowDownload: true, watermark: '', expiry: 'day' }): Promise<void> {
     if (!this.selection) {
       await this.refreshFromActiveEditor();
       if (!this.selection) return;
