@@ -51,7 +51,7 @@ test('does not expose platform-owned share-page actions to plugin users', () => 
   assert.doesNotMatch(script, /ctaLabel|ctaUrl|setCta|ctaLoaded/);
 });
 
-test('exposes the website share controls and sends them through every share entry', () => {
+test('exposes guest share controls with a fixed one-day lifetime', () => {
   const webview = fs.readFileSync(path.join(root, 'src', 'sidebarWebview.ts'), 'utf8');
   const provider = fs.readFileSync(path.join(root, 'src', 'sidebarProvider.ts'), 'utf8');
   const script = fs.readFileSync(path.join(root, 'resources', 'sidebar.js'), 'utf8');
@@ -60,8 +60,8 @@ test('exposes the website share controls and sends them through every share entr
   assert.match(webview, /id="watermark"/);
   assert.match(webview, /id="expiry"/);
   assert.match(webview, /value="day"/);
-  assert.match(webview, /value="week"/);
-  assert.match(webview, /value="month"/);
+  assert.doesNotMatch(webview, /value="week"/);
+  assert.doesNotMatch(webview, /value="month"/);
   assert.match(script, /function shareOptions\(\)/);
   assert.match(script, /post\('share', \{ options: shareOptions\(\) \}\)/);
   assert.match(script, /post\('dropUri', \{ uri, options: shareOptions\(\) \}\)/);

@@ -5,7 +5,7 @@ const path = require('node:path');
 const test = require('node:test');
 const { createWebShare } = require('../out/webShareService.js');
 
-test('sends download, watermark and lifetime controls to the managed website share service', async () => {
+test('sends download and watermark controls with a fixed one-day guest lifetime', async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'solodrop-web-share-test-'));
   const filePath = path.join(directory, 'review.txt');
   fs.writeFileSync(filePath, 'hello');
@@ -23,7 +23,7 @@ test('sends download, watermark and lifetime controls to the managed website sha
     assert.equal(request.url,'https://drop.szlk.ai/api/shares');
     assert.equal(request.options.body.get('allowDownload'),'no');
     assert.equal(request.options.body.get('watermark'),'Client review');
-    assert.equal(request.options.body.get('expiry'),'month');
+    assert.equal(request.options.body.get('expiry'),'day');
     assert.equal(result.shortUrl,'https://drop.szlk.ai/Abc2345');
   } finally {
     fs.unlinkSync(filePath);
