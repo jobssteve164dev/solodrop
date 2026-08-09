@@ -156,7 +156,12 @@ test('R2 shares reject multi-day lifetimes for guests', async () => {
 
 test('login claims guest share activity and opens account history', async () => {
   const originalFetch=globalThis.fetch;
-  globalThis.fetch=async()=>new Response(JSON.stringify({data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
+  const passportRequests=[];
+  globalThis.fetch=async(url,options)=>{
+    passportRequests.push({url,options});
+    if(url==='https://passport.szlk.ai/api/v1/passport/link') return new Response(JSON.stringify({ok:true,data:{linked:true}}),{headers:{'content-type':'application/json'}});
+    return new Response(JSON.stringify({data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
+  };
   const requests=[];
   const registry={fetch:async(url,options={})=>{
     requests.push({url,options});
@@ -168,8 +173,62 @@ test('login claims guest share activity and opens account history', async () => 
     const response=await handleAuth(request,{SZLK_PASSPORT_SECRET:'secret'},registry,'https://drop.szlk.ai');
     assert.equal(response.status,303);
     assert.equal(response.headers.get('location'),'/account');
+    assert.deepEqual(passportRequests.map(({url})=>url),[
+      'https://passport.szlk.ai/api/v1/auth/login',
+      'https://passport.szlk.ai/api/v1/passport/link'
+    ]);
+    assert.deepEqual(JSON.parse(passportRequests[1].options.body),{
+      email:'user@example.com',
+      product:'solodrop',
+      productUid:'user-1',
+      metadata:{integration:'solodrop_headless_auth'}
+    });
     const claim=requests.find(({url})=>url==='https://registry/claim-activities');
     assert.equal(claim.options.headers['x-claim-token'],'claim-secret');
     assert.match(response.headers.get('set-cookie'),/solodrop_session=/);
+  } finally { globalThis.fetch=originalFetch; }
+});
+
+test('login does not create a local session when Passport product linking fails', async () => {
+  const originalFetch=globalThis.fetch;
+  globalThis.fetch=async(url)=>{
+    if(url==='https://passport.szlk.ai/api/v1/passport/link') return new Response(JSON.stringify({ok:false,error:{message:'Identity conflict'}}),{status:409,headers:{'content-type':'application/json'}});
+    return new Response(JSON.stringify({data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
+  };
+  const requests=[];
+  const registry={fetch:async(url,options={})=>{requests.push({url,options}); return new Response('{}',{status:201});}};
+  try {
+    const response=await handleAuth(new Request('https://drop.szlk.ai/api/auth/login',{method:'POST',body:new URLSearchParams({email:'user@example.com',password:'password1'})}),{SZLK_PASSPORT_SECRET:'secret'},registry,'https://drop.szlk.ai');
+    assert.equal(response.status,303);
+    assert.match(response.headers.get('location'),/^\/login\?error=Identity%20conflict$/);
+    assert.equal(requests.some(({url})=>url==='https://registry/session'),false);
+    assert.equal(response.headers.has('set-cookie'),false);
+  } finally { globalThis.fetch=originalFetch; }
+});
+
+test('email verification links the verified Passport identity before reporting success', async () => {
+  const originalFetch=globalThis.fetch;
+  const passportRequests=[];
+  globalThis.fetch=async(url,options)=>{
+    passportRequests.push({url,options});
+    if(url==='https://passport.szlk.ai/api/v1/auth/verify-email') {
+      return new Response(JSON.stringify({data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
+    }
+    assert.equal(url,'https://passport.szlk.ai/api/v1/passport/link');
+    return new Response(JSON.stringify({ok:true,data:{linked:true}}),{headers:{'content-type':'application/json'}});
+  };
+  try {
+    const response=await handleAuth(
+      new Request('https://drop.szlk.ai/api/auth/verify-email',{method:'POST',body:new URLSearchParams({token:'verification-token'})}),
+      {SZLK_PASSPORT_SECRET:'secret'},
+      {fetch:async()=>new Response('{}')},
+      'https://drop.szlk.ai'
+    );
+    assert.equal(response.status,303);
+    assert.equal(response.headers.get('location'),'/login?notice=verified');
+    assert.deepEqual(passportRequests.map(({url})=>url),[
+      'https://passport.szlk.ai/api/v1/auth/verify-email',
+      'https://passport.szlk.ai/api/v1/passport/link'
+    ]);
   } finally { globalThis.fetch=originalFetch; }
 });

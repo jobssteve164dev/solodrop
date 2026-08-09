@@ -17,7 +17,7 @@ async function passport(env, path, body) {
     method: 'POST', headers: {'content-type':'application/json','x-szlk-product':'solodrop','x-szlk-secret':env.SZLK_PASSPORT_SECRET}, body: JSON.stringify(body)
   });
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok || payload.success === false) throw new Error(payload.error?.message || payload.message || 'Account request failed.');
+  if (!response.ok || payload.ok === false || payload.success === false) throw new Error(payload.error?.message || payload.message || 'Account request failed.');
   return payload.data || payload.result || payload;
 }
 
@@ -53,6 +53,12 @@ async function handleAuth(request, env, registry, origin) {
     if (mode === 'login') {
       const data = await passport(env, '/api/v1/auth/login', body);
       if (data.needsEmailVerification || data.user?.emailVerified === false) return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=verify-first`}});
+      await passport(env, '/api/v1/passport/link', {
+        email:data.user?.email,
+        product:'solodrop',
+        productUid:data.user?.id,
+        metadata:{integration:'solodrop_headless_auth'}
+      });
       const cookie = await establishSession(data.user, registry);
       const claimToken=parseCookie(request,ACTIVITY_CLAIM_COOKIE);
       let claimed=0, claimCompleted=false;
@@ -70,7 +76,13 @@ async function handleAuth(request, env, registry, origin) {
       return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=reset-sent`}});
     }
     if (mode === 'verify-email') {
-      await passport(env, '/api/v1/auth/verify-email', {token:body.token});
+      const data = await passport(env, '/api/v1/auth/verify-email', {token:body.token});
+      await passport(env, '/api/v1/passport/link', {
+        email:data.user?.email,
+        product:'solodrop',
+        productUid:data.user?.id,
+        metadata:{integration:'solodrop_headless_auth'}
+      });
       return new Response(null,{status:303,headers:{location:`${prefix}/login?notice=verified`}});
     }
     if (mode === 'reset-password') {
