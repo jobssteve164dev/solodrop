@@ -8,3 +8,6 @@ worker/.wrangler/
 .env
 .env.*
 !.env.example
+
+# SoloMap runtime state
+/.solopreneur/
