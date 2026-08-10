@@ -2,6 +2,7 @@ import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
+import QRCode from 'qrcode';
 import { describeArtifact, formatBytes, scanArtifact } from './artifact';
 import { getSidebarHtml } from './sidebarWebview';
 import { format, resolveLocale, strings } from './i18n';
@@ -29,6 +30,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'solodrop.sidebar';
   private view?: vscode.WebviewView;
   private selection?: ArtifactSelection;
+  private shareInFlight = false;
 
   constructor(
     private readonly context: vscode.ExtensionContext,
@@ -66,6 +68,18 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
   }
 
   async shareSelection(options: ShareOptions = { allowDownload: true, watermark: '', expiry: 'day' }): Promise<void> {
+    if (this.shareInFlight) return;
+    this.shareInFlight = true;
+    this.post({ command: 'shareStarted' });
+    try {
+      await this.performShareSelection(options);
+    } finally {
+      this.shareInFlight = false;
+      this.post({ command: 'shareCancelled' });
+    }
+  }
+
+  private async performShareSelection(options: ShareOptions): Promise<void> {
     if (!this.selection) {
       await this.refreshFromActiveEditor();
       if (!this.selection) return;
@@ -91,7 +105,6 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
       if (confirmation !== text.shareAction) return;
     }
 
-    this.post({ command: 'shareStarted' });
     try {
       const record = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: format(text.shareTitle, { name: artifact.name }), cancellable: false }, async (progress) => {
         progress.report({ message: text.publishing });
@@ -114,7 +127,8 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         const { sourcePath: _sourcePath, managementToken: _managementToken, originUrl: _originUrl, ...publicRecord } = next;
         return publicRecord;
       });
-      this.post({ command: 'shareCompleted', record, records: this.clientHistory() });
+      const qrDataUrl = await QRCode.toDataURL(record.previewUrl, { margin: 1, width: 456, errorCorrectionLevel: 'M' });
+      this.post({ command: 'shareCompleted', record, records: this.clientHistory(), qrDataUrl });
       vscode.window.showInformationMessage(format(text.readyMessage, { name: artifact.name }), text.openPreview).then((choice) => {
         if (choice === text.openPreview) vscode.env.openExternal(vscode.Uri.parse(record.previewUrl));
       });
@@ -205,6 +219,16 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
       }
       case 'open': if (message.url) await vscode.env.openExternal(vscode.Uri.parse(message.url)); break;
       case 'copy': if (message.url) await vscode.env.clipboard.writeText(message.url); break;
+      case 'saveCard': {
+        if (!message.name || !message.bytes) break;
+        const baseName = path.basename(message.name, path.extname(message.name)).replace(/[\\/:*?"<>|]/g, '-');
+        const destination = await vscode.window.showSaveDialog({ defaultUri: vscode.Uri.file(`${baseName || 'solodrop'}-share-card.png`), filters: { PNG: ['png'] } });
+        if (destination) {
+          await vscode.workspace.fs.writeFile(destination, new Uint8Array(message.bytes));
+          void vscode.window.showInformationMessage(strings().shareCardSaved);
+        }
+        break;
+      }
     }
   }
 

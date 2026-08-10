@@ -47,6 +47,7 @@ export function getSidebarHtml(webview: vscode.Webview, extensionUri: vscode.Uri
       <div class="result-mark" aria-hidden="true">✓</div>
       <div><h2 id="result-heading">${escapeHtml(text.linkCopied)}</h2><p id="result-meta"></p></div>
       <div class="result-actions"><button id="open-link" type="button">${escapeHtml(text.open)}</button><button id="copy-link" type="button">${escapeHtml(text.copyAgain)}</button></div>
+      <button id="save-card" class="share-card-button" type="button">${escapeHtml(text.saveShareCard)}</button>
       <button id="claim-link" class="claim hidden" type="button">${escapeHtml(text.keepPreview)}</button>
     </section>
 

@@ -124,6 +124,7 @@
   "devDependencies": {
     "@aiden0z/pptx-renderer": "^1.2.4",
     "@types/node": "^20.17.0",
+    "@types/qrcode": "^1.5.5",
     "@types/vscode": "^1.85.0",
     "@vscode/vsce": "^3.6.0",
     "docx-preview": "^0.4.0",
@@ -137,5 +138,8 @@
     "js-yaml": "4.3.1",
     "sharp": "0.35.3",
     "undici": "7.29.0"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
   }
 }

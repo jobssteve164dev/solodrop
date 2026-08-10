@@ -144,6 +144,13 @@ test('R2 shares enforce download preference and render escaped watermarks', asyn
   assert.ok(signedInLifetime<=30*24*60*60*1000);
 });
 
+test('R2 shares render Markdown content instead of the generic file fallback', () => {
+  const page=previewPage({slug:'Abc2345',name:'result.md',type:'application/octet-stream',allowDownload:true,watermark:''});
+  assert.match(page,/id="markdown-preview"/);
+  assert.match(page,/api\/shares\/Abc2345\/content/);
+  assert.doesNotMatch(page,/available from its share page/);
+});
+
 test('R2 shares reject multi-day lifetimes for guests', async () => {
   const form=new FormData();
   form.set('file',new File(['hello'],'review.txt',{type:'text/plain'}));

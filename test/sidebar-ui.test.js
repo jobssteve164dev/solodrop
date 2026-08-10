@@ -68,3 +68,17 @@ test('exposes guest share controls with a fixed one-day lifetime', () => {
   assert.match(script, /command: 'dropFile',[^\n]+options: shareOptions\(\)/);
   assert.match(provider, /createWebShare\(artifact, options\)/);
 });
+
+test('shows immediate share progress, prevents duplicate share jobs and saves an OG-sized PNG card', () => {
+  const webview = fs.readFileSync(path.join(root, 'src', 'sidebarWebview.ts'), 'utf8');
+  const provider = fs.readFileSync(path.join(root, 'src', 'sidebarProvider.ts'), 'utf8');
+  const script = fs.readFileSync(path.join(root, 'resources', 'sidebar.js'), 'utf8');
+
+  assert.match(script, /setLoading\(true\); post\('share'/);
+  assert.match(provider, /if \(this\.shareInFlight\) return/);
+  assert.match(provider, /QRCode\.toDataURL\(record\.previewUrl/);
+  assert.match(webview, /id="save-card"/);
+  assert.match(script, /canvas\.width = 1200; canvas\.height = 630/);
+  assert.match(script, /canvas\.toBlob\(resolve, 'image\/png'\)/);
+  assert.match(provider, /case 'saveCard'/);
+});

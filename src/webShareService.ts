@@ -1,4 +1,5 @@
 import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { ArtifactSelection, ShareOptions } from './types';
 
 const SERVICE_URL = 'https://drop.szlk.ai';
@@ -10,10 +11,20 @@ interface WebShareResult {
   expiresAt: string;
 }
 
+const contentTypes: Record<string, string> = {
+  '.md': 'text/markdown', '.markdown': 'text/markdown', '.txt': 'text/plain', '.csv': 'text/csv',
+  '.json': 'application/json', '.js': 'text/javascript', '.ts': 'text/plain', '.html': 'text/html',
+  '.css': 'text/css', '.xml': 'application/xml', '.svg': 'image/svg+xml', '.png': 'image/png',
+  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.webp': 'image/webp',
+  '.pdf': 'application/pdf', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+};
+
 export async function createWebShare(artifact: ArtifactSelection, options: ShareOptions, fetcher: typeof fetch = fetch): Promise<WebShareResult> {
   const bytes = await fs.readFile(artifact.path);
   const form = new FormData();
-  form.set('file', new File([bytes], artifact.name));
+  const contentType = contentTypes[path.extname(artifact.name).toLowerCase()] || 'application/octet-stream';
+  form.set('file', new File([bytes], artifact.name, { type: contentType }));
   form.set('allowDownload', options.allowDownload ? 'yes' : 'no');
   form.set('watermark', options.watermark.trim().slice(0, 60));
   form.set('expiry', 'day');

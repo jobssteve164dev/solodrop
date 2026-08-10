@@ -52,7 +52,7 @@ h1, h2, p { margin: 0; }
 .option-field input::placeholder { color: var(--vscode-input-placeholderForeground); }
 .option-value { min-height: 30px; display: flex; align-items: center; color: var(--vscode-foreground); font-size: 10px; }
 
-.primary, .secondary, .result-actions button, .claim {
+.primary, .secondary, .result-actions button, .claim, .share-card-button {
   width: 100%; min-height: 34px; border-radius: 7px; border: 1px solid transparent; cursor: pointer;
   transition: background-color 160ms ease, border-color 160ms ease, opacity 160ms ease;
 }
@@ -77,6 +77,8 @@ button:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-off
 .result-actions { clear: both; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding-top: 8px; }
 .result-actions button { background: transparent; color: var(--vscode-foreground); border-color: var(--border); }
 .claim { margin-top: 6px; background: transparent; color: var(--brand); border-color: color-mix(in srgb, var(--brand) 55%, var(--border)); }
+.share-card-button { margin-top: 6px; background: var(--brand-strong); color: var(--brand-on); font-weight: 650; }
+.share-card-button:hover { background: color-mix(in srgb, var(--brand-strong) 88%, white 12%); }
 
 .recent { margin-top: 14px; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 8px; }

@@ -11,6 +11,7 @@
     resultMeta: document.getElementById('result-meta'),
     open: document.getElementById('open-link'),
     copy: document.getElementById('copy-link'),
+    saveCard: document.getElementById('save-card'),
     claim: document.getElementById('claim-link'),
     refresh: document.getElementById('refresh'),
     language: document.getElementById('language'),
@@ -21,6 +22,7 @@
   };
   elements.dropZone = document.getElementById('drop-zone');
   let latestRecord = null;
+  let latestQr = null;
 
   function shareOptions() {
     return { allowDownload: elements.allowDownload.checked, watermark: elements.watermark.value, expiry: elements.expiry.value };
@@ -74,11 +76,31 @@
     });
   }
   elements.choose.addEventListener('click', () => post('choose'));
-  elements.share.addEventListener('click', () => post('share', { options: shareOptions() }));
+  elements.share.addEventListener('click', () => { setLoading(true); post('share', { options: shareOptions() }); });
   elements.refresh.addEventListener('click', () => post('refresh'));
   elements.language.addEventListener('click', () => post('setLanguage'));
   elements.open.addEventListener('click', () => latestRecord && post('open', { url: latestRecord.previewUrl }));
   elements.copy.addEventListener('click', () => latestRecord && post('copy', { url: latestRecord.previewUrl }));
+  elements.saveCard.addEventListener('click', async () => {
+    if (!latestRecord || !latestQr) return;
+    const canvas = document.createElement('canvas'); canvas.width = 1200; canvas.height = 630;
+    const context = canvas.getContext('2d');
+    const gradient = context.createLinearGradient(0, 0, 1200, 630); gradient.addColorStop(0, '#17152d'); gradient.addColorStop(.58, '#312b72'); gradient.addColorStop(1, '#695cff');
+    context.fillStyle = gradient; context.fillRect(0, 0, 1200, 630);
+    context.fillStyle = 'rgba(255,255,255,.08)'; context.beginPath(); context.arc(1040, 50, 300, 0, Math.PI * 2); context.fill();
+    context.fillStyle = '#766bff'; context.beginPath(); context.roundRect(72, 66, 72, 72, 20); context.fill();
+    context.fillStyle = '#fff'; context.font = '800 38px system-ui'; context.textAlign = 'center'; context.fillText('S', 108, 116);
+    context.textAlign = 'left'; context.font = '750 34px system-ui'; context.fillText('SoloDrop', 166, 113);
+    context.fillStyle = '#c7c3e5'; context.font = '500 24px system-ui'; context.fillText('Shared with SoloDrop', 74, 205);
+    context.fillStyle = '#fff'; context.font = '750 54px system-ui';
+    const fileName = latestRecord.name.length > 28 ? `${latestRecord.name.slice(0, 27)}…` : latestRecord.name; context.fillText(fileName, 74, 282);
+    context.fillStyle = '#d8d5ef'; context.font = '500 25px system-ui'; context.fillText(latestRecord.previewUrl, 74, 356);
+    context.fillStyle = '#aaa4d2'; context.font = '500 21px system-ui'; context.fillText('Scan to open the shared preview', 74, 520);
+    const qr = new Image(); qr.src = latestQr; await qr.decode();
+    context.fillStyle = '#fff'; context.beginPath(); context.roundRect(850, 145, 278, 278, 24); context.fill(); context.drawImage(qr, 875, 170, 228, 228);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    if (blob) post('saveCard', { name: latestRecord.name, bytes: await blob.arrayBuffer() });
+  });
   elements.claim.addEventListener('click', () => latestRecord?.claimUrl && post('open', { url: latestRecord.claimUrl }));
   let dragDepth = 0;
   elements.dropZone.addEventListener('dragenter', (event) => { event.preventDefault(); dragDepth += 1; elements.dropZone.classList.add('dragging'); });
@@ -109,9 +131,10 @@
     if (message.command === 'selectionChanged') renderSelection(message.selection);
     if (message.command === 'historyLoaded') renderHistory(message.records);
     if (message.command === 'shareStarted') setLoading(true);
+    if (message.command === 'shareCancelled') setLoading(false);
     if (message.command === 'shareFailed') { setLoading(false); elements.status.textContent = message.message; }
     if (message.command === 'shareCompleted') {
-      setLoading(false); latestRecord = message.record; elements.result.classList.remove('hidden');
+      setLoading(false); latestRecord = message.record; latestQr = message.qrDataUrl; elements.result.classList.remove('hidden');
       elements.resultMeta.textContent = message.record.managed ? (message.record.temporary ? text.managedTemporaryMeta : text.managedPersistentMeta) : text.shortLinkFallback;
       elements.claim.classList.toggle('hidden', !message.record.claimUrl);
       renderHistory(message.records || [message.record]);

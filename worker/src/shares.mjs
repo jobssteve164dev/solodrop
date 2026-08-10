@@ -33,7 +33,8 @@ function previewBody(meta) {
   if (meta.type.startsWith('image/')) return `<img class="media" src="${content}" alt="${name}">`;
   if (meta.type === 'application/pdf' || extension === '.pdf') return `<embed class="pdf" src="${content}" type="application/pdf"><p><a class="open-pdf" href="${content}">Open the PDF</a></p>`;
   if (meta.type === 'text/html' || ['.html','.htm'].includes(extension)) return `<iframe class="pdf" sandbox="allow-scripts" src="${content}" title="${name}"></iframe>`;
-  if (meta.type.startsWith('text/') || /json|javascript|xml/.test(meta.type)) return `<pre id="text-preview"><code></code></pre><script>fetch(${JSON.stringify(content)}).then(r=>r.text()).then(value=>document.querySelector('#text-preview code').textContent=value)<\/script>`;
+  if (['.md','.markdown'].includes(extension)) return `<article id="markdown-preview" class="markdown-preview"></article><script>function e(v){return v.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}function m(v){return e(v).replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>').replace(/\x60\x60\x60([\\s\\S]*?)\x60\x60\x60/g,'<pre><code>$1</code></pre>').replace(/\x60([^\x60]+)\x60/g,'<code>$1</code>').replace(/\\*\\*([^*]+)\\*\\*/g,'<strong>$1</strong>').replace(/^- (.+)$/gm,'<li>$1</li>').split(/\\n{2,}/).map(b=>/^(?:<h\\d|<pre|<li)/.test(b)?b:'<p>'+b.replace(/\\n/g,'<br>')+'</p>').join('')}fetch(${JSON.stringify(content)}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}).then(v=>document.querySelector('#markdown-preview').innerHTML=m(v)).catch(()=>document.querySelector('#markdown-preview').textContent='Unable to load this preview.')<\/script>`;
+  if (meta.type.startsWith('text/') || /json|javascript|xml/.test(meta.type) || ['.md','.markdown','.txt','.csv','.yml','.yaml','.toml','.sql','.sh','.py','.go','.rs','.java','.c','.cpp','.h','.ts','.tsx'].includes(extension)) return `<pre id="text-preview"><code></code></pre><script>fetch(${JSON.stringify(content)}).then(r=>r.text()).then(value=>document.querySelector('#text-preview code').textContent=value)<\/script>`;
   return `<div class="file-fallback"><h1>${name}</h1><p>This file is available from its share page.</p></div>`;
 }
 
@@ -66,7 +67,8 @@ async function createShare(request, env, user, registry, origin, claimToken = nu
   if(await env.PREVIEWS.head(metadataKey(slug)))throw new Error('暂时无法生成唯一链接，请重试。');
   const managementToken = randomValue(28), now = Date.now();
   const expiresAt = expiry === 'never' ? null : now + EXPIRY_MS[expiry];
-  const meta = { slug, name: safeName(file.name), type: file.type || 'application/octet-stream', size: file.size, allowDownload, watermark: watermarkText, createdAt: now, expiresAt, ownerId: user?.id || null, managementHash: await sha256(managementToken) };
+  const inferredText = /\.(?:md|markdown|txt|csv|yml|yaml|toml|sql|sh|py|go|rs|java|c|cpp|h|ts|tsx)$/i.test(file.name);
+  const meta = { slug, name: safeName(file.name), type: file.type || (inferredText ? 'text/plain' : 'application/octet-stream'), size: file.size, allowDownload, watermark: watermarkText, createdAt: now, expiresAt, ownerId: user?.id || null, managementHash: await sha256(managementToken) };
   await env.PREVIEWS.put(contentKey(slug), file.stream(), { httpMetadata: { contentType: meta.type } });
   try {
     await env.PREVIEWS.put(metadataKey(slug), JSON.stringify(meta), { httpMetadata: { contentType: 'application/json' } });

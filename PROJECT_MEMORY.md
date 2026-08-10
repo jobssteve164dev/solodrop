@@ -29,6 +29,8 @@ This file stores stable project facts future agents should reuse. Do not paste r
 - Web uploads are stored under separate R2 metadata and content keys. Metadata stores only a hash of the deletion token. Expired content returns `410` immediately and is physically removed by the hourly cleanup trigger.
 - Hiding the download action is a presentation policy, not DRM: browser preview still requires readable content bytes. Custom text watermarks are non-interactive ownership/review overlays and must never block the artifact.
 - Public and claim URLs remain separate; link-management tokens stay in extension state and are not sent to the sidebar Webview.
+- Extension shares preserve a renderable content type for known file extensions. Markdown is also recognized server-side by filename so older or third-party clients cannot fall into the generic binary-file preview.
+- A sidebar share is single-flight from the first click through confirmation and publishing. After success, the extension can generate a 1200×630 PNG share card locally with the SoloDrop name, shared filename, public URL and QR code; saving the card never uploads another asset.
 - Legacy plugin-side temporary deployment retries only Cloudflare temporary-account provisioning failures with explicit 429/502/503/504 evidence. The current sidebar share action does not use this Wrangler path.
 - A successful Wrangler deploy can precede global `workers.dev` route availability. Public-preview verification allows about 60 seconds of progressive propagation and cache-busts each probe so a transient edge 404 does not falsely fail an otherwise successful share; the link is still accepted only after a real 2xx response.
 
