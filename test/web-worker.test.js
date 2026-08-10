@@ -110,7 +110,7 @@ test('R2 shares enforce download preference and render escaped watermarks', asyn
   const bucket={
     async head(key){return objects.has(key)?{}:null;},
     async put(key,value,options={}){objects.set(key,{bytes:new Uint8Array(await new Response(value).arrayBuffer()),type:options.httpMetadata?.contentType||'application/octet-stream'});},
-    async get(key){const item=objects.get(key);if(!item)return null;return {body:item.bytes,httpEtag:'"test"',range:null,async json(){return JSON.parse(new TextDecoder().decode(item.bytes));},writeHttpMetadata(headers){headers.set('content-type',item.type);}};},
+    async get(key,options){const item=objects.get(key);if(!item)return null;const requested=Boolean(options?.range);return {body:item.bytes,httpEtag:'"test"',size:item.bytes.length,range:requested?{offset:0,length:item.bytes.length}:{offset:0,length:item.bytes.length},async json(){return JSON.parse(new TextDecoder().decode(item.bytes));},writeHttpMetadata(headers){headers.set('content-type',item.type);}};},
     async delete(keys){for(const key of Array.isArray(keys)?keys:[keys])objects.delete(key);}
   };
   const form=new FormData();
@@ -132,6 +132,8 @@ test('R2 shares enforce download preference and render escaped watermarks', asyn
   assert.equal(registryRequests[0].options.headers['x-claim-token'],'claim-secret');
   const inline=await serveContent(new Request(`https://drop.szlk.ai/api/shares/${slug}/content`),slug,{PREVIEWS:bucket});
   assert.equal(inline.status,200);
+  assert.equal(inline.headers.get('accept-ranges'),'bytes');
+  assert.equal(inline.headers.has('content-range'),false);
   const download=await serveContent(new Request(`https://drop.szlk.ai/api/shares/${slug}/content?download=1`),slug,{PREVIEWS:bucket});
   assert.equal(download.status,403);
 
@@ -142,6 +144,17 @@ test('R2 shares enforce download preference and render escaped watermarks', asyn
   const signedInLifetime=new Date(signedIn.expiresAt).getTime()-Date.now();
   assert.ok(signedInLifetime>29*24*60*60*1000);
   assert.ok(signedInLifetime<=30*24*60*60*1000);
+});
+
+test('R2 shares return valid partial-content headers only for an actual Range request', async () => {
+  const metadata={slug:'Abc2345',name:'report.md',type:'text/markdown',allowDownload:true,expiresAt:Date.now()+60_000};
+  const bucket={async get(key,options){
+    if(key==='shares/Abc2345.json')return {async json(){return metadata;}};
+    assert.ok(options?.range); return {body:new TextEncoder().encode('hello'),httpEtag:'"test"',size:10,range:{offset:0,length:5},writeHttpMetadata(headers){headers.set('content-type','text/markdown');}};
+  }};
+  const response=await serveContent(new Request('https://drop.szlk.ai/api/shares/Abc2345/content',{headers:{range:'bytes=0-4'}}),'Abc2345',{PREVIEWS:bucket});
+  assert.equal(response.status,206);
+  assert.equal(response.headers.get('content-range'),'bytes 0-4/10');
 });
 
 test('R2 shares render Markdown content instead of the generic file fallback', () => {

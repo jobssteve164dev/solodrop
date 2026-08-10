@@ -99,7 +99,8 @@ async function serveContent(request, slug, env) {
   if (meta.expiresAt && Date.now() >= meta.expiresAt) return new Response('This share has expired.', { status: 410 });
   const download = new URL(request.url).searchParams.get('download') === '1';
   if (download && !meta.allowDownload) return new Response('Downloads are disabled for this share.', { status: 403 });
-  const object = await env.PREVIEWS.get(contentKey(slug), { range: request.headers });
+  const requestedRange = request.headers.has('range');
+  const object = await env.PREVIEWS.get(contentKey(slug), requestedRange ? { range: request.headers } : undefined);
   if (!object) return new Response('Not found.', { status: 404 });
   const headers = new Headers();
   object.writeHttpMetadata(headers);
@@ -107,7 +108,11 @@ async function serveContent(request, slug, env) {
   headers.set('cache-control', 'private,max-age=300');
   headers.set('content-disposition', `${download ? 'attachment' : 'inline'}; filename*=UTF-8''${encodeURIComponent(meta.name)}`);
   headers.set('x-content-type-options', 'nosniff');
-  return new Response(object.body, { status: object.range ? 206 : 200, headers });
+  headers.set('accept-ranges', 'bytes');
+  if (requestedRange && object.range && Number.isInteger(object.range.offset) && Number.isInteger(object.range.length)) {
+    headers.set('content-range', `bytes ${object.range.offset}-${object.range.offset + object.range.length - 1}/${object.size}`);
+  }
+  return new Response(object.body, { status: requestedRange && object.range ? 206 : 200, headers });
 }
 
 async function deleteShare(request, slug, env, user = null) {

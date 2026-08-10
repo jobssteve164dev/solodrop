@@ -31,6 +31,7 @@ This file stores stable project facts future agents should reuse. Do not paste r
 - Public and claim URLs remain separate; link-management tokens stay in extension state and are not sent to the sidebar Webview.
 - Extension shares preserve a renderable content type for known file extensions. Markdown is also recognized server-side by filename so older or third-party clients cannot fall into the generic binary-file preview.
 - A sidebar share is single-flight from the first click through confirmation and publishing. After success, the extension can generate a 1200×630 PNG share card locally with the SoloDrop name, shared filename, public URL and QR code; saving the card never uploads another asset.
+- R2 content responses use `206 Partial Content` only when the client actually sends a Range request, and then include a valid `Content-Range`; full preview and download responses remain `200` even if the R2 object exposes full-object range metadata.
 - Legacy plugin-side temporary deployment retries only Cloudflare temporary-account provisioning failures with explicit 429/502/503/504 evidence. The current sidebar share action does not use this Wrangler path.
 - A successful Wrangler deploy can precede global `workers.dev` route availability. Public-preview verification allows about 60 seconds of progressive propagation and cache-busts each probe so a transient edge 404 does not falsely fail an otherwise successful share; the link is still accepted only after a real 2xx response.
 
