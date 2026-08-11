@@ -95,9 +95,11 @@
     context.fillStyle = '#fff'; context.font = '750 54px system-ui';
     const fileName = latestRecord.name.length > 28 ? `${latestRecord.name.slice(0, 27)}…` : latestRecord.name; context.fillText(fileName, 74, 282);
     context.fillStyle = '#d8d5ef'; context.font = '500 25px system-ui'; context.fillText(latestRecord.previewUrl, 74, 356);
-    context.fillStyle = '#aaa4d2'; context.font = '500 21px system-ui'; context.fillText('Scan to open the shared preview', 74, 520);
+    const expiryDate = new Intl.DateTimeFormat(document.documentElement.lang, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(latestRecord.expiresAt));
+    context.fillStyle = '#aaa4d2'; context.font = '500 21px system-ui'; context.fillText(format(text.shareCardExpiresAt, { date: expiryDate }), 74, 520);
     const qr = new Image(); qr.src = latestQr; await qr.decode();
     context.fillStyle = '#fff'; context.beginPath(); context.roundRect(850, 145, 278, 278, 24); context.fill(); context.drawImage(qr, 875, 170, 228, 228);
+    context.fillStyle = '#d8d5ef'; context.font = '600 22px system-ui'; context.textAlign = 'center'; context.fillText(text.shareCardScanHint, 989, 470);
     const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
     if (blob) post('saveCard', { name: latestRecord.name, bytes: await blob.arrayBuffer() });
   });
