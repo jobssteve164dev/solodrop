@@ -79,6 +79,9 @@ test('shows immediate share progress, prevents duplicate share jobs and saves an
   assert.match(provider, /QRCode\.toDataURL\(record\.previewUrl/);
   assert.match(webview, /id="save-card"/);
   assert.match(script, /canvas\.width = 1200; canvas\.height = 630/);
+  assert.match(script, /wrapCanvasText\(context, latestRecord\.name, 720, 2\)/);
+  assert.match(script, /context\.measureText/);
+  assert.doesNotMatch(script, /latestRecord\.name\.length > 28/);
   assert.match(script, /text\.shareCardScanHint/);
   assert.match(script, /format\(text\.shareCardExpiresAt, \{ date: expiryDate \}\)/);
   assert.match(script, /new Intl\.DateTimeFormat\(document\.documentElement\.lang/);

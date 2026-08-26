@@ -49,6 +49,31 @@
     if (seconds < 86400) return format(text.hoursAgo, { count: Math.floor(seconds / 3600) });
     return format(text.daysAgo, { count: Math.floor(seconds / 86400) });
   }
+  function wrapCanvasText(context, value, maxWidth, maxLines) {
+    const remaining = Array.from(value);
+    const lines = [];
+    while (remaining.length > 0 && lines.length < maxLines) {
+      let fit = 0;
+      let lastNaturalBreak = 0;
+      while (fit < remaining.length && context.measureText(remaining.slice(0, fit + 1).join('')).width <= maxWidth) {
+        fit += 1;
+        if (/\s|_|-/.test(remaining[fit - 1])) lastNaturalBreak = fit;
+      }
+      if (fit === remaining.length) {
+        lines.push(remaining.splice(0).join('').trim());
+        break;
+      }
+      const breakAt = lastNaturalBreak >= Math.floor(fit * 0.6) ? lastNaturalBreak : Math.max(1, fit);
+      lines.push(remaining.splice(0, breakAt).join('').trim());
+      while (remaining[0] && /\s/.test(remaining[0])) remaining.shift();
+    }
+    if (remaining.length > 0) {
+      let lastLine = lines[lines.length - 1];
+      while (lastLine && context.measureText(`${lastLine}…`).width > maxWidth) lastLine = Array.from(lastLine).slice(0, -1).join('');
+      lines[lines.length - 1] = `${lastLine}…`;
+    }
+    return lines;
+  }
   function renderHistory(records) {
     elements.history.replaceChildren();
     if (!records || records.length === 0) {
@@ -93,8 +118,9 @@
     context.textAlign = 'left'; context.font = '750 34px system-ui'; context.fillText('SoloDrop', 166, 113);
     context.fillStyle = '#c7c3e5'; context.font = '500 24px system-ui'; context.fillText('Shared with SoloDrop', 74, 205);
     context.fillStyle = '#fff'; context.font = '750 54px system-ui';
-    const fileName = latestRecord.name.length > 28 ? `${latestRecord.name.slice(0, 27)}…` : latestRecord.name; context.fillText(fileName, 74, 282);
-    context.fillStyle = '#d8d5ef'; context.font = '500 25px system-ui'; context.fillText(latestRecord.previewUrl, 74, 356);
+    const fileNameLines = wrapCanvasText(context, latestRecord.name, 720, 2);
+    fileNameLines.forEach((line, index) => context.fillText(line, 74, 282 + (index * 64)));
+    context.fillStyle = '#d8d5ef'; context.font = '500 25px system-ui'; context.fillText(latestRecord.previewUrl, 74, 424);
     const expiryDate = new Intl.DateTimeFormat(document.documentElement.lang, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(latestRecord.expiresAt));
     context.fillStyle = '#aaa4d2'; context.font = '500 21px system-ui'; context.fillText(format(text.shareCardExpiresAt, { date: expiryDate }), 74, 520);
     const qr = new Image(); qr.src = latestQr; await qr.decode();
