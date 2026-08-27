@@ -52,25 +52,48 @@ function previewPage(meta) {
 </style>${selectionProtection}</head><body><header class="top"><div class="brand"><span class="mark">S</span><span class="title">${esc(meta.name)}</span></div>${download}</header><main class="content">${previewBody(meta)}</main>${watermark(meta.watermark)}<aside class="share-actions" data-solodrop-actions hidden aria-label="Shared page actions"></aside><script defer src="/embed.js?v=3"></script></body></html>`;
 }
 
-function expiredPage(locale = 'zh') {
+function shareStatusPage(state = 'expired', locale = 'zh') {
   const en = locale === 'en';
   const home = en ? '/en' : '/';
-  const copy = en ? {
-    lang: 'en',
-    title: 'This share has expired',
-    description: 'The file is no longer available because this link has reached the lifetime chosen by the sender.',
-    recovery: 'Ask the sender to create and send you a new share link.',
-    action: 'Go to SoloDrop'
-  } : {
-    lang: 'zh-CN',
-    title: '这个分享链接已过期',
-    description: '这个链接已超过分享者设置的有效期，文件现在无法继续访问。',
-    recovery: '请联系分享者重新生成并发送一个新的分享链接。',
-    action: '返回 SoloDrop'
-  };
+  const missing = state === 'missing';
+  const copy = missing
+    ? (en ? {
+        lang: 'en',
+        title: 'This share link is unavailable',
+        description: 'The shared file may have expired and been removed, or the link may be incomplete.',
+        recovery: 'Check the link, or ask the sender to create and send you a new one.',
+        action: 'Go to SoloDrop'
+      } : {
+        lang: 'zh-CN',
+        title: '这个分享链接已失效',
+        description: '分享内容可能已到期并完成清理，或者链接地址不完整。',
+        recovery: '请检查链接，或联系分享者重新生成并发送一个新的分享链接。',
+        action: '返回 SoloDrop'
+      })
+    : (en ? {
+        lang: 'en',
+        title: 'This share has expired',
+        description: 'The file is no longer available because this link has reached the lifetime chosen by the sender.',
+        recovery: 'Ask the sender to create and send you a new share link.',
+        action: 'Go to SoloDrop'
+      } : {
+        lang: 'zh-CN',
+        title: '这个分享链接已过期',
+        description: '这个链接已超过分享者设置的有效期，文件现在无法继续访问。',
+        recovery: '请联系分享者重新生成并发送一个新的分享链接。',
+        action: '返回 SoloDrop'
+      });
+  const icon = missing
+    ? '<svg viewBox="0 0 24 24" fill="none"><path d="m9.5 14.5-1 1a3.5 3.5 0 0 1-5-5l2-2a3.5 3.5 0 0 1 4.4-.45M14.5 9.5l1-1a3.5 3.5 0 0 1 5 5l-2 2a3.5 3.5 0 0 1-4.4.45M4.5 4.5l15 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5l3.25 1.85" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   return `<!doctype html><html lang="${copy.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f7fc"><meta name="robots" content="noindex,nofollow"><title>${copy.title} · SoloDrop</title><style>
 :root{font-family:Inter,"Noto Sans SC",ui-sans-serif,system-ui,-apple-system,sans-serif;color:#171724;background:#f7f7fc;--brand:#5046e5;--brand-dark:#3f37c9;--muted:#626274;--line:#e5e5ef;--surface:#fff;--soft:#f0efff}*{box-sizing:border-box}body{margin:0;min-width:320px;min-height:100vh;min-height:100dvh;background:radial-gradient(circle at 50% 15%,#eceaff 0,rgba(236,234,255,0) 38%),#f7f7fc}.page{width:min(calc(100% - 32px),720px);min-height:100vh;min-height:100dvh;margin:auto;padding:32px 0;display:grid;grid-template-rows:auto 1fr auto}.brand{width:max-content;min-height:44px;display:inline-flex;align-items:center;gap:11px;color:#171724;font-size:20px;font-weight:820;letter-spacing:-.02em;text-decoration:none}.brand-mark{width:36px;height:36px;display:block}.state{align-self:center;text-align:center;padding:56px clamp(24px,7vw,64px);background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 70px rgba(31,30,64,.11)}.state-icon{width:72px;height:72px;margin:0 auto 26px;display:grid;place-items:center;color:var(--brand);background:var(--soft);border-radius:22px}.state-icon svg{width:36px;height:36px}.state h1{max-width:560px;margin:0 auto;font-size:clamp(32px,6vw,48px);line-height:1.12;letter-spacing:-.045em}.description{max-width:540px;margin:20px auto 0;color:var(--muted);font-size:17px;line-height:1.7}.recovery{max-width:520px;margin:12px auto 0;color:#3f3f50;font-size:16px;line-height:1.65}.action{min-height:48px;margin-top:30px;padding:0 21px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:var(--brand);color:#fff;font-weight:760;text-decoration:none;transition:background .18s,box-shadow .18s}.action:hover{background:var(--brand-dark);box-shadow:0 10px 28px rgba(80,70,229,.2)}.action:focus-visible,.brand:focus-visible{outline:3px solid #9ca3ff;outline-offset:3px}.footer{padding:26px 0 2px;text-align:center;color:#777789;font-size:13px}@media(max-width:560px){.page{padding:20px 0}.state{padding:44px 22px;border-radius:20px}.state-icon{width:64px;height:64px;border-radius:19px}.description{font-size:16px}.action{width:100%}}@media(prefers-reduced-motion:reduce){.action{transition:none}}@media(prefers-color-scheme:dark){:root{color:#f4f3fb;background:#11111a;--muted:#b9b8c8;--line:#303040;--surface:#1a1a25;--soft:#292744}.brand{color:#f4f3fb}body{background:radial-gradient(circle at 50% 15%,#242146 0,rgba(36,33,70,0) 40%),#11111a}.recovery{color:#d7d6e1}.footer{color:#9998aa}.state{box-shadow:0 24px 70px rgba(0,0,0,.28)}}
-</style></head><body><main class="page"><a class="brand" href="${home}" aria-label="SoloDrop"><svg class="brand-mark" viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="28" fill="#5046e5"/><path d="M64 22c15.5 18.5 27 31.7 27 49.2C91 87 79.2 99 64 99S37 87 37 71.2C37 53.7 48.5 40.5 64 22Z" fill="#fff"/><path d="M49 68.5 64 83l15-14.5M64 48v34" fill="none" stroke="#5046e5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>SoloDrop</span></a><section class="state" aria-labelledby="expired-title"><div class="state-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5l3.25 1.85" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h1 id="expired-title">${copy.title}</h1><p class="description">${copy.description}</p><p class="recovery">${copy.recovery}</p><a class="action" href="${home}">${copy.action}</a></section><footer class="footer">© 2026 SoloDrop · A SZLK product</footer></main></body></html>`;
+</style></head><body><main class="page"><a class="brand" href="${home}" aria-label="SoloDrop"><svg class="brand-mark" viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="28" fill="#5046e5"/><path d="M64 22c15.5 18.5 27 31.7 27 49.2C91 87 79.2 99 64 99S37 87 37 71.2C37 53.7 48.5 40.5 64 22Z" fill="#fff"/><path d="M49 68.5 64 83l15-14.5M64 48v34" fill="none" stroke="#5046e5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>SoloDrop</span></a><section class="state" aria-labelledby="share-status-title"><div class="state-icon" aria-hidden="true">${icon}</div><h1 id="share-status-title">${copy.title}</h1><p class="description">${copy.description}</p><p class="recovery">${copy.recovery}</p><a class="action" href="${home}">${copy.action}</a></section><footer class="footer">© 2026 SoloDrop · A SZLK product</footer></main></body></html>`;
+}
+
+function shareStatusResponse(state, request) {
+  const locale = /^en(?:-|,|;|$)/i.test(request?.headers.get('accept-language') || '') ? 'en' : 'zh';
+  return new Response(shareStatusPage(state, locale), { status: state === 'expired' ? 410 : 404, headers: { 'content-type':'text/html;charset=utf-8', 'cache-control':'no-store', 'content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'", 'x-content-type-options':'nosniff', 'referrer-policy':'no-referrer' } });
 }
 
 async function createShare(request, env, user, registry, origin, claimToken = null) {
@@ -110,10 +133,7 @@ async function createShare(request, env, user, registry, origin, claimToken = nu
 async function serveShare(slug, env, request = null) {
   const meta = await readMetadata(env.PREVIEWS, slug);
   if (!meta) return new Response('Not found.', { status: 404 });
-  if (meta.expiresAt && Date.now() >= meta.expiresAt) {
-    const locale = /^en(?:-|,|;|$)/i.test(request?.headers.get('accept-language') || '') ? 'en' : 'zh';
-    return new Response(expiredPage(locale), { status: 410, headers: { 'content-type':'text/html;charset=utf-8', 'cache-control':'no-store', 'content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'", 'x-content-type-options':'nosniff', 'referrer-policy':'no-referrer' } });
-  }
+  if (meta.expiresAt && Date.now() >= meta.expiresAt) return shareStatusResponse('expired', request);
   return new Response(previewPage(meta), { headers: { 'content-type':'text/html;charset=utf-8', 'cache-control':'no-store', 'content-security-policy':"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; object-src 'self'; frame-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'", 'x-content-type-options':'nosniff', 'referrer-policy':'no-referrer' } });
 }
 
@@ -160,4 +180,4 @@ async function purgeExpiredShares(env) {
   } while (cursor);
 }
 
-export { MAX_SHARE_BYTES, createShare, deleteShare, expiredPage, previewPage, purgeExpiredShares, serveContent, serveShare };
+export { MAX_SHARE_BYTES, createShare, deleteShare, previewPage, purgeExpiredShares, serveContent, serveShare, shareStatusPage, shareStatusResponse };

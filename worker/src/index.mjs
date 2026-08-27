@@ -1,7 +1,7 @@
 import { handleAuth, sessionUser } from './auth.mjs';
 import { LOGO_SVG, SITE_URL, SOCIAL_CARD_SVG, accountPage, authPage, homePage, legalPage, localizeSecondaryPage, shell } from './web.mjs';
 import { powScript } from './pow.mjs';
-import { createShare, deleteShare, purgeExpiredShares, serveContent, serveShare } from './shares.mjs';
+import { createShare, deleteShare, purgeExpiredShares, serveContent, serveShare, shareStatusResponse } from './shares.mjs';
 
 const SERVICE_NAME = 'SoloDrop';
 const MAX_CREATES_PER_DAY = 40;
@@ -390,6 +390,7 @@ export default {
     if (request.method !== 'GET') return json({ error: 'Method not allowed.' }, 405);
     if(!apiAction){const managed=await serveShare(slug,env,request);if(managed.status!==404)return managed;}
     const resolved = await registry.fetch(`https://registry/links/${slug}${apiAction ? `/${apiAction}` : ''}`, { headers });
+    if (!apiAction && (resolved.status === 404 || resolved.status === 410)) return shareStatusResponse(resolved.status === 410 ? 'expired' : 'missing', request);
     if (apiAction || !resolved.ok) return resolved;
     const result = await resolved.json();
     return new Response(null, {
