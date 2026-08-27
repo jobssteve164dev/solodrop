@@ -4,7 +4,7 @@ import worker from '../worker/src/index.mjs';
 import { authPage, homePage, MAX_FILE_BYTES } from '../worker/src/web.mjs';
 import { powScript } from '../worker/src/pow.mjs';
 import { previewWorker, verifyTemporaryPreview } from '../worker/src/temporary.mjs';
-import { createShare, previewPage, serveContent } from '../worker/src/shares.mjs';
+import { createShare, previewPage, serveContent, serveShare } from '../worker/src/shares.mjs';
 import { handleAuth } from '../worker/src/auth.mjs';
 
 test('web entry lets guests share first and offers registration after success', () => {
@@ -155,6 +155,19 @@ test('R2 shares return valid partial-content headers only for an actual Range re
   const response=await serveContent(new Request('https://drop.szlk.ai/api/shares/Abc2345/content',{headers:{range:'bytes=0-4'}}),'Abc2345',{PREVIEWS:bucket});
   assert.equal(response.status,206);
   assert.equal(response.headers.get('content-range'),'bytes 0-4/10');
+});
+
+test('expired R2 shares render a branded recovery page while preserving HTTP 410', async () => {
+  const metadata={slug:'Abc2345',name:'report.md',type:'text/markdown',allowDownload:true,expiresAt:Date.now()-60_000};
+  const bucket={async get(key){return key==='shares/Abc2345.json'?{async json(){return metadata;}}:null;}};
+  const zh=await serveShare('Abc2345',{PREVIEWS:bucket},new Request('https://drop.szlk.ai/Abc2345',{headers:{'accept-language':'zh-CN,zh;q=0.9'}}));
+  assert.equal(zh.status,410);
+  assert.equal(zh.headers.get('content-type'),'text/html;charset=utf-8');
+  assert.equal(zh.headers.get('cache-control'),'no-store');
+  assert.match(await zh.text(),/<html lang="zh-CN">[\s\S]*这个分享链接已过期[\s\S]*请联系分享者重新生成/);
+
+  const en=await serveShare('Abc2345',{PREVIEWS:bucket},new Request('https://drop.szlk.ai/Abc2345',{headers:{'accept-language':'en-US,en;q=0.9'}}));
+  assert.match(await en.text(),/<html lang="en">[\s\S]*This share has expired[\s\S]*Ask the sender[\s\S]*href="\/en"/);
 });
 
 test('R2 shares render Markdown content instead of the generic file fallback', () => {

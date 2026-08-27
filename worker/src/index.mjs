@@ -388,7 +388,7 @@ export default {
       });
     }
     if (request.method !== 'GET') return json({ error: 'Method not allowed.' }, 405);
-    if(!apiAction){const managed=await serveShare(slug,env);if(managed.status!==404)return managed;}
+    if(!apiAction){const managed=await serveShare(slug,env,request);if(managed.status!==404)return managed;}
     const resolved = await registry.fetch(`https://registry/links/${slug}${apiAction ? `/${apiAction}` : ''}`, { headers });
     if (apiAction || !resolved.ok) return resolved;
     const result = await resolved.json();
