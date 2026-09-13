@@ -1,0 +1,127 @@
+{
+  "status": "published_and_verified",
+  "documents": [
+    {
+      "product_id": "solodrop",
+      "document_type": "product_legal_supplement",
+      "locale": "en",
+      "title": "Product Legal Supplement",
+      "notes": "Align SoloDrop product facts with verified R2 sharing, paid plans and finite retention; preserve shared SZLK legal policies.",
+      "sections": [
+        {
+          "id": "product_scope",
+          "title": "SoloDrop Product Scope",
+          "body_markdown": "SoloDrop turns user-selected files into browser previews for temporary sharing and review. The website and VS Code extension use the same sharing service and account. SoloDrop is not a backup service or a permanent file library."
+        },
+        {
+          "id": "legal_composition",
+          "title": "How This Supplement Applies",
+          "body_markdown": "This product supplement is read together with the SZLK Terms of Service, Privacy Policy, Cookie / Tracking Policy, Refund and Cancellation Policy, Data Rights Notice, Do Not Sell or Share Notice, and AI and Entertainment Disclaimer. It records the facts that are specific to SoloDrop. General legal and support questions may be emailed to hello@szlk.ai; privacy questions and rights requests may be emailed to dpo@szlk.ai."
+        },
+        {
+          "id": "account_and_product_data",
+          "title": "Account and Product Data",
+          "body_markdown": "SoloDrop processes uploaded file contents, filenames, types, sizes, sharing settings and activity records. Account and session information supports sign-in, share history and subscriptions. Free sharing does not require an account. The extension keeps sign-in credentials in secure storage on the device."
+        },
+        {
+          "id": "ai_and_service_processing",
+          "title": "AI and Service Processing",
+          "body_markdown": "Uploaded files and sharing settings are stored in private Cloudflare storage to provide the requested preview. Recipients receive the content needed to view a share in their browser. Password-protected shares require the access password; access passwords are not stored in plain text. SoloDrop does not send shared file contents for AI processing as part of this sharing feature."
+        },
+        {
+          "id": "payments_and_entitlements",
+          "title": "Payments and Paid Access",
+          "body_markdown": "Free shares last 24 hours and support files up to 10 MiB, whether or not the sender signs in. Pro costs USD 5 per month or USD 49 per year and offers the same features on both billing cycles: 1, 7 or 30 days per share, up to 100 MiB per file, 5 GiB of active share contents, access passwords and optional removal of SoloDrop branding. The price and billing cycle are shown before purchase. SZLK manages account and subscription access; Stripe processes payments. These plans support temporary sharing; they do not provide permanent storage."
+        },
+        {
+          "id": "delivery_and_refunds",
+          "title": "Delivery and Refund Facts",
+          "body_markdown": "A share is delivered when SoloDrop verifies that its preview is available and returns the link. Pro sharing options become available after payment is confirmed and subscription access is granted. Existing shares keep the expiry chosen when they were created. Refund and cancellation requests follow the shared SZLK Refund and Cancellation Policy."
+        },
+        {
+          "id": "cookies_privacy_requests_and_preferences",
+          "title": "Cookies, Privacy Requests, and Preferences",
+          "body_markdown": "SoloDrop may use necessary cookies or similar technologies for sign-in, security, checkout, preference saving, product operation, analytics, and user-requested features. Optional analytics, advertising, or similar technologies should follow the product's cookie controls and applicable consent rules. Privacy requests, cookie preferences, and sale/share opt-out preferences should be submitted through the routes or contact methods displayed in the product."
+        },
+        {
+          "id": "storage_and_retention",
+          "title": "Storage and Retention",
+          "body_markdown": "Every new share has an expiry: 24 hours for Free, or 1, 7 or 30 days for Pro, with a maximum of 30 days. Signing in alone does not extend Free retention. Expired links stop serving their content immediately, and scheduled cleanup removes expired file contents. Creators can delete a share earlier using its deletion control. Historical shares retain their existing expiry; this change does not retrospectively shorten or delete them. Account, activity and billing records may be retained as described in the shared Privacy Policy. Management credentials are kept separate from public share links."
+        },
+        {
+          "id": "user_responsibility_and_risk_boundary",
+          "title": "User Responsibility and Risk Boundary",
+          "body_markdown": "Anyone with an unprotected share link can open the content. Password-protected shares also require the password. Share only files you have permission to share and check them for confidential information, personal data, credentials, malware and third-party rights. Hiding the download button and adding a watermark do not prevent a recipient from saving content received for browser preview."
+        },
+        {
+          "id": "material_service_categories",
+          "title": "Material Service Categories",
+          "body_markdown": "SoloDrop may use service providers for hosting, account access, payment processing, email delivery, analytics, AI processing, search or research support, storage, security, logging, and customer support. These providers may process data only as needed for the purposes described in the shared legal documents and this supplement."
+        }
+      ]
+    },
+    {
+      "product_id": "solodrop",
+      "document_type": "product_legal_supplement",
+      "locale": "zh-CN",
+      "title": "产品法律补充说明",
+      "notes": "Align SoloDrop product facts with verified R2 sharing, paid plans and finite retention; preserve shared SZLK legal policies.",
+      "sections": [
+        {
+          "id": "product_scope",
+          "title": "SoloDrop 产品范围",
+          "body_markdown": "SoloDrop 将用户选择的文件转换为浏览器预览，用于临时分享和审阅。官网与 VS Code 插件共用分享服务和账号。SoloDrop 不提供备份服务或永久文件库。"
+        },
+        {
+          "id": "legal_composition",
+          "title": "本补充说明如何适用",
+          "body_markdown": "本产品补充说明应与 SZLK 服务条款、隐私政策、Cookie / Tracking 政策、退款与取消政策、数据权利说明、不出售/不分享声明、AI 与娱乐用途免责声明共同阅读。它记录的是 SoloDrop 的产品专有事实。一般法律与支持问题可发送邮件至 hello@szlk.ai；隐私问题与权利请求可发送邮件至 dpo@szlk.ai。"
+        },
+        {
+          "id": "account_and_product_data",
+          "title": "账号与产品数据",
+          "body_markdown": "SoloDrop 处理上传文件内容、文件名、类型、大小、分享设置及活动记录。账号与会话信息用于登录、分享记录和订阅管理。免费分享无需注册或登录；插件的登录凭据保存在设备的安全存储中。"
+        },
+        {
+          "id": "ai_and_service_processing",
+          "title": "AI 与服务处理",
+          "body_markdown": "上传的文件及分享设置保存在私有 Cloudflare 云存储中，用于提供用户请求的预览。接收者的浏览器会取得显示预览所需的文件内容。设置访问密码的分享需要验证密码，不保存明文访问密码。本分享功能不会将文件内容发送给 AI 处理。"
+        },
+        {
+          "id": "payments_and_entitlements",
+          "title": "付款与付费访问",
+          "body_markdown": "Free 分享保留 24 小时，单文件最大 10 MiB，登录与否均相同。Pro 为每月 5 美元或每年 49 美元，两种付款周期权益一致：每个分享可选 1、7、30 天，单文件最大 100 MiB，有效分享内容总量 5 GiB，支持访问密码及按需移除 SoloDrop 品牌。购买前会显示价格和计费周期。账号及订阅权益由 SZLK 管理，支付由 Stripe 处理。套餐用于临时分享，不提供永久存储。"
+        },
+        {
+          "id": "delivery_and_refunds",
+          "title": "交付与退款事实",
+          "body_markdown": "SoloDrop 确认预览可访问并返回分享链接后，完成该次分享交付。付款确认且订阅权益生效后，用户可使用 Pro 分享选项。已创建分享遵守创建时选定的到期时间。退款及取消请求适用 SZLK 统一退款与取消政策。"
+        },
+        {
+          "id": "cookies_privacy_requests_and_preferences",
+          "title": "Cookie、隐私请求与偏好",
+          "body_markdown": "SoloDrop 可能为登录、安全、结账、偏好保存、产品运行、分析和用户请求的功能使用必要 Cookie 或类似技术。可选分析、广告或类似技术应遵循产品 Cookie 控制和适用同意规则。隐私请求、Cookie 偏好和出售/分享退出偏好应通过产品中展示的入口或联系方式提交。"
+        },
+        {
+          "id": "storage_and_retention",
+          "title": "存储与保留",
+          "body_markdown": "所有新分享均有明确有效期：Free 为 24 小时，Pro 可选 1、7、30 天，最长 30 天。仅登录不会延长 Free 有效期。到期后链接立即停止提供内容，定期清理任务随后删除过期文件。创建者可使用删除功能提前删除分享。历史分享保留原有到期设置，本次变更不追溯缩短或删除历史分享。账号、活动及账务记录按统一隐私政策所述规则保留。管理凭据与公开分享链接分开保存。"
+        },
+        {
+          "id": "user_responsibility_and_risk_boundary",
+          "title": "用户责任与风险边界",
+          "body_markdown": "未设置密码的分享，任何取得链接的人都可打开；设置密码的分享还需提供访问密码。请仅分享你有权提供的文件，并检查机密信息、个人数据、凭据、恶意内容及第三方权利。隐藏下载按钮和添加水印不能阻止接收者保存浏览器预览所需的内容。"
+        },
+        {
+          "id": "material_service_categories",
+          "title": "重要服务类别",
+          "body_markdown": "SoloDrop 可能使用托管、账号访问、支付处理、邮件发送、分析、AI 处理、搜索或研究支持、存储、安全、日志和客户支持服务提供方。这些服务提供方仅可为共享法律文件和本补充说明所述目的处理必要数据。"
+        }
+      ]
+    }
+  ],
+  "published_versions": {
+    "en": "c986b49d-4f19-4720-a0e8-cd20ffcd8dea",
+    "zh-CN": "602fc867-b409-4e38-9033-82c8d3d114d1"
+  }
+}
