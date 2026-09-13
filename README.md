@@ -87,9 +87,9 @@ SoloDrop 会在产物之后增加一个统一、克制的产品行动入口。�
 
 ### 🌍 Start now, sign in when you need more / 无需登录也能开始
 
-The website and VS Code extension use the same managed sharing service. Guest shares last 1 day; signed-in website users can choose additional lifetimes. Before sharing, you can also add an optional text watermark and decide whether to show the original-file download action.
+The website and VS Code extension use the same sharing service and account. Free shares last 24 hours; Pro offers 1, 7, or 30 days. Before sharing, you can also add an optional text watermark and decide whether to show the original-file download action.
 
-官网与 VS Code 插件使用同一套分享服务。未登录分享固定保留 1 天；官网登录用户可选择更多有效期。分享前还可以按需添加文字水印，并决定是否显示原文件下载入口。
+官网与 VS Code 插件共用分享服务和账号。Free 分享保留 24 小时；Pro 可选 1、7、30 天。分享前还可以按需添加文字水印，并决定是否显示原文件下载入口。
 
 ## Quick start / 60 秒开始分享
 
