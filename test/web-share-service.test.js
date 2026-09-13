@@ -60,3 +60,21 @@ test('sends Markdown with a renderable content type', async () => {
     assert.equal(uploaded.type,'text/markdown');
   } finally { fs.unlinkSync(filePath); fs.rmdirSync(directory); }
 });
+
+test('authenticated upload sends the session and paid choices; preview verification uses only the share management token',async()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'solodrop-paid-upload-'));
+  const filePath=path.join(directory,'review.txt');fs.writeFileSync(filePath,'review');
+  const calls=[];
+  try {
+    await createWebShare({path:filePath,name:'review.txt',size:6,kind:'Text'},{allowDownload:true,watermark:'',expiry:'month',password:'review-password',removeBranding:true},async(url,options)=>{
+      calls.push({url:String(url),options});
+      return String(url).endsWith('/api/shares')?Response.json({shortUrl:'https://drop.szlk.ai/Abc2345',previewUrl:'https://drop.szlk.ai/Abc2345',managementToken:'share-secret',expiresAt:new Date(Date.now()+86400000).toISOString()},{status:201}):new Response('<meta name="solodrop-preview">');
+    },'account-session');
+    assert.equal(calls[0].options.headers.authorization,'Bearer account-session');
+    assert.equal(calls[0].options.body.get('expiry'),'month');
+    assert.equal(calls[0].options.body.get('password'),'review-password');
+    assert.equal(calls[0].options.body.get('removeBranding'),'yes');
+    assert.equal(calls[1].options.headers['x-management-token'],'share-secret');
+    assert.equal(calls[1].options.headers.authorization,undefined);
+  }finally{fs.unlinkSync(filePath);fs.rmdirSync(directory);}
+});

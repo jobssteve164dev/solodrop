@@ -19,10 +19,12 @@ export interface Strings {
   shareCardScanHint: string; shareCardExpiresAt: string;
   shareOptions: string; allowDownload: string; watermark: string; watermarkPlaceholder: string;
   linkLifetime: string; oneDay: string; sevenDays: string; thirtyDays: string;
+  login: string; logout: string; pricing: string; account: string; accountUnavailable: string; accessPassword: string; removeBranding: string; fileLimit: string;
 }
 
 const translations: Record<SupportedLocale, Strings> = {
   en: {
+    login: 'Log in', logout: 'Log out', pricing: 'Explore Pro', account: 'Manage account', accountUnavailable: 'Account unavailable. Refresh to try again.', accessPassword: 'Access password (optional)', removeBranding: 'Remove SoloDrop branding', fileLimit: 'Your plan supports files up to {size} MB.',
     tagline: 'Share the result, not the file path.', dropHere: 'Drop a file here', dropToShare: 'Drop to share', releaseHere: 'Release the file here', noFile: 'No file selected', dragOrChoose: 'Drag from Explorer or choose a file.',
     sharePreview: 'Share preview', chooseFile: 'Choose a file', linkCopied: 'Link copied', open: 'Open', copyAgain: 'Copy again', keepPreview: 'Keep this preview', recent: 'Recent', refresh: 'Refresh', emptyHistory: 'Shared previews will appear here.', active: 'Active', expired: 'Expired', shareAgain: 'Share again', chooseToShareAgain: 'Choose the original file to share again',
     buildingChecking: 'Building and checking your public preview…', dropOneFile: 'Drop one file from Explorer or your computer.', droppedFileLimit: 'Files up to 10 MB can be shared.',
@@ -33,6 +35,7 @@ const translations: Record<SupportedLocale, Strings> = {
     shareOptions: 'Share settings', allowDownload: 'Allow original-file download', watermark: 'Text watermark', watermarkPlaceholder: 'Optional, e.g. Client review only', linkLifetime: 'Link lifetime', oneDay: '1 day', sevenDays: '7 days', thirtyDays: '30 days'
   },
   'zh-cn': {
+    login: '登录', logout: '退出', pricing: '了解 Pro', account: '管理账号', accountUnavailable: '暂时无法加载账号，请刷新重试。', accessPassword: '访问密码（可选）', removeBranding: '移除 SoloDrop 品牌', fileLimit: '当前套餐支持最大 {size} MB 的文件。',
     tagline: '分享结果，不再解释文件路径。', dropHere: '将文件拖到这里', dropToShare: '松手即可分享', releaseHere: '文件将在这里生成预览', noFile: '尚未选择文件', dragOrChoose: '从资源管理器拖入，或选择一个文件。',
     sharePreview: '分享预览', chooseFile: '选择文件', linkCopied: '链接已复制', open: '打开', copyAgain: '再次复制', keepPreview: '保留这个预览', recent: '最近分享', refresh: '刷新', emptyHistory: '分享过的预览会显示在这里。', active: '有效', expired: '已过期', shareAgain: '重新分享', chooseToShareAgain: '选择原文件并重新分享',
     buildingChecking: '正在生成并检查公开预览…', dropOneFile: '请从资源管理器或电脑拖入一个文件。', droppedFileLimit: '当前支持最大 10 MB 的文件。',

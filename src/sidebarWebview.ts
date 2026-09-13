@@ -23,6 +23,15 @@ export function getSidebarHtml(webview: vscode.Webview, extensionUri: vscode.Uri
       <button id="language" class="language-button" type="button" aria-label="${escapeHtml(text.switchLanguage)}" title="${escapeHtml(text.switchLanguage)}">${locale === 'zh-cn' ? 'EN' : '中'}</button>
     </header>
 
+    <section class="account-strip" aria-label="${escapeHtml(text.account)}">
+      <span id="account-name">Free</span>
+      <button id="login" class="history-action" type="button">${escapeHtml(text.login)}</button>
+      <button id="pricing" class="history-action" type="button">${escapeHtml(text.pricing)}</button>
+      <button id="manage-account" class="history-action hidden" type="button">${escapeHtml(text.account)}</button>
+      <button id="logout" class="history-action hidden" type="button">${escapeHtml(text.logout)}</button>
+    </section>
+    <p id="account-status" class="muted" role="status" aria-live="polite"></p>
+
     <section id="drop-zone" class="share-card" aria-labelledby="selected-heading">
       <div class="drop-overlay" aria-hidden="true"><strong>${escapeHtml(text.dropToShare)}</strong><span>${escapeHtml(text.releaseHere)}</span></div>
       <div class="eyebrow" id="selected-heading">${escapeHtml(text.dropHere)}</div>
@@ -34,7 +43,11 @@ export function getSidebarHtml(webview: vscode.Webview, extensionUri: vscode.Uri
         <legend>${escapeHtml(text.shareOptions)}</legend>
         <label class="toggle"><input id="allow-download" type="checkbox" checked><span>${escapeHtml(text.allowDownload)}</span></label>
         <label class="option-field"><span>${escapeHtml(text.watermark)}</span><input id="watermark" type="text" maxlength="60" placeholder="${escapeHtml(text.watermarkPlaceholder)}"></label>
-        <label class="option-field"><span>${escapeHtml(text.linkLifetime)}</span><input id="expiry" type="hidden" value="day"><strong class="option-value">${escapeHtml(text.oneDay)}</strong></label>
+        <label class="option-field"><span>${escapeHtml(text.linkLifetime)}</span><select id="expiry"><option value="day">${escapeHtml(text.oneDay)}</option></select></label>
+        <div id="pro-options" class="hidden">
+          <label class="option-field"><span>${escapeHtml(text.accessPassword)}</span><input id="share-password" type="password" minlength="8" maxlength="128" autocomplete="new-password"></label>
+          <label class="toggle"><input id="remove-branding" type="checkbox"><span>${escapeHtml(text.removeBranding)}</span></label>
+        </div>
       </fieldset>
       <button id="share" class="primary" type="button" disabled>
         <span class="button-label">${escapeHtml(text.sharePreview)}</span><span class="spinner" aria-hidden="true"></span>

@@ -5,6 +5,8 @@ export interface ShareOptions {
   allowDownload: boolean;
   watermark: string;
   expiry: ShareExpiry;
+  password?: string;
+  removeBranding?: boolean;
 }
 
 export interface ArtifactSelection {

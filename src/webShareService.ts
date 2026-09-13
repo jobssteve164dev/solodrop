@@ -20,21 +20,24 @@ const contentTypes: Record<string, string> = {
   '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
 };
 
-export async function createWebShare(artifact: ArtifactSelection, options: ShareOptions, fetcher: typeof fetch = fetch): Promise<WebShareResult> {
+export async function createWebShare(artifact: ArtifactSelection, options: ShareOptions, fetcher: typeof fetch = fetch, sessionToken?: string, locale = 'en'): Promise<WebShareResult> {
   const bytes = await fs.readFile(artifact.path);
   const form = new FormData();
   const contentType = contentTypes[path.extname(artifact.name).toLowerCase()] || 'application/octet-stream';
   form.set('file', new File([bytes], artifact.name, { type: contentType }));
   form.set('allowDownload', options.allowDownload ? 'yes' : 'no');
   form.set('watermark', options.watermark.trim().slice(0, 60));
-  form.set('expiry', 'day');
-  const response = await fetcher(`${SERVICE_URL}/api/shares`, { method: 'POST', body: form });
+  form.set('expiry', sessionToken ? options.expiry : 'day');
+  form.set('locale', locale === 'en' ? 'en' : 'zh');
+  if (options.password) form.set('password', options.password);
+  if (options.removeBranding) form.set('removeBranding', 'yes');
+  const response = await fetcher(`${SERVICE_URL}/api/shares`, { method: 'POST', body: form, headers: sessionToken ? { authorization: `Bearer ${sessionToken}` } : {} });
   const payload = await response.json().catch(() => ({})) as Partial<WebShareResult> & { error?: string };
   if (!response.ok) throw new Error(payload.error || `SoloDrop share service returned HTTP ${response.status}.`);
   if (!payload.shortUrl || !payload.previewUrl || !payload.managementToken || !payload.expiresAt) throw new Error('SoloDrop share service returned an incomplete result.');
   const publicUrl = new URL(payload.shortUrl);
   if (publicUrl.origin !== SERVICE_URL) throw new Error('SoloDrop share service returned an unexpected link.');
-  const verification = await fetcher(publicUrl, { cache: 'no-store', headers: { 'cache-control':'no-cache' } });
+  const verification = await fetcher(publicUrl, { cache: 'no-store', redirect: 'error', headers: { 'cache-control':'no-cache', 'x-management-token':payload.managementToken } });
   if (!verification.ok) throw new Error(`The published preview returned HTTP ${verification.status}.`);
   return payload as WebShareResult;
 }

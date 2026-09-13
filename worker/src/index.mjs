@@ -1,7 +1,10 @@
-import { handleAuth, sessionUser } from './auth.mjs';
+import { handleAuth, sessionUser, safeNext } from './auth.mjs';
+import { pricingPage, subscriptionPanel, billingScript, billingSuccessPage } from './billing-pages.mjs';
+import { deviceRequest, connectPage } from './device.mjs';
 import { LOGO_SVG, SITE_URL, SOCIAL_CARD_SVG, accountPage, authPage, homePage, legalPage, localizeSecondaryPage, shell } from './web.mjs';
 import { powScript } from './pow.mjs';
-import { createShare, deleteShare, purgeExpiredShares, serveContent, serveShare, shareStatusResponse } from './shares.mjs';
+import { createShare, deleteShare, purgeExpiredShares, serveContent, serveShare, shareStatusResponse, unlockShare } from './shares.mjs';
+import { billingCatalog, publicCatalog, sharePolicy, checkout, billingPortal, sameOrigin } from './billing.mjs';
 
 const SERVICE_NAME = 'SoloDrop';
 const MAX_CREATES_PER_DAY = 40;
@@ -106,6 +109,19 @@ export class LinkRegistry {
       rate_key TEXT PRIMARY KEY,
       count INTEGER NOT NULL,
       expires_at INTEGER NOT NULL
+    ); CREATE TABLE IF NOT EXISTS device_codes (
+      code TEXT PRIMARY KEY,
+      secret_hash TEXT NOT NULL,
+      expires_at INTEGER NOT NULL,
+      user_id TEXT,
+      email TEXT,
+      name TEXT,
+      consumed INTEGER NOT NULL DEFAULT 0
+    ); CREATE TABLE IF NOT EXISTS share_reservations (
+      slug TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      size_bytes INTEGER NOT NULL,
+      expires_at INTEGER NOT NULL
     ); CREATE TABLE IF NOT EXISTS sessions (
       token_hash TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
@@ -142,6 +158,9 @@ export class LinkRegistry {
   async fetch(request) {
     const url = new URL(request.url);
     if (url.pathname === '/session') return this.session(request);
+    if(url.pathname.startsWith('/device/') && request.method==='POST')return deviceRequest(this.sql,request);
+    if (url.pathname.startsWith('/share-quota/') && request.method === 'POST') return this.shareQuota(request);
+    if(url.pathname==='/share-owner' && request.method==='GET')return json({owned:[...this.sql.exec('SELECT id FROM activities WHERE user_id = ? AND short_slug = ? LIMIT 1',request.headers.get('x-user-id')||'',url.searchParams.get('slug')||'')].length>0});
     if (url.pathname === '/activity' && request.method === 'POST') return this.createActivity(request);
     if (url.pathname === '/guest-activity' && request.method === 'POST') return this.createGuestActivity(request);
     if (url.pathname === '/claim-activities' && request.method === 'POST') return this.claimActivities(request);
@@ -160,6 +179,23 @@ export class LinkRegistry {
     }
     if (request.method === 'DELETE' && match && !match[2]) return this.remove(match[1], request.headers.get('x-management-token') || '');
     return json({ error: 'Not found.' }, 404);
+  }
+
+  async shareQuota(request) {
+    const body=await request.json();
+    if(new URL(request.url).pathname==='/share-quota/release') {
+      this.sql.exec('DELETE FROM share_reservations WHERE slug = ?',body.slug);
+      if(body.deleted)this.sql.exec("UPDATE activities SET status = 'deleted' WHERE short_slug = ?",body.slug);
+      return json({ok:true});
+    }
+    if(!body.slug || !body.userId || !Number.isSafeInteger(body.size) || body.size<=0 || !Number.isSafeInteger(body.expiresAt)
+      || (body.limit!==null && (!Number.isSafeInteger(body.limit) || body.limit<=0))) return json({error:'Invalid reservation.'},400);
+    // No awaits between checking usage and reserving bytes: concurrent uploads share this SQL authority.
+    this.sql.exec("INSERT OR IGNORE INTO share_reservations (slug,user_id,size_bytes,expires_at) SELECT short_slug,user_id,size_bytes,COALESCE(expires_at,253402300799000) FROM activities WHERE user_id = ? AND short_slug IS NOT NULL AND status = 'ready' AND (expires_at IS NULL OR expires_at > ?)",body.userId,Date.now());
+    const used=[...this.sql.exec('SELECT COALESCE(SUM(size_bytes),0) AS bytes FROM share_reservations WHERE user_id = ? AND expires_at > ?',body.userId,Date.now())][0].bytes;
+    if(body.limit!==null && used+body.size>body.limit)return json({error:'有效分享内容已达到套餐容量，请删除不再需要的分享后重试。'},413);
+    this.sql.exec('INSERT INTO share_reservations (slug,user_id,size_bytes,expires_at) VALUES (?,?,?,?)',body.slug,body.userId,body.size,body.expiresAt);
+    return json({ok:true},201);
   }
 
   async session(request) {
@@ -212,7 +248,7 @@ export class LinkRegistry {
   listActivities(request) {
     const userId=request.headers.get('x-user-id');
     if(!userId)return json({error:'Unauthorized.'},401);
-    const rows=[...this.sql.exec('SELECT file_name,size_bytes,status,short_slug,created_at,expires_at FROM activities WHERE user_id=? ORDER BY created_at DESC LIMIT 50',userId)];
+    const rows=[...this.sql.exec("SELECT file_name,size_bytes,status,short_slug,created_at,expires_at FROM activities WHERE user_id=? ORDER BY CASE WHEN status = 'deleted' OR expires_at <= ? THEN 1 ELSE 0 END, created_at DESC LIMIT 50",userId,Date.now())];
     return json(rows);
   }
 
@@ -293,7 +329,61 @@ export default {
     const pagePath=locale==='en'?(url.pathname.slice(3)||'/'):url.pathname;
     const registry=env.LINKS.get(env.LINKS.idFromName('registry'));
     const origin=url.origin;
-    if (request.method === 'GET' && pagePath === '/') return new Response(homePage(await sessionUser(request,registry),locale),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store','content-language':locale==='en'?'en':'zh-CN'}});
+    if(request.method==='POST' && ['/api/device/start','/api/device/poll','/api/device/approve'].includes(url.pathname)) {
+      if(!sameOrigin(request))return json({error:'Invalid request origin.'},403);
+      let body;try{body=await request.json();}catch{return json({error:'Invalid request.'},400);}
+      if(url.pathname.endsWith('/start')) {
+        const limited=await registry.fetch('https://registry/rate',{method:'POST',headers:{'x-solodrop-client-ip':`device:${request.headers.get('cf-connecting-ip')||''}`}});
+        if(!limited.ok)return limited;
+      }
+      if(url.pathname.endsWith('/approve')) {
+        const user=await sessionUser(request,registry);
+        if(!user)return json({error:'Unauthorized.'},401);
+        body={code:body.code,user};
+      } else body={code:body.code,secret:body.secret};
+      return registry.fetch(`https://registry${url.pathname.slice(4)}`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+    }
+    if(request.method==='GET' && pagePath==='/connect') {
+      const code=url.searchParams.get('code')||'';
+      if(!/^[a-f0-9-]{36}$/.test(code))return new Response('Invalid authorization request.',{status:400});
+      const user=await sessionUser(request,registry);
+      if(!user)return Response.redirect(`${origin}${locale==='en'?'/en':''}/login?next=${encodeURIComponent(url.pathname+'?code='+code)}`,303);
+      return new Response(connectPage(code,user,locale),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store','referrer-policy':'no-referrer'}});
+    }
+    if (url.pathname==='/api/billing/catalog' && request.method==='GET') {
+      try { return json(publicCatalog(await billingCatalog(env))); }
+      catch { return json({error:'套餐暂时无法加载，请稍后重试。'},503); }
+    }
+    if (url.pathname==='/api/account' && request.method==='GET') {
+      const user=await sessionUser(request,registry);
+      try { return json({user,...await sharePolicy(env,user)}); }
+      catch { return json({error:'暂时无法确认账户权益，请稍后重试。'},503); }
+    }
+    if (['/api/billing/checkout','/api/billing/portal'].includes(url.pathname) && request.method==='POST') {
+      if(!sameOrigin(request))return json({error:'Invalid request origin.'},403);
+      const user=await sessionUser(request,registry);
+      if(!user)return json({error:'请先登录。'},401);
+      try {
+        const body=await request.json();
+        const result=url.pathname.endsWith('/checkout')?await checkout(env,user,body):await billingPortal(env,user,body.locale);
+        return result?json(result):json({error:'请选择有效套餐。'},400);
+      } catch { return json({error:'暂时无法打开付款或订阅页面，请稍后重试。'},503); }
+    }
+    if (request.method === 'GET' && pagePath === '/') {
+      const user=await sessionUser(request,registry);
+      let policy; try {policy=await sharePolicy(env,user);}catch{policy=null;}
+      return new Response(homePage(user,locale,policy),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store','content-language':locale==='en'?'en':'zh-CN'}});
+    }
+    if(request.method==='GET' && pagePath==='/pricing') {
+      const user=await sessionUser(request,registry);
+      let catalog,policy;try{catalog=await billingCatalog(env);policy=await sharePolicy(env,user);}catch{}
+      return new Response(pricingPage(catalog,user,locale,policy?.pro),{status:catalog?200:503,headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+    }
+    if(request.method==='GET' && pagePath==='/billing/success') {
+      const user=await sessionUser(request,registry);
+      if(!user)return Response.redirect(`${origin}${locale==='en'?'/en':''}/login?next=${encodeURIComponent((locale==='en'?'/en':'')+'/pricing')}`,303);
+      return new Response(billingSuccessPage(user,locale),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+    }
     if (request.method === 'GET' && url.pathname === '/favicon.svg') return new Response(LOGO_SVG,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=86400','x-content-type-options':'nosniff'}});
     if (request.method === 'GET' && url.pathname === '/social-card.svg') return new Response(SOCIAL_CARD_SVG,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=86400','x-content-type-options':'nosniff'}});
     if (request.method === 'GET' && url.pathname === '/robots.txt') return new Response(`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /account\nDisallow: /en/account\nDisallow: /login\nDisallow: /register\nDisallow: /forgot\nSitemap: ${SITE_URL}/sitemap.xml\n`,{headers:{'content-type':'text/plain;charset=utf-8','cache-control':'public,max-age=3600'}});
@@ -302,7 +392,7 @@ export default {
     if (request.method === 'GET' && ['/login','/register'].includes(pagePath)) {
       const notices=locale==='en'?{ 'check-email':'Account created. Check your email to verify it.','verify-first':'Verify your email before logging in.','reset-sent':'If the account exists, a reset email has been sent.','verified':'Email verified. You can now log in.','reset':'Password reset.' }:{ 'check-email':'注册成功，请查收验证邮件。','verify-first':'请先完成邮箱验证。','reset-sent':'如果账号存在，重置邮件已经发出。','verified':'邮箱验证成功，现在可以登录。','reset':'密码已重置。' };
       const message=url.searchParams.get('error')||notices[url.searchParams.get('notice')]||'';
-      return new Response(authPage(pagePath.slice(1),message,locale),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+      return new Response(authPage(pagePath.slice(1),message,locale,safeNext(url.searchParams.get('next'))),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
     }
     if (request.method === 'GET' && pagePath === '/forgot') return new Response(shell(locale==='en'?'Reset password':'找回密码',locale==='en'?'<main id="main" class="auth card"><h1>Reset password</h1><p class="muted">Enter your account email and we will send a reset link.</p><form method="post" action="/api/auth/forgot-password"><input type="hidden" name="locale" value="en"><label class="field">Email<input type="email" name="email" required></label><button class="full">Send reset email</button></form></main>':'<main id="main" class="auth card"><h1>找回密码</h1><p class="muted">输入注册邮箱，我们会发送重置链接。</p><form method="post" action="/api/auth/forgot-password"><label class="field">邮箱<input type="email" name="email" required></label><button class="full">发送重置邮件</button></form></main>','',null,locale),{headers:{'content-type':'text/html;charset=utf-8'}});
     if (request.method === 'GET' && pagePath === '/reset-password') { const token=(url.searchParams.get('token')||'').replace(/["&<>]/g,''); return new Response(shell(locale==='en'?'Set a new password':'设置新密码',locale==='en'?`<main id="main" class="auth card"><h1>Set a new password</h1><form method="post" action="/api/auth/reset-password"><input type="hidden" name="locale" value="en"><input type="hidden" name="token" value="${token}"><label class="field">New password<input type="password" name="password" minlength="8" required></label><button class="full">Save new password</button></form></main>`:`<main id="main" class="auth card"><h1>设置新密码</h1><form method="post" action="/api/auth/reset-password"><input type="hidden" name="token" value="${token}"><label class="field">新密码<input type="password" name="password" minlength="8" required></label><button class="full">保存新密码</button></form></main>`,'',null,locale),{headers:{'content-type':'text/html;charset=utf-8'}}); }
@@ -312,7 +402,9 @@ export default {
     if (request.method === 'GET' && pagePath === '/account') {
       const user=await sessionUser(request,registry); if(!user)return Response.redirect(`${origin}${locale==='en'?'/en':''}/login`,303);
       const activities=await (await registry.fetch('https://registry/activities',{headers:{'x-user-id':user.id}})).json();
-      return new Response(localizeSecondaryPage(accountPage(user,activities),locale),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
+      let policy;try{policy=await sharePolicy(env,user);}catch{}
+      const panel=policy?subscriptionPanel(policy,locale):`<p role="alert">${locale==='en'?'Could not load your subscription. Please refresh to try again.':'暂时无法加载订阅，请刷新重试。'}</p>`;
+      return new Response(accountPage(user,activities,locale).replace('<section class="history">',panel+'<section class="history">').replace('</body>',billingScript(locale)+'</body>'),{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store'}});
     }
     if (request.method === 'GET' && ['/terms','/privacy','/legal-supplement'].includes(pagePath)) {
       const map={'/terms':['terms_of_service','服务条款'],'/privacy':['privacy_policy','隐私政策'],'/legal-supplement':['product_legal_supplement','产品补充说明']};
@@ -323,6 +415,7 @@ export default {
     }
     if (url.pathname.startsWith('/api/auth/') && (request.method === 'POST' || url.pathname.endsWith('/logout'))) return handleAuth(request,env,registry,origin);
     if (request.method === 'POST' && url.pathname === '/api/shares') {
+      if(!sameOrigin(request))return json({error:'Invalid request origin.'},403);
       const limited=await registry.fetch('https://registry/rate',{method:'POST',headers:{'x-solodrop-client-ip':request.headers.get('cf-connecting-ip')||''}});
       if(!limited.ok)return limited;
       try {
@@ -334,10 +427,19 @@ export default {
         return json(result,201,headers);
       } catch(error) { return json({error:error.message||'分享失败。'},422); }
     }
+    const shareUnlock=url.pathname.match(/^\/api\/shares\/([A-Za-z0-9]+)\/unlock$/);
+    if(shareUnlock && request.method==='POST') {
+      if(!sameOrigin(request))return json({error:'Invalid request origin.'},403);
+      const limited=await registry.fetch('https://registry/rate',{method:'POST',headers:{'x-solodrop-client-ip':`password:${shareUnlock[1]}:${request.headers.get('cf-connecting-ip')||''}`}});
+      return limited.ok?unlockShare(request,shareUnlock[1],env):limited;
+    }
     const shareContent=url.pathname.match(/^\/api\/shares\/([A-Za-z0-9]+)\/content$/);
     if(shareContent&&request.method==='GET')return serveContent(request,shareContent[1],env);
     const shareDelete=url.pathname.match(/^\/api\/shares\/([A-Za-z0-9]+)$/);
-    if(shareDelete&&request.method==='DELETE')return deleteShare(request,shareDelete[1],env,await sessionUser(request,registry));
+    if(shareDelete&&request.method==='DELETE') {
+      if(!sameOrigin(request))return json({error:'Invalid request origin.'},403);
+      return deleteShare(request,shareDelete[1],env,await sessionUser(request,registry));
+    }
     if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/')) return new Response(null, { status: 204, headers: corsHeaders(request) });
     if (request.method === 'GET' && url.pathname === '/health') return json({ ok: true, service: SERVICE_NAME });
     if (request.method === 'GET' && url.pathname === '/embed.js') {

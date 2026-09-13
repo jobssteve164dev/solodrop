@@ -67,9 +67,11 @@ A successful deployment is not enough. SoloDrop opens the published URL over HTT
 
 ### 🧭 Control how the result is delivered / 控制交付方式
 
-Guest shares expire after 1 day. Signed-in users can choose 1, 7 or 30 days, or keep a share until they delete it. Web shares can also hide the original-file download action and add a custom text watermark. Watermarks and hidden downloads guide normal recipient behavior; they are not presented as DRM.
+Free shares expire after 24 hours, with or without an account. Pro is $5/month or $49/year and offers 1, 7, or 30 days, 100 MB per file, 5 GB of active shares, passwords, and no SoloDrop branding. Free supports 10 MB files. The website and extension share one account and plan. Download controls and text watermarks stay free. Watermarks and hidden downloads guide normal recipient behavior; they are not presented as DRM.
 
-未登录分享固定为 1 天有效期。登录用户可选择 1 天、7 天、30 天，或长期保留直到主动删除。网页分享还可以隐藏原文件下载入口、添加自定义文字水印。水印与隐藏下载用于约束常规接收行为，不会被宣传成 DRM。
+Free 无论是否登录都保留 24 小时，单文件 10 MB。Pro 为 $5/月或 $49/年，可选 1、7、30 天，单文件 100 MB、有效分享内容 5 GB，并支持访问密码和去品牌。官网与插件共用账号和套餐，下载控制及文字水印仍免费。水印与隐藏下载用于约束常规接收行为，不会被宣传成 DRM。
+
+套餐契约与接入验收见 [套餐与付费接入](docs/product/plans-and-billing.md)。新分享不提供无期限保存，历史链接不追溯缩短。
 
 ### 🔗 Send a clean short link / 分享更简洁的短链接
 

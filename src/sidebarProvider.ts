@@ -9,9 +9,11 @@ import { format, resolveLocale, strings } from './i18n';
 import { getManagedLinkStats } from './linkService';
 import { ArtifactSelection, ShareOptions, ShareRecord } from './types';
 import { createWebShare } from './webShareService';
+import { readAccount, startDeviceLogin, pollDeviceLogin, logoutAccount } from './accountService';
 
 const HISTORY_KEY = 'solodrop.shareHistory';
 const HISTORY_SOURCES_KEY = 'solodrop.shareHistorySources';
+const SESSION_KEY = 'solodrop.accountSession';
 
 export async function prepareShareHistorySync(context: vscode.ExtensionContext): Promise<void> {
   const records = context.globalState.get<ShareRecord[]>(HISTORY_KEY, []);
@@ -31,6 +33,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
   private view?: vscode.WebviewView;
   private selection?: ArtifactSelection;
   private shareInFlight = false;
+  private loginInFlight = false;
 
   constructor(
     private readonly context: vscode.ExtensionContext,
@@ -108,7 +111,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     try {
       const record = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: format(text.shareTitle, { name: artifact.name }), cancellable: false }, async (progress) => {
         progress.report({ message: text.publishing });
-        const shared = await createWebShare(artifact, options);
+        const shared = await createWebShare(artifact, options, fetch, await this.context.secrets.get(SESSION_KEY), resolveLocale());
         const next: ShareRecord = {
           id: `${Date.now()}`,
           name: artifact.name,
@@ -146,6 +149,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
     this.postSelection();
     this.post({ command: 'historyLoaded', records: this.clientHistory() });
     void this.refreshManagedStats();
+    void this.refreshAccount();
   }
 
   rerender(): void {
@@ -165,6 +169,16 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
 
   private async handleMessage(message: { command?: string; id?: string; url?: string; uri?: string; name?: string; bytes?: ArrayBuffer; options?: ShareOptions }): Promise<void> {
     switch (message.command) {
+      case 'login': await this.login(); break;
+      case 'logout': {
+        const token = await this.context.secrets.get(SESSION_KEY);
+        if (token) await logoutAccount(token);
+        await this.context.secrets.delete(SESSION_KEY);
+        await this.refreshAccount();
+        break;
+      }
+      case 'pricing': await vscode.env.openExternal(vscode.Uri.parse(`https://drop.szlk.ai${resolveLocale() === 'en' ? '/en' : ''}/pricing`)); break;
+      case 'account': await vscode.env.openExternal(vscode.Uri.parse(`https://drop.szlk.ai${resolveLocale() === 'en' ? '/en' : ''}/account`)); break;
       case 'ready': this.refresh(); break;
       case 'choose': await this.chooseFile(); break;
       case 'share': await this.shareSelection(message.options); break;
@@ -191,7 +205,7 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         }
         break;
       }
-      case 'refresh': await this.refreshFromActiveEditor(); break;
+      case 'refresh': await this.refreshFromActiveEditor(); this.refresh(); break;
       case 'reshare': {
         const record = this.history().find((item) => item.id === message.id);
         if (!record?.temporary) break;
@@ -230,6 +244,40 @@ export class SoloDropSidebarProvider implements vscode.WebviewViewProvider {
         break;
       }
     }
+  }
+
+  private async refreshAccount(): Promise<void> {
+    try {
+      const token = await this.context.secrets.get(SESSION_KEY);
+      const account = await readAccount(token);
+      if (token && !account.user) await this.context.secrets.delete(SESSION_KEY);
+      this.post({ command: 'accountLoaded', account });
+    } catch {
+      this.post({ command: 'accountUnavailable' });
+    }
+  }
+
+  private async login(): Promise<void> {
+    if (this.loginInFlight) return;
+    this.loginInFlight = true;
+    const en = resolveLocale() === 'en';
+    try {
+      await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: en ? 'Confirm your SoloDrop login in the browser' : '请在浏览器中确认 SoloDrop 登录', cancellable: true }, async (_progress, cancellation) => {
+        const device = await startDeviceLogin(resolveLocale());
+        if (!await vscode.env.openExternal(vscode.Uri.parse(device.url))) throw new Error(en ? 'Could not open the browser.' : '无法打开浏览器。');
+        while (!cancellation.isCancellationRequested && Date.now() < device.expiresAt) {
+          const token = await pollDeviceLogin(device.code, device.secret);
+          if (token) {
+            if (cancellation.isCancellationRequested) { await logoutAccount(token); return; }
+            await this.context.secrets.store(SESSION_KEY, token);
+            await this.refreshAccount();
+            return;
+          }
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+        if (!cancellation.isCancellationRequested) throw new Error(en ? 'Login expired. Please try again.' : '登录已过期，请重试。');
+      });
+    } finally { this.loginInFlight = false; }
   }
 
   private history(): ShareRecord[] {

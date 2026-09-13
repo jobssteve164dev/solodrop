@@ -18,14 +18,17 @@
     allowDownload: document.getElementById('allow-download'),
     watermark: document.getElementById('watermark'),
     expiry: document.getElementById('expiry'),
+    password: document.getElementById('share-password'),
+    removeBranding: document.getElementById('remove-branding'),
     history: document.getElementById('history')
   };
   elements.dropZone = document.getElementById('drop-zone');
   let latestRecord = null;
   let latestQr = null;
+  let maxFileBytes = 10 * 1024 * 1024;
 
   function shareOptions() {
-    return { allowDownload: elements.allowDownload.checked, watermark: elements.watermark.value, expiry: elements.expiry.value };
+    return { allowDownload: elements.allowDownload.checked, watermark: elements.watermark.value, expiry: elements.expiry.value, password: elements.password.value, removeBranding: elements.removeBranding.checked };
   }
 
   function post(command, extras) { vscode.postMessage(Object.assign({ command }, extras || {})); }
@@ -104,6 +107,7 @@
   elements.share.addEventListener('click', () => { setLoading(true); post('share', { options: shareOptions() }); });
   elements.refresh.addEventListener('click', () => post('refresh'));
   elements.language.addEventListener('click', () => post('setLanguage'));
+  for (const [id, command] of [['login','login'],['logout','logout'],['pricing','pricing'],['manage-account','account']]) document.getElementById(id).addEventListener('click', () => post(command));
   elements.open.addEventListener('click', () => latestRecord && post('open', { url: latestRecord.previewUrl }));
   elements.copy.addEventListener('click', () => latestRecord && post('copy', { url: latestRecord.previewUrl }));
   elements.saveCard.addEventListener('click', async () => {
@@ -150,12 +154,31 @@
     }
     const file = transfer?.files?.[0];
     if (!file) { elements.status.textContent = text.dropOneFile; return; }
-    if (file.size > 10 * 1024 * 1024) { elements.status.textContent = text.droppedFileLimit; return; }
+    if (file.size > maxFileBytes) { elements.status.textContent = format(text.fileLimit, {size:maxFileBytes/1048576}); return; }
     const bytes = await file.arrayBuffer();
     vscode.postMessage({ command: 'dropFile', name: file.name, bytes, options: shareOptions() });
   });
   window.addEventListener('message', (event) => {
     const message = event.data;
+    if (message.command === 'accountUnavailable') document.getElementById('account-status').textContent = text.accountUnavailable;
+    if (message.command === 'accountLoaded') {
+      const account = message.account;
+      document.getElementById('account-status').textContent = '';
+      document.getElementById('account-name').textContent = account.user ? `${account.user.email} · ${account.pro?'Pro':'Free'}` : 'Free';
+      document.getElementById('login').classList.toggle('hidden',!!account.user);
+      document.getElementById('logout').classList.toggle('hidden',!account.user);
+      document.getElementById('manage-account').classList.toggle('hidden',!account.user);
+      document.getElementById('pricing').classList.toggle('hidden',account.pro);
+      document.getElementById('pro-options').classList.toggle('hidden',!account.pro);
+      const previous = elements.expiry.value;
+      elements.expiry.replaceChildren();
+      for(const [day,value,label] of [[1,'day',text.oneDay],[7,'week',text.sevenDays],[30,'month',text.thirtyDays]]) if(account.expiryDays.includes(day)) {
+        const option=document.createElement('option'); option.value=value; option.textContent=label; elements.expiry.appendChild(option);
+      }
+      if([...elements.expiry.options].some(option=>option.value===previous))elements.expiry.value=previous;
+      if(!account.pro){elements.password.value='';elements.removeBranding.checked=false;}
+      maxFileBytes=account.maxFileBytes;
+    }
     if (message.command === 'selectionChanged') renderSelection(message.selection);
     if (message.command === 'historyLoaded') renderHistory(message.records);
     if (message.command === 'shareStarted') setLoading(true);

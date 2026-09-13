@@ -101,3 +101,7 @@ button:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-off
 .history-action.reshare { font-weight: 650; }
 .muted { padding: 6px 2px; color: var(--muted); font-size: 10px; line-height: 1.45; }
 .hidden { display: none !important; }
+.account-strip { display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:0 0 6px;font-size:11px; }
+#account-name { overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;margin-right:auto; }
+#account-status:empty { display:none; }
+.option-field select,.option-field input[type=password] { width:100%;box-sizing:border-box;min-height:30px;padding:5px 8px;border:1px solid var(--vscode-input-border,transparent);border-radius:5px;color:var(--vscode-input-foreground);background:var(--vscode-input-background);font:inherit; }

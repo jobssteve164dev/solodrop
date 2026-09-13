@@ -66,7 +66,7 @@ test('exposes guest share controls with a fixed one-day lifetime', () => {
   assert.match(script, /post\('share', \{ options: shareOptions\(\) \}\)/);
   assert.match(script, /post\('dropUri', \{ uri, options: shareOptions\(\) \}\)/);
   assert.match(script, /command: 'dropFile',[^\n]+options: shareOptions\(\)/);
-  assert.match(provider, /createWebShare\(artifact, options\)/);
+  assert.match(provider, /createWebShare\(artifact, options, fetch, await this.context.secrets.get\(SESSION_KEY\), resolveLocale\(\)\)/);
 });
 
 test('shows immediate share progress, prevents duplicate share jobs and saves an OG-sized PNG card', () => {

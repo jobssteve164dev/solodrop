@@ -7,7 +7,7 @@ import { previewWorker, verifyTemporaryPreview } from '../worker/src/temporary.m
 import { createShare, previewPage, serveContent, serveShare } from '../worker/src/shares.mjs';
 import { handleAuth } from '../worker/src/auth.mjs';
 
-test('web entry lets guests share first and offers registration after success', () => {
+test('web entry keeps free sharing at one day and offers Pro after success', () => {
   const guest = homePage(null);
   assert.match(guest, /无需登录/);
   assert.match(guest, /创建分享链接/);
@@ -19,9 +19,9 @@ test('web entry lets guests share first and offers registration after success', 
   assert.doesNotMatch(guest, /<option value="week"/);
   assert.doesNotMatch(guest, /<option value="month"/);
   const user = homePage({id:'user-1',email:'user@example.com'});
-  assert.match(user, /<option value="week" selected>/);
-  assert.match(user, /<option value="month">/);
-  assert.match(user, /长期保留/);
+  assert.doesNotMatch(user, /<option value="week"/);
+  assert.doesNotMatch(user, /<option value="month">/);
+  assert.doesNotMatch(user, /长期保留/);
   assert.match(guest, /favicon\.svg/);
   assert.match(guest, /SoloDrop · A SZLK product/);
   assert.equal(MAX_FILE_BYTES, 10 * 1024 * 1024);
@@ -139,11 +139,16 @@ test('R2 shares enforce download preference and render escaped watermarks', asyn
 
   const signedInForm=new FormData();
   signedInForm.set('file',new File(['hello'],'signed-in.txt',{type:'text/plain'}));
-  signedInForm.set('expiry','month');
-  const signedIn=await createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:signedInForm}),{PREVIEWS:bucket},{id:'user-1',email:'user@example.com'},registry,'https://drop.szlk.ai');
-  const signedInLifetime=new Date(signedIn.expiresAt).getTime()-Date.now();
-  assert.ok(signedInLifetime>29*24*60*60*1000);
-  assert.ok(signedInLifetime<=30*24*60*60*1000);
+  signedInForm.set('expiry','day');
+  const previous=globalThis.fetch;
+  globalThis.fetch=async()=>Response.json({ok:true,data:{allowed:false}});
+  try {
+    const signedIn=await createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:signedInForm}),{PREVIEWS:bucket,SZLK_PASSPORT_SECRET:'fixture'},{id:'user-1',email:'user@example.com'},registry,'https://drop.szlk.ai');
+    const signedInLifetime=new Date(signedIn.expiresAt).getTime()-Date.now();
+    assert.ok(signedInLifetime>23*60*60*1000);
+    assert.ok(signedInLifetime<=24*60*60*1000);
+  } finally {globalThis.fetch=previous;}
+
 });
 
 test('R2 shares return valid partial-content headers only for an actual Range request', async () => {
@@ -183,7 +188,7 @@ test('R2 shares reject multi-day lifetimes for guests', async () => {
   form.set('expiry','week');
   await assert.rejects(
     ()=>createShare(new Request('https://drop.szlk.ai/api/shares',{method:'POST',body:form}),{},null,{},'https://drop.szlk.ai','claim-secret'),
-    /未登录用户只能创建 1 天有效期/
+    /Free 分享保留 1 天/
   );
 });
 
@@ -193,7 +198,7 @@ test('login claims guest share activity and opens account history', async () => 
   globalThis.fetch=async(url,options)=>{
     passportRequests.push({url,options});
     if(url==='https://passport.szlk.ai/api/v1/passport/link') return new Response(JSON.stringify({ok:true,data:{linked:true}}),{headers:{'content-type':'application/json'}});
-    return new Response(JSON.stringify({data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
+    return new Response(JSON.stringify({ok:true,data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
   };
   const requests=[];
   const registry={fetch:async(url,options={})=>{
@@ -208,7 +213,8 @@ test('login claims guest share activity and opens account history', async () => 
     assert.equal(response.headers.get('location'),'/account');
     assert.deepEqual(passportRequests.map(({url})=>url),[
       'https://passport.szlk.ai/api/v1/auth/login',
-      'https://passport.szlk.ai/api/v1/passport/link'
+      'https://passport.szlk.ai/api/v1/passport/link',
+      'https://passport.szlk.ai/api/v1/entitlements/access-check'
     ]);
     assert.deepEqual(JSON.parse(passportRequests[1].options.body),{
       email:'user@example.com',
@@ -226,7 +232,7 @@ test('login does not create a local session when Passport product linking fails'
   const originalFetch=globalThis.fetch;
   globalThis.fetch=async(url)=>{
     if(url==='https://passport.szlk.ai/api/v1/passport/link') return new Response(JSON.stringify({ok:false,error:{message:'Identity conflict'}}),{status:409,headers:{'content-type':'application/json'}});
-    return new Response(JSON.stringify({data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
+    return new Response(JSON.stringify({ok:true,data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
   };
   const requests=[];
   const registry={fetch:async(url,options={})=>{requests.push({url,options}); return new Response('{}',{status:201});}};
@@ -245,7 +251,7 @@ test('email verification links the verified Passport identity before reporting s
   globalThis.fetch=async(url,options)=>{
     passportRequests.push({url,options});
     if(url==='https://passport.szlk.ai/api/v1/auth/verify-email') {
-      return new Response(JSON.stringify({data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
+      return new Response(JSON.stringify({ok:true,data:{user:{id:'user-1',email:'user@example.com',emailVerified:true}}}),{headers:{'content-type':'application/json'}});
     }
     assert.equal(url,'https://passport.szlk.ai/api/v1/passport/link');
     return new Response(JSON.stringify({ok:true,data:{linked:true}}),{headers:{'content-type':'application/json'}});
@@ -264,4 +270,29 @@ test('email verification links the verified Passport identity before reporting s
       'https://passport.szlk.ai/api/v1/passport/link'
     ]);
   } finally { globalThis.fetch=originalFetch; }
+});
+
+test('registration and email verification preserve a safe device or pricing destination',async()=>{
+  const previous=globalThis.fetch;
+  globalThis.fetch=async(url)=>Response.json({ok:true,data:url.endsWith('/verify-email')?{user:{id:'u1',email:'a@example.com'}}:{ok:true}});
+  const next='/en/connect?code=12345678-1234-1234-1234-123456789abc';
+  const registry={fetch:async()=>Response.json({})};
+  try{
+    const registered=await handleAuth(new Request('https://drop.szlk.ai/api/auth/register',{method:'POST',body:new URLSearchParams({email:'a@example.com',password:'password1',locale:'en',next})}),{SZLK_PASSPORT_SECRET:'fixture'},registry,'https://drop.szlk.ai');
+    assert.equal(new URL(registered.headers.get('location'),'https://drop.szlk.ai').searchParams.get('next'),next);
+    const verified=await handleAuth(new Request('https://drop.szlk.ai/api/auth/verify-email',{method:'POST',headers:{cookie:registered.headers.get('set-cookie').split(';')[0]},body:new URLSearchParams({token:'fixture',locale:'en'})}),{SZLK_PASSPORT_SECRET:'fixture'},registry,'https://drop.szlk.ai');
+    assert.equal(new URL(verified.headers.get('location'),'https://drop.szlk.ai').searchParams.get('next'),next);
+  }finally{globalThis.fetch=previous;}
+});
+
+test('an existing unverified account retains the connection destination when opening an earlier verification email',async()=>{
+  const previous=globalThis.fetch;
+  globalThis.fetch=async(url)=>Response.json({ok:true,data:url.endsWith('/login')?{needsEmailVerification:true}:{user:{id:'u1',email:'a@example.com',emailVerified:true}}});
+  const next='/connect?code=12345678-1234-1234-1234-123456789abc';
+  try{
+    const pending=await handleAuth(new Request('https://drop.szlk.ai/api/auth/login',{method:'POST',body:new URLSearchParams({email:'a@example.com',password:'password1',next})}),{SZLK_PASSPORT_SECRET:'fixture'},{},'https://drop.szlk.ai');
+    const cookie=pending.headers.get('set-cookie');assert.match(cookie,/solodrop_auth_next=/);
+    const verified=await handleAuth(new Request('https://drop.szlk.ai/api/auth/verify-email',{method:'POST',headers:{cookie:cookie.split(';')[0]},body:new URLSearchParams({token:'previous-email'})}),{SZLK_PASSPORT_SECRET:'fixture'},{},'https://drop.szlk.ai');
+    assert.equal(new URL(verified.headers.get('location'),'https://drop.szlk.ai').searchParams.get('next'),next);
+  }finally{globalThis.fetch=previous;}
 });

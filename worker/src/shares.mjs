@@ -1,3 +1,5 @@
+import { sharePolicy } from './billing.mjs';
+import { shareError } from './share-errors.mjs';
 const MAX_SHARE_BYTES = 10 * 1024 * 1024;
 const EXPIRY_MS = { day: 24 * 60 * 60 * 1000, week: 7 * 24 * 60 * 60 * 1000, month: 30 * 24 * 60 * 60 * 1000 };
 const ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
@@ -18,6 +20,45 @@ async function sha256(value) {
 
 function metadataKey(slug) { return `shares/${slug}.json`; }
 function contentKey(slug) { return `content/${slug}`; }
+
+async function derivePassword(password,salt) {
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:new TextEncoder().encode(salt),iterations:100000},key,256);
+  return [...new Uint8Array(bits)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+}
+
+function equalSecret(a,b) {
+  if(typeof a!=='string'||typeof b!=='string'||a.length!==b.length)return false;
+  let difference=0; for(let i=0;i<a.length;i++)difference|=a.charCodeAt(i)^b.charCodeAt(i);
+  return difference===0;
+}
+
+async function accessCookie(meta) {
+  return sha256(`solodrop-share-access:${meta.slug}:${meta.passwordHash}`);
+}
+
+async function canReadShare(request,meta) {
+  if(!meta.passwordHash)return true;
+  const managementToken=request?.headers.get('x-management-token');
+  if(managementToken && equalSecret(await sha256(managementToken),meta.managementHash))return true;
+  const cookie=request?.headers.get('cookie')?.split(';').map(v=>v.trim()).find(v=>v.startsWith(`sd_share_${meta.slug}=`))?.split('=')[1];
+  return equalSecret(cookie,await accessCookie(meta));
+}
+
+function passwordPrompt(slug,request,message='') {
+  const en=/^en/i.test(request?.headers.get('accept-language')||'');
+  return new Response(`<!doctype html><html lang="${en?'en':'zh-CN'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${en?'Password required':'请输入访问密码'}</title><style>body{font:16px system-ui;background:#f7f7fb;color:#20212b;margin:0;padding:24px}main{max-width:420px;margin:12vh auto;background:white;padding:28px;border-radius:18px}input,button{box-sizing:border-box;width:100%;min-height:46px;margin-top:16px;padding:10px;font:inherit;border:1px solid #ddd;border-radius:8px}button{background:#5046e5;color:white;cursor:pointer}</style></head><body><main><h1>${en?'Enter the share password':'请输入访问密码'}</h1><p>${en?'Ask the sender for the password to view this file.':'向分享者获取密码，即可查看文件。'}</p>${message?`<p role="alert">${esc(message)}</p>`:''}<form method="post" action="/api/shares/${encodeURIComponent(slug)}/unlock"><label>${en?'Password':'密码'}<input name="password" type="password" required maxlength="128" autocomplete="current-password"></label><button>${en?'Open preview':'查看文件'}</button></form></main></body></html>`,{status:401,headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store','referrer-policy':'same-origin','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"}});
+}
+
+async function unlockShare(request,slug,env) {
+  const meta=await readMetadata(env.PREVIEWS,slug);
+  if(!meta)return new Response('Not found.',{status:404});
+  if(meta.expiresAt && Date.now()>=meta.expiresAt)return shareStatusResponse('expired',request);
+  if(!meta.passwordHash)return Response.redirect(`https://drop.szlk.ai/${slug}`,303);
+  const form=await request.formData(),password=String(form.get('password')||'');
+  if(password.length>128 || !equalSecret(await derivePassword(password,meta.passwordSalt),meta.passwordHash))return passwordPrompt(slug,request,/^en/i.test(request.headers.get('accept-language')||'')?'Incorrect password.':'密码不正确。');
+  return new Response(null,{status:303,headers:{location:`/${slug}`,'set-cookie':`sd_share_${slug}=${await accessCookie(meta)}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=${Math.max(1,Math.floor((meta.expiresAt-Date.now())/1000))}`,'cache-control':'no-store'}});
+}
 
 async function readMetadata(bucket, slug) {
   const object = await bucket.get(metadataKey(slug));
@@ -45,11 +86,12 @@ function watermark(text) {
 }
 
 function previewPage(meta) {
-  const download = meta.allowDownload ? `<a class="download" href="/api/shares/${encodeURIComponent(meta.slug)}/content?download=1" download>Download</a>` : '';
+  const en=meta.locale!=='zh';
+  const download = meta.allowDownload ? `<a class="download" href="/api/shares/${encodeURIComponent(meta.slug)}/content?download=1" download>${en?'Download':'下载'}</a>` : '';
   const selectionProtection = meta.watermark ? '<style>.content,.content *{-webkit-user-select:none;user-select:none}.content .pdf{pointer-events:none}</style><script>document.addEventListener("copy",function(event){if(event.target.closest(".content"))event.preventDefault()});document.addEventListener("selectstart",function(event){if(event.target.closest(".content"))event.preventDefault()})<\/script>' : '';
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="solodrop-preview" content="r2-v1"><meta name="robots" content="noindex,nofollow"><title>${esc(meta.name)}</title><style>
+  return `<!doctype html><html lang="${en?'en':'zh-CN'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="solodrop-preview" content="r2-v1"><meta name="robots" content="noindex,nofollow"><title>${esc(meta.name)}</title><style>
 :root{font-family:Inter,"Noto Sans SC",system-ui,sans-serif;color:#20212b;background:#f7f7fb;--brand:#5046e5;--surface:#fff;--line:#e2e3ed;--muted:#666979}*{box-sizing:border-box}body{margin:0}.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}.brand{display:flex;align-items:center;gap:10px;min-width:0;font-weight:750}.mark{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;display:grid;place-items:center}.title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.download{min-height:44px;display:inline-flex;align-items:center;color:#4546bd;font-weight:700;text-decoration:none}.content{position:relative;z-index:1;width:min(100% - 32px,960px);min-height:60vh;margin:36px auto 24px;padding:clamp(20px,4vw,48px);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 60px rgba(30,31,62,.08);overflow:auto}.media{display:block;max-width:100%;margin:auto}.pdf{width:100%;height:78vh;border:0}.office-viewer{min-height:50vh}.office-status,.file-fallback{text-align:center;color:var(--muted);padding:40px 16px}pre{white-space:pre-wrap;overflow-wrap:anywhere}.share-actions{position:relative;z-index:3;width:min(100% - 32px,960px);margin:0 auto 44px;display:flex;justify-content:flex-end;gap:12px}.solodrop-cta,.solodrop-powered{min-height:44px;display:inline-flex;align-items:center;text-decoration:none;font-weight:650}.solodrop-cta{padding:0 18px;border-radius:10px;background:var(--brand);color:#fff}.solodrop-powered{color:var(--muted)}.watermark{position:fixed;inset:0;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:150px;place-items:center;overflow:hidden;pointer-events:none;user-select:none}.watermark span{max-width:220px;color:rgba(67,58,150,.16);font-size:18px;font-weight:760;transform:rotate(-24deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media(max-width:600px){.top{padding:10px 16px}.content{width:100%;margin:0 0 20px;border:0;border-radius:0;padding:22px 18px}.watermark{grid-template-columns:repeat(2,1fr)}.share-actions{width:100%;padding:0 18px;display:grid}.solodrop-cta,.solodrop-powered{justify-content:center}}
-</style>${selectionProtection}</head><body><header class="top"><div class="brand"><span class="mark">S</span><span class="title">${esc(meta.name)}</span></div>${download}</header><main class="content">${previewBody(meta)}</main>${watermark(meta.watermark)}<aside class="share-actions" data-solodrop-actions hidden aria-label="Shared page actions"></aside><script defer src="/embed.js?v=3"></script></body></html>`;
+</style>${selectionProtection}</head><body><header class="top"><div class="brand">${meta.removeBranding?'':'<span class="mark">S</span>'}<span class="title">${esc(meta.name)}</span></div>${download}</header><main class="content">${previewBody(meta)}</main>${watermark(meta.watermark)}${meta.removeBranding?'':'<aside class="share-actions" data-solodrop-actions hidden aria-label="Shared page actions"></aside><script defer src="/embed.js?v=3"></script>'}</body></html>`;
 }
 
 function shareStatusPage(state = 'expired', locale = 'zh') {
@@ -98,26 +140,44 @@ function shareStatusResponse(state, request) {
 
 async function createShare(request, env, user, registry, origin, claimToken = null) {
   const form = await request.formData();
+  try {return await storeShare(form,env,user,registry,origin,claimToken);}
+  catch(error){throw shareError(error.message,form.get('locale')==='en' || /^en/i.test(request.headers.get('accept-language')||''));}
+}
+
+async function storeShare(form,env,user,registry,origin,claimToken) {
   const file = form.get('file');
   if (!(file instanceof File) || !file.size) throw new Error('请选择要分享的文件。');
-  if (file.size > MAX_SHARE_BYTES) throw new Error('当前支持最大 10 MB 的文件。');
-  const expiry = String(form.get('expiry') || (user ? 'week' : 'day'));
-  if (!user && expiry !== 'day') throw new Error('未登录用户只能创建 1 天有效期的分享。');
-  if (user && !(expiry in EXPIRY_MS) && expiry !== 'never') throw new Error('分享有效期无效。');
+  const expiry = String(form.get('expiry') || 'day');
+  if (!Object.hasOwn(EXPIRY_MS,expiry)) throw new Error('分享有效期无效，请选择 1、7 或 30 天。');
+  const policy=await sharePolicy(env,user);
+  if (file.size > policy.maxFileBytes) throw new Error(`当前支持最大 ${policy.maxFileBytes/1024/1024} MB 的文件。`);
+  if (!policy.expiryDays.includes(EXPIRY_MS[expiry]/86400000)) throw new Error('Free 分享保留 1 天；升级 Pro 可选择 7 或 30 天。');
+  const password=String(form.get('password')||'');
+  const removeBranding=form.get('removeBranding')==='yes';
+  if(password && !policy.features.includes('password'))throw new Error('访问密码需要 SoloDrop Pro。');
+  if(password && (password.length<8 || password.length>128))throw new Error('访问密码请使用 8–128 个字符。');
+  if(removeBranding && !policy.features.includes('remove_branding'))throw new Error('移除品牌需要 SoloDrop Pro。');
   const allowDownload = form.get('allowDownload') !== 'no';
   const watermarkText = String(form.get('watermark') || '').trim().slice(0, 60);
   let slug=randomValue(7);
   for(let attempt=0;attempt<5&&await env.PREVIEWS.head(metadataKey(slug));attempt+=1)slug=randomValue(7);
   if(await env.PREVIEWS.head(metadataKey(slug)))throw new Error('暂时无法生成唯一链接，请重试。');
   const managementToken = randomValue(28), now = Date.now();
-  const expiresAt = expiry === 'never' ? null : now + EXPIRY_MS[expiry];
+  const expiresAt = now + EXPIRY_MS[expiry];
   const inferredText = /\.(?:md|markdown|txt|csv|yml|yaml|toml|sql|sh|py|go|rs|java|c|cpp|h|ts|tsx)$/i.test(file.name);
-  const meta = { slug, name: safeName(file.name), type: file.type || (inferredText ? 'text/plain' : 'application/octet-stream'), size: file.size, allowDownload, watermark: watermarkText, createdAt: now, expiresAt, ownerId: user?.id || null, managementHash: await sha256(managementToken) };
-  await env.PREVIEWS.put(contentKey(slug), file.stream(), { httpMetadata: { contentType: meta.type } });
+  const passwordSalt=password?randomValue(24):null;
+  const passwordHash=password?await derivePassword(password,passwordSalt):null;
+  const meta = { slug, name: safeName(file.name), type: file.type || (inferredText ? 'text/plain' : 'application/octet-stream'), size: file.size, allowDownload, watermark: watermarkText, createdAt: now, expiresAt, ownerId: user?.id || null, managementHash: await sha256(managementToken),locale:form.get('locale')==='en'?'en':'zh',passwordSalt,passwordHash,removeBranding };
+  if(user) {
+    const reservation=await registry.fetch('https://registry/share-quota/reserve',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({slug,userId:user.id,size:file.size,expiresAt,limit:policy.maxStoredBytes})});
+    if(!reservation.ok)throw new Error((await reservation.json()).error||'暂时无法确认分享容量，请重试。');
+  }
   try {
+    await env.PREVIEWS.put(contentKey(slug), file.stream(), { httpMetadata: { contentType: meta.type } });
     await env.PREVIEWS.put(metadataKey(slug), JSON.stringify(meta), { httpMetadata: { contentType: 'application/json' } });
   } catch (error) {
     await env.PREVIEWS.delete(contentKey(slug));
+    if(user)await registry.fetch('https://registry/share-quota/release',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({slug})});
     throw error;
   }
   if (user) {
@@ -134,6 +194,7 @@ async function serveShare(slug, env, request = null) {
   const meta = await readMetadata(env.PREVIEWS, slug);
   if (!meta) return new Response('Not found.', { status: 404 });
   if (meta.expiresAt && Date.now() >= meta.expiresAt) return shareStatusResponse('expired', request);
+  if(!await canReadShare(request,meta))return passwordPrompt(slug,request);
   return new Response(previewPage(meta), { headers: { 'content-type':'text/html;charset=utf-8', 'cache-control':'no-store', 'content-security-policy':"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; object-src 'self'; frame-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'", 'x-content-type-options':'nosniff', 'referrer-policy':'no-referrer' } });
 }
 
@@ -141,6 +202,7 @@ async function serveContent(request, slug, env) {
   const meta = await readMetadata(env.PREVIEWS, slug);
   if (!meta) return new Response('Not found.', { status: 404 });
   if (meta.expiresAt && Date.now() >= meta.expiresAt) return new Response('This share has expired.', { status: 410 });
+  if(!await canReadShare(request,meta))return new Response('Password required.',{status:401,headers:{'cache-control':'no-store'}});
   const download = new URL(request.url).searchParams.get('download') === '1';
   if (download && !meta.allowDownload) return new Response('Downloads are disabled for this share.', { status: 403 });
   const requestedRange = request.headers.has('range');
@@ -149,7 +211,7 @@ async function serveContent(request, slug, env) {
   const headers = new Headers();
   object.writeHttpMetadata(headers);
   headers.set('etag', object.httpEtag);
-  headers.set('cache-control', 'private,max-age=300');
+  headers.set('cache-control', 'no-store');
   headers.set('content-disposition', `${download ? 'attachment' : 'inline'}; filename*=UTF-8''${encodeURIComponent(meta.name)}`);
   headers.set('x-content-type-options', 'nosniff');
   headers.set('accept-ranges', 'bytes');
@@ -161,10 +223,29 @@ async function serveContent(request, slug, env) {
 
 async function deleteShare(request, slug, env, user = null) {
   const meta = await readMetadata(env.PREVIEWS, slug);
-  if (!meta) return new Response(null, { status: 204 });
+  if (!meta) {
+    if(user && env.LINKS) {
+      const registry=env.LINKS.get(env.LINKS.idFromName('registry'));
+      const ownership=await registry.fetch(`https://registry/share-owner?slug=${encodeURIComponent(slug)}`,{headers:{'x-user-id':user.id}});
+      if(ownership.ok && (await ownership.json()).owned===true) {
+        const release=await registry.fetch('https://registry/share-quota/release',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({slug,deleted:true})});
+        if(!release.ok)return new Response('Could not update this share. Please retry.',{status:503});
+      }
+    }
+    return new Response(null, { status: 204 });
+  }
   const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') || '';
-  if ((!token || await sha256(token) !== meta.managementHash) && (!user || user.id !== meta.ownerId)) return new Response(JSON.stringify({ error:'Not authorized.' }), { status:403, headers:{'content-type':'application/json'} });
+  let owned=Boolean(user && user.id===meta.ownerId);
+  if(!owned && user && !meta.ownerId && env.LINKS) {
+    const response=await env.LINKS.get(env.LINKS.idFromName('registry')).fetch(`https://registry/share-owner?slug=${encodeURIComponent(slug)}`,{headers:{'x-user-id':user.id}});
+    owned=response.ok && (await response.json()).owned===true;
+  }
+  if ((!token || await sha256(token) !== meta.managementHash) && !owned) return new Response(JSON.stringify({ error:'Not authorized.' }), { status:403, headers:{'content-type':'application/json'} });
   await env.PREVIEWS.delete([metadataKey(slug), contentKey(slug)]);
+  if(env.LINKS) {
+    const release=await env.LINKS.get(env.LINKS.idFromName('registry')).fetch('https://registry/share-quota/release',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({slug,deleted:true})});
+    if(!release.ok)return new Response('Could not update this share. Please retry.',{status:503});
+  }
   return new Response(null, { status: 204 });
 }
 
@@ -180,4 +261,4 @@ async function purgeExpiredShares(env) {
   } while (cursor);
 }
 
-export { MAX_SHARE_BYTES, createShare, deleteShare, previewPage, purgeExpiredShares, serveContent, serveShare, shareStatusPage, shareStatusResponse };
+export { MAX_SHARE_BYTES, createShare, deleteShare, previewPage, purgeExpiredShares, serveContent, serveShare, shareStatusPage, shareStatusResponse, unlockShare };

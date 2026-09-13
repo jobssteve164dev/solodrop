@@ -2,6 +2,9 @@
 .github/**
 .vscode/**
 .solopreneur/**
+.playwright-cli/**
+AGENTS.md
+PROJECT_MEMORY.md
 docs/**
 src/**
 test/**
